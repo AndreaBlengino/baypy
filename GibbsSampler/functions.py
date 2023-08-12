@@ -3,7 +3,7 @@ import numpy as np
 from scipy.stats import gamma, multivariate_normal, gaussian_kde
 
 
-def sampler(n_iterations, burn_in_iterations, data, y_name, initial_values, initial_value_intercept, prior):
+def sampler(n_iterations, burn_in_iterations, n_chains, data, y_name, initial_values, initial_value_intercept, prior):
 
     beta_0 = [prior[x]['mean'] for x in list(initial_values.keys())]
     beta_0.insert(0, prior['intercept']['mean'])
@@ -30,44 +30,47 @@ def sampler(n_iterations, burn_in_iterations, data, y_name, initial_values, init
     Sigma_0_inv_Beta_0 = np.dot(Sigma_0_inv, Beta_0)
 
 
-    traces = {parameter: [] for parameter in list(initial_values.keys())}
-    traces['intercept'] = []
-    traces['sigma2'] = []
+    traces = {parameter: [[] for _ in range(n_chains)] for parameter in list(initial_values.keys())}
+    traces['intercept'] = [[] for _ in range(n_chains)]
+    traces['sigma2'] = [[] for _ in range(n_chains)]
 
-    beta = np.hstack((initial_value_intercept, list(initial_values.values())))
+    beta = [np.hstack((initial_value_intercept, list(initial_values.values()))) for _ in range(n_chains)]
 
     for _ in range(burn_in_iterations):
 
-        sigma2 = sample_sigma2(Y = Y,
-                               X = X,
-                               beta = beta,
-                               T_1 = T_1,
-                               theta_0 = theta_0)
+        sigma2 = [sample_sigma2(Y = Y,
+                                X = X,
+                                beta = beta[i],
+                                T_1 = T_1,
+                                theta_0 = theta_0) for i in range(n_chains)]
 
-        beta = sample_beta(XtX = XtX,
-                           XtY = XtY,
-                           sigma2 = sigma2,
-                           Sigma_0_inv = Sigma_0_inv,
-                           Sigma_0_inv_Beta_0 = Sigma_0_inv_Beta_0)
+        beta = [sample_beta(XtX = XtX,
+                            XtY = XtY,
+                            sigma2 = sigma2[i],
+                            Sigma_0_inv = Sigma_0_inv,
+                            Sigma_0_inv_Beta_0 = Sigma_0_inv_Beta_0) for i in range(n_chains)]
 
     for _ in range(n_iterations):
 
-        sigma2 = sample_sigma2(Y = Y,
-                               X = X,
-                               beta = beta,
-                               T_1 = T_1,
-                               theta_0 = theta_0)
+        sigma2 = [sample_sigma2(Y = Y,
+                                X = X,
+                                beta = beta[i],
+                                T_1 = T_1,
+                                theta_0 = theta_0) for i in range(n_chains)]
 
-        beta = sample_beta(XtX = XtX,
-                           XtY = XtY,
-                           sigma2 = sigma2,
-                           Sigma_0_inv = Sigma_0_inv,
-                           Sigma_0_inv_Beta_0 = Sigma_0_inv_Beta_0)
+        beta = [sample_beta(XtX = XtX,
+                            XtY = XtY,
+                            sigma2 = sigma2[i],
+                             Sigma_0_inv = Sigma_0_inv,
+                            Sigma_0_inv_Beta_0 = Sigma_0_inv_Beta_0) for i in range(n_chains)]
 
 
-        traces['sigma2'].append(sigma2)
-        traces['intercept'].append(beta[0])
-        [traces[x_k].append(beta[k]) for k, x_k in enumerate(list(initial_values.keys()), 1)]
+        for i in range(n_chains):
+            traces['sigma2'][i].append(sigma2[i])
+            traces['intercept'][i].append(beta[i][0])
+            [traces[x_k][i].append(beta[i][k]) for k, x_k in enumerate(list(initial_values.keys()), 1)]
+
+    traces = {parameter: np.matrix(trace).transpose() for parameter, trace in traces.items()}
 
     return traces
 
@@ -101,7 +104,7 @@ def plot(traces, x_names):
     ax_intercept_density = fig.add_subplot(n_variables, 2, 2)
 
     ax_intercept_trace.plot(traces['intercept'], linewidth = 0.5)
-    ax_intercept_density.plot(*compute_kde(traces['intercept']))
+    ax_intercept_density.plot(*compute_kde(traces['intercept'].flatten()))
 
     ax_intercept_trace.set_title('Trace of intercept')
     ax_intercept_density.set_title('Density of intercept')
@@ -111,7 +114,7 @@ def plot(traces, x_names):
         ax_i_density = fig.add_subplot(n_variables, 2, i + 1)
 
         ax_i_trace.plot(traces[x_i], linewidth = 0.5)
-        ax_i_density.plot(*compute_kde(traces[x_i]))
+        ax_i_density.plot(*compute_kde(traces[x_i].flatten()))
 
         ax_i_trace.set_title(f'Trace of {x_i}')
         ax_i_density.set_title(f'Density of {x_i}')
@@ -120,7 +123,7 @@ def plot(traces, x_names):
     ax_sigma2_density = fig.add_subplot(n_variables, 2, 2*n_variables)
 
     ax_sigma2_trace.plot(traces['sigma2'], linewidth = 0.5)
-    ax_sigma2_density.plot(*compute_kde(traces['sigma2']))
+    ax_sigma2_density.plot(*compute_kde(traces['sigma2'].flatten()))
 
     ax_sigma2_trace.set_title(r'Trace of $\sigma^2$')
     ax_sigma2_density.set_title('Density of $\sigma^2$')
