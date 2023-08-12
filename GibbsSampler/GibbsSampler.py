@@ -1,4 +1,5 @@
 from .functions import sampler
+from .functions import plot
 
 
 class GibbsSampler:
@@ -35,3 +36,8 @@ class GibbsSampler:
                               initial_values = self.initial_values,
                               initial_value_intercept = self.initial_values_intercept,
                               prior = self.prior)
+
+    def plot(self):
+
+        plot(traces = self.traces,
+             x_names = list(self.initial_values.keys()))

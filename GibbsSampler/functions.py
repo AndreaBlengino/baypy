@@ -1,5 +1,6 @@
+import matplotlib.pyplot as plt
 import numpy as np
-from scipy.stats import gamma, multivariate_normal
+from scipy.stats import gamma, multivariate_normal, gaussian_kde
 
 
 def sampler(n_iterations, burn_in_iterations, data, y_name, initial_values, initial_value_intercept, prior):
@@ -89,3 +90,49 @@ def sample_beta(XtX, XtY, sigma2, Sigma_0_inv, Sigma_0_inv_Beta_0):
     return multivariate_normal.rvs(mean = np.asarray(M).reshape(-1),
                                    cov = V,
                                    size = 1)
+
+def plot(traces, x_names):
+
+    n_variables = len(traces.keys())
+    n_iterations = len(traces['intercept'])
+
+    fig = plt.figure(figsize = (10, min(1.5*n_variables + 2, 10)))
+    ax_intercept_trace = fig.add_subplot(n_variables, 2, 1)
+    ax_intercept_density = fig.add_subplot(n_variables, 2, 2)
+
+    ax_intercept_trace.plot(traces['intercept'], linewidth = 0.5)
+    ax_intercept_density.plot(*compute_kde(traces['intercept']))
+
+    ax_intercept_trace.set_title('Trace of intercept')
+    ax_intercept_density.set_title('Density of intercept')
+
+    for i, x_i in zip(range(3, 2*n_variables - 2, 2), x_names):
+        ax_i_trace = fig.add_subplot(n_variables, 2, i, sharex = ax_intercept_trace)
+        ax_i_density = fig.add_subplot(n_variables, 2, i + 1)
+
+        ax_i_trace.plot(traces[x_i], linewidth = 0.5)
+        ax_i_density.plot(*compute_kde(traces[x_i]))
+
+        ax_i_trace.set_title(f'Trace of {x_i}')
+        ax_i_density.set_title(f'Density of {x_i}')
+
+    ax_sigma2_trace = fig.add_subplot(n_variables, 2, 2*n_variables - 1, sharex = ax_intercept_trace)
+    ax_sigma2_density = fig.add_subplot(n_variables, 2, 2*n_variables)
+
+    ax_sigma2_trace.plot(traces['sigma2'], linewidth = 0.5)
+    ax_sigma2_density.plot(*compute_kde(traces['sigma2']))
+
+    ax_sigma2_trace.set_title(r'Trace of $\sigma^2$')
+    ax_sigma2_density.set_title('Density of $\sigma^2$')
+
+    ax_intercept_trace.set_xlim(0, n_iterations)
+
+    plt.tight_layout()
+
+    plt.show()
+
+def compute_kde(trace):
+    posterior_support = np.linspace(np.min(trace), np.max(trace), 1000)
+    posterior_kde = gaussian_kde(trace)(posterior_support)
+
+    return posterior_support, posterior_kde
