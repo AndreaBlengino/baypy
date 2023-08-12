@@ -2,7 +2,7 @@ import numpy as np
 from scipy.stats import gamma, multivariate_normal
 
 
-def sampler(n_iterations, data, y_name, initial_values, initial_value_intercept, prior):
+def sampler(n_iterations, burn_in_iterations, data, y_name, initial_values, initial_value_intercept, prior):
 
     beta_0 = [prior[x]['mean'] for x in list(initial_values.keys())]
     beta_0.insert(0, prior['intercept']['mean'])
@@ -34,6 +34,20 @@ def sampler(n_iterations, data, y_name, initial_values, initial_value_intercept,
     traces['sigma2'] = []
 
     beta = np.hstack((initial_value_intercept, list(initial_values.values())))
+
+    for _ in range(burn_in_iterations):
+
+        sigma2 = sample_sigma2(Y = Y,
+                               X = X,
+                               beta = beta,
+                               T_1 = T_1,
+                               theta_0 = theta_0)
+
+        beta = sample_beta(XtX = XtX,
+                           XtY = XtY,
+                           sigma2 = sigma2,
+                           Sigma_0_inv = Sigma_0_inv,
+                           Sigma_0_inv_Beta_0 = Sigma_0_inv_Beta_0)
 
     for _ in range(n_iterations):
 

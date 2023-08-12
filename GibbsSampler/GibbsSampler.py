@@ -26,9 +26,10 @@ class GibbsSampler:
 
         self.prior = prior
 
-    def run(self, n_iterations):
+    def run(self, n_iterations, burn_in_iterations):
 
         self.traces = sampler(n_iterations = n_iterations,
+                              burn_in_iterations = burn_in_iterations,
                               data = self.data,
                               y_name = self.y_name,
                               initial_values = self.initial_values,
