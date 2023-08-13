@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.stats import gamma, multivariate_normal, gaussian_kde
+from scipy.stats import invgamma, multivariate_normal, gaussian_kde
 
 
 def sampler(n_iterations, burn_in_iterations, n_chains, data, y_name, initial_values, initial_value_intercept, prior):
@@ -16,7 +16,7 @@ def sampler(n_iterations, burn_in_iterations, n_chains, data, y_name, initial_va
     Sigma_0_inv = np.linalg.inv(Sigma_0)
 
     T_0 = prior['sigma2']['shape']
-    theta_0 = prior['sigma2']['rate']
+    theta_0 = prior['sigma2']['scale']
 
     n = len(data)
     T_1 = T_0 + n
@@ -61,7 +61,7 @@ def sampler(n_iterations, burn_in_iterations, n_chains, data, y_name, initial_va
         beta = [sample_beta(XtX = XtX,
                             XtY = XtY,
                             sigma2 = sigma2[i],
-                             Sigma_0_inv = Sigma_0_inv,
+                            Sigma_0_inv = Sigma_0_inv,
                             Sigma_0_inv_Beta_0 = Sigma_0_inv_Beta_0) for i in range(n_chains)]
 
 
@@ -80,9 +80,9 @@ def sample_sigma2(Y, X, beta, T_1, theta_0):
     Y_X_beta = Y - np.asarray(np.dot(X, beta)).reshape(-1)
     theta_1 = theta_0 + np.dot(Y_X_beta.transpose(), Y_X_beta)
 
-    return 1/gamma.rvs(a = T_1/2,
-                       scale = 1/(theta_1/2),
-                       size = 1)[0]
+    return invgamma.rvs(a = T_1/2,
+                        scale = theta_1/2,
+                        size = 1)[0]
 
 
 def sample_beta(XtX, XtY, sigma2, Sigma_0_inv, Sigma_0_inv_Beta_0):
