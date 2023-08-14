@@ -1,6 +1,7 @@
 from .functions import sampler
 from .functions import plot
 from .functions import plot_autocorrelation
+from .functions import print_autocorrelation
 
 
 class GibbsSampler:
@@ -49,3 +50,11 @@ class GibbsSampler:
         plot_autocorrelation(traces = self.traces,
                              x_names = list(self.initial_values.keys()),
                              max_lags = max_lags)
+
+    def autocorrelation_summary(self, lags = None):
+
+        lags = [0, 1, 5, 10, 30] if lags is None else lags
+
+        print_autocorrelation(traces = self.traces,
+                              x_names = list(self.initial_values.keys()),
+                              lags = lags)

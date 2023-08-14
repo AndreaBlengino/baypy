@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 from scipy.stats import invgamma, multivariate_normal, gaussian_kde
 
 
@@ -183,6 +184,24 @@ def plot_autocorrelation(traces, x_names, max_lags):
     plt.subplots_adjust(left = 0.1)
 
     plt.show()
+
+
+def print_autocorrelation(traces, x_names, lags):
+
+    n_chains = traces['intercept'].shape[1]
+    acorr_summary = pd.DataFrame(columns = ['intercept', *x_names, 'sigma2'],
+                                 index = [f'Lag {lag}' for lag in lags])
+
+    for parameter in acorr_summary.columns:
+        param_acorr = []
+        for i in range(n_chains):
+            param_chain_acorr = compute_autocorrelation(vector = np.asarray(traces[parameter][:, i]).reshape(-1),
+                                                        max_lags = max(lags) + 1)
+            param_acorr.append(param_chain_acorr[lags])
+        param_acorr = np.array(param_acorr)
+        acorr_summary[parameter] = param_acorr.mean(axis = 0)
+
+    print(acorr_summary)
 
 
 def compute_autocorrelation(vector, max_lags):
