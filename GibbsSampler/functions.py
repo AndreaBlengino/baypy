@@ -94,6 +94,7 @@ def sample_beta(XtX, XtY, sigma2, Sigma_0_inv, Sigma_0_inv_Beta_0):
                                    cov = V,
                                    size = 1)
 
+
 def plot(traces, x_names):
 
     n_variables = len(traces.keys())
@@ -134,8 +135,61 @@ def plot(traces, x_names):
 
     plt.show()
 
+
 def compute_kde(trace):
     posterior_support = np.linspace(np.min(trace), np.max(trace), 1000)
     posterior_kde = gaussian_kde(trace)(posterior_support)
 
     return posterior_support, posterior_kde
+
+
+def plot_autocorrelation(traces, x_names, max_lags):
+
+    n_variables = len(traces.keys())
+    n_chains = traces['intercept'].shape[1]
+
+    fig, ax = plt.subplots(nrows = n_variables,
+                           ncols = n_chains,
+                           figsize = (min(1.5*n_chains + 3, 10), min(1.5*n_variables + 2, 10)),
+                           sharex = 'all',
+                           sharey = 'all')
+
+    for i in range(n_chains):
+        autocorrelation = compute_autocorrelation(vector = np.asarray(traces['intercept'][:, i]).reshape(-1),
+                                                  max_lags = max_lags)
+        ax[0, i].stem(autocorrelation, markerfmt = ' ', basefmt = ' ')
+        ax[0, i].set_title(f'Chain {i + 1}')
+
+        for j, x_j in zip(range(1, n_variables - 1), x_names):
+            autocorrelation = compute_autocorrelation(vector = np.asarray(traces[x_j][:, i]).reshape(-1),
+                                                      max_lags = max_lags)
+            ax[j, i].stem(autocorrelation, markerfmt = ' ', basefmt = ' ')
+            ax[j, 0].set_ylabel(f'{x_j}')
+
+        autocorrelation = compute_autocorrelation(vector = np.asarray(traces['sigma2'][:, i]).reshape(-1),
+                                                  max_lags = max_lags)
+        ax[n_variables - 1, i].stem(autocorrelation, markerfmt = ' ', basefmt = ' ')
+
+    for i in range(n_variables):
+        ax[i, 0].set_yticks([-1, 0, 1])
+
+    ax[0, 0].set_ylabel('intercept')
+    ax[n_variables - 1, 0].set_ylabel('$\sigma^2$')
+
+    ax[0, 0].set_xlim(-1, max_lags)
+    ax[0, 0].set_ylim(-1, 1)
+
+    plt.tight_layout()
+    plt.subplots_adjust(left = 0.1)
+
+    plt.show()
+
+
+def compute_autocorrelation(vector, max_lags):
+
+    normalized_vector = vector - vector.mean()
+    autocorrelation = np.correlate(normalized_vector, normalized_vector, 'full')[len(normalized_vector) - 1:]
+    autocorrelation = autocorrelation/vector.var()/len(vector)
+    autocorrelation = autocorrelation[:max_lags]
+
+    return autocorrelation
