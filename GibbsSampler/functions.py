@@ -155,27 +155,18 @@ def plot_autocorrelation(traces, x_names, max_lags):
                            sharex = 'all',
                            sharey = 'all')
 
+    parameters = ['intercept', *x_names, 'sigma2']
+
     for i in range(n_chains):
-        autocorrelation = compute_autocorrelation(vector = np.asarray(traces['intercept'][:, i]).reshape(-1),
-                                                  max_lags = max_lags)
-        ax[0, i].stem(autocorrelation, markerfmt = ' ', basefmt = ' ')
         ax[0, i].set_title(f'Chain {i + 1}')
+        for j, parameter in enumerate(parameters, 0):
+            acorr = compute_autocorrelation(vector = np.asarray(traces[parameter][:, i]).reshape(-1),
+                                            max_lags = max_lags)
+            ax[j, i].stem(acorr, markerfmt = ' ', basefmt = ' ')
 
-        for j, x_j in zip(range(1, n_variables - 1), x_names):
-            autocorrelation = compute_autocorrelation(vector = np.asarray(traces[x_j][:, i]).reshape(-1),
-                                                      max_lags = max_lags)
-            ax[j, i].stem(autocorrelation, markerfmt = ' ', basefmt = ' ')
-            ax[j, 0].set_ylabel(f'{x_j}')
-
-        autocorrelation = compute_autocorrelation(vector = np.asarray(traces['sigma2'][:, i]).reshape(-1),
-                                                  max_lags = max_lags)
-        ax[n_variables - 1, i].stem(autocorrelation, markerfmt = ' ', basefmt = ' ')
-
-    for i in range(n_variables):
+    for i, parameter in enumerate(parameters, 0):
+        ax[i, 0].set_ylabel(parameter)
         ax[i, 0].set_yticks([-1, 0, 1])
-
-    ax[0, 0].set_ylabel('intercept')
-    ax[n_variables - 1, 0].set_ylabel('$\sigma^2$')
 
     ax[0, 0].set_xlim(-1, max_lags)
     ax[0, 0].set_ylim(-1, 1)
