@@ -51,7 +51,7 @@ def sampler(n_iterations, burn_in_iterations, n_chains, data, y_name, initial_va
                             Sigma_0_inv = Sigma_0_inv,
                             Sigma_0_inv_Beta_0 = Sigma_0_inv_Beta_0) for i in range(n_chains)]
 
-        if i > burn_in_iterations:
+        if i >= burn_in_iterations:
             for j in range(n_chains):
                 traces['sigma2'][j].append(sigma2[j])
                 traces['intercept'][j].append(beta[j][0])
@@ -213,3 +213,28 @@ def compute_autocorrelation(vector, max_lags):
     autocorrelation = autocorrelation[:max_lags]
 
     return autocorrelation
+
+
+def print_summary(traces, x_names):
+
+    quantiles = [0.025, 0.25, 0.5, 0.75, 0.975]
+    n_iterations, n_chains = traces['intercept'].shape
+    summary = pd.DataFrame(columns = [f'{100*q}%' for q in quantiles],
+                           index = ['intercept', *x_names, 'sigma2'])
+    summary['Mean'] = np.nan
+
+    for parameter in summary.index:
+        for q in quantiles:
+            summary.loc[parameter, f'{100*q}%'] = np.quantile(np.asarray(traces[parameter]).reshape(-1), q)
+        summary.loc[parameter, 'Mean'] = traces[parameter].mean()
+
+    cols = list(summary.columns)
+    cols.insert(0, cols.pop(cols.index('Mean')))
+    summary = summary.loc[:, cols]
+
+    print(f'Number of chains:      {n_chains:>5}')
+    print(f'Sample size per chian: {n_iterations:>5}')
+    print()
+    print('Empirical mean and quantiles for each variable:')
+    print()
+    print(summary)

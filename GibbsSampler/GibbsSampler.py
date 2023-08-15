@@ -3,6 +3,7 @@ from .functions import plot
 from .functions import plot_autocorrelation
 from .functions import print_autocorrelation
 from .functions import compute_effective_sample_size
+from .functions import print_summary
 
 
 class GibbsSampler:
@@ -64,3 +65,8 @@ class GibbsSampler:
 
         compute_effective_sample_size(traces = self.traces,
                                       x_names = list(self.initial_values.keys()))
+
+    def summary(self):
+
+        print_summary(traces = self.traces,
+                      x_names = list(self.initial_values.keys()))
