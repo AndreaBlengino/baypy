@@ -13,8 +13,8 @@ class GibbsSampler:
         self.data = None
         self.y_name = None
         self.initial_values = None
-        self.initial_values_intercept = None
         self.prior = None
+        self.variable_names = None
         self.traces = None
 
     def set_data(self, data, y_name):
@@ -22,10 +22,9 @@ class GibbsSampler:
         self.data = data
         self.y_name = y_name
 
-    def set_initial_values(self, initial_values, initial_value_intercept):
+    def set_initial_values(self, values):
 
-        self.initial_values = initial_values
-        self.initial_values_intercept = initial_value_intercept
+        self.initial_values = values
 
     def set_prior(self, prior):
 
@@ -33,24 +32,25 @@ class GibbsSampler:
 
     def run(self, n_iterations, burn_in_iterations, n_chains):
 
+        self.variable_names = list(self.prior.keys())
+        self.variable_names.insert(0, self.variable_names.pop(self.variable_names.index('intercept')))
+
         self.traces = sampler(n_iterations = n_iterations,
                               burn_in_iterations = burn_in_iterations,
                               n_chains = n_chains,
                               data = self.data,
                               y_name = self.y_name,
+                              variable_names = self.variable_names,
                               initial_values = self.initial_values,
-                              initial_value_intercept = self.initial_values_intercept,
                               prior = self.prior)
 
     def plot(self):
 
-        plot(traces = self.traces,
-             x_names = list(self.initial_values.keys()))
+        plot(traces = self.traces)
 
     def plot_autocorrelation(self, max_lags = 30):
 
         plot_autocorrelation(traces = self.traces,
-                             x_names = list(self.initial_values.keys()),
                              max_lags = max_lags)
 
     def autocorrelation_summary(self, lags = None):
@@ -58,18 +58,15 @@ class GibbsSampler:
         lags = [0, 1, 5, 10, 30] if lags is None else lags
 
         print_autocorrelation(traces = self.traces,
-                              x_names = list(self.initial_values.keys()),
                               lags = lags)
 
     def effective_sample_size(self):
 
-        compute_effective_sample_size(traces = self.traces,
-                                      x_names = list(self.initial_values.keys()))
+        compute_effective_sample_size(traces = self.traces)
 
     def summary(self, quantiles = None):
 
         quantiles = [0.025, 0.25, 0.5, 0.75, 0.975] if quantiles is None else quantiles
 
         print_summary(traces = self.traces,
-                      x_names = list(self.initial_values.keys()),
                       quantiles = quantiles)

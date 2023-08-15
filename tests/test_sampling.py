@@ -17,8 +17,8 @@ data['y'] = 3*data['x_1'] - 20*data['x_2'] - data['x_3'] - 5*data['x_1 * x_2'] +
 initial_values = {'x_1': 1,
                   'x_2': 2,
                   'x_3': 3,
-                  'x_1 * x_2': 4}
-initial_values_intercept = 5
+                  'x_1 * x_2': 4,
+                  'intercept': 5}
 
 sigma2_sample_size = 5
 sigma2_variance = 10
@@ -47,15 +47,12 @@ def test_set_data(sampler):
 
 @mark.set_input
 def test_set_initial_values(sampler):
-    sampler.set_initial_values(initial_values = initial_values,
-                               initial_value_intercept = initial_values_intercept)
+    sampler.set_initial_values(values = initial_values)
 
     assert sampler.initial_values == initial_values
-    assert sampler.initial_values_intercept == initial_values_intercept
 
 @mark.set_input
 def test_set_prior(sampler):
     sampler.set_prior(prior = prior)
 
     assert sampler.prior == prior
-

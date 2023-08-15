@@ -4,14 +4,15 @@ import pandas as pd
 from scipy.stats import invgamma, multivariate_normal, gaussian_kde
 
 
-def sampler(n_iterations, burn_in_iterations, n_chains, data, y_name, initial_values, initial_value_intercept, prior):
+def sampler(n_iterations, burn_in_iterations, n_chains, data, y_name, variable_names, initial_values, prior):
 
-    beta_0 = [prior[x]['mean'] for x in list(initial_values.keys())]
-    beta_0.insert(0, prior['intercept']['mean'])
+    regressor_names = variable_names.copy()
+    regressor_names.pop(regressor_names.index('sigma2'))
+
+    beta_0 = [prior[x]['mean'] for x in regressor_names]
     Beta_0 = np.matrix(beta_0).transpose()
 
-    sigma_0 = [prior[x]['variance'] for x in list(initial_values.keys())]
-    sigma_0.insert(0, prior['intercept']['variance'])
+    sigma_0 = [prior[x]['variance'] for x in regressor_names]
     Sigma_0 = np.zeros((len(sigma_0), len(sigma_0)))
     np.fill_diagonal(Sigma_0, sigma_0)
     Sigma_0_inv = np.linalg.inv(Sigma_0)
@@ -23,19 +24,16 @@ def sampler(n_iterations, burn_in_iterations, n_chains, data, y_name, initial_va
     T_1 = T_0 + n
 
     Y = data[y_name]
-    X = np.asmatrix(data[list(initial_values.keys())])
-    X = np.hstack((np.ones((n, 1)), X))
+    data['intercept'] = 1
+    X = np.asmatrix(data[regressor_names])
 
     XtX = np.dot(X.transpose(), X)
     XtY = np.dot(X.transpose(), Y).transpose()
     Sigma_0_inv_Beta_0 = np.dot(Sigma_0_inv, Beta_0)
 
+    traces = {variable: [[] for _ in range(n_chains)] for variable in variable_names}
 
-    traces = {parameter: [[] for _ in range(n_chains)] for parameter in list(initial_values.keys())}
-    traces['intercept'] = [[] for _ in range(n_chains)]
-    traces['sigma2'] = [[] for _ in range(n_chains)]
-
-    beta = [np.hstack((initial_value_intercept, list(initial_values.values()))) for _ in range(n_chains)]
+    beta = [[initial_values[regressor] for regressor in regressor_names] for _ in range(n_chains)]
 
     for i in range(burn_in_iterations + n_iterations):
 
@@ -53,11 +51,10 @@ def sampler(n_iterations, burn_in_iterations, n_chains, data, y_name, initial_va
 
         if i >= burn_in_iterations:
             for j in range(n_chains):
+                [traces[regressor][j].append(beta[j][k]) for k, regressor in enumerate(regressor_names, 0)]
                 traces['sigma2'][j].append(sigma2[j])
-                traces['intercept'][j].append(beta[j][0])
-                [traces[x_k][j].append(beta[j][k]) for k, x_k in enumerate(list(initial_values.keys()), 1)]
 
-    traces = {parameter: np.matrix(trace).transpose() for parameter, trace in traces.items()}
+    traces = {variable: np.matrix(trace).transpose() for variable, trace in traces.items()}
 
     return traces
 
@@ -82,41 +79,32 @@ def sample_beta(XtX, XtY, sigma2, Sigma_0_inv, Sigma_0_inv_Beta_0):
                                    size = 1)
 
 
-def plot(traces, x_names):
+def plot(traces):
 
-    n_variables = len(traces.keys())
+    variable_names = list(traces.keys())
+    n_variables = len(variable_names)
     n_iterations = len(traces['intercept'])
 
     fig = plt.figure(figsize = (10, min(1.5*n_variables + 2, 10)))
-    ax_intercept_trace = fig.add_subplot(n_variables, 2, 1)
-    ax_intercept_density = fig.add_subplot(n_variables, 2, 2)
-
-    ax_intercept_trace.plot(traces['intercept'], linewidth = 0.5)
-    ax_intercept_density.plot(*compute_kde(traces['intercept'].flatten()))
-
-    ax_intercept_trace.set_title('Trace of intercept')
-    ax_intercept_density.set_title('Density of intercept')
-
-    for i, x_i in zip(range(3, 2*n_variables - 2, 2), x_names):
-        ax_i_trace = fig.add_subplot(n_variables, 2, i, sharex = ax_intercept_trace)
+    trace_axes = []
+    for i, variable in zip(range(1, 2*n_variables, 2), variable_names):
+        ax_i_trace = fig.add_subplot(n_variables, 2, i)
         ax_i_density = fig.add_subplot(n_variables, 2, i + 1)
 
-        ax_i_trace.plot(traces[x_i], linewidth = 0.5)
-        ax_i_density.plot(*compute_kde(traces[x_i].flatten()))
+        ax_i_trace.plot(traces[variable], linewidth = 0.5)
+        ax_i_density.plot(*compute_kde(traces[variable].flatten()))
 
-        ax_i_trace.set_title(f'Trace of {x_i}')
-        ax_i_density.set_title(f'Density of {x_i}')
+        if variable != 'sigma2':
+            ax_i_trace.set_title(f'Trace of {variable}')
+            ax_i_density.set_title(f'Density of {variable}')
+        else:
+            ax_i_trace.set_title(f'Trace of $\sigma^2$')
+            ax_i_density.set_title(f'Density of $\sigma^2$')
 
-    ax_sigma2_trace = fig.add_subplot(n_variables, 2, 2*n_variables - 1, sharex = ax_intercept_trace)
-    ax_sigma2_density = fig.add_subplot(n_variables, 2, 2*n_variables)
+        trace_axes.append(ax_i_trace)
 
-    ax_sigma2_trace.plot(traces['sigma2'], linewidth = 0.5)
-    ax_sigma2_density.plot(*compute_kde(traces['sigma2'].flatten()))
-
-    ax_sigma2_trace.set_title(r'Trace of $\sigma^2$')
-    ax_sigma2_density.set_title('Density of $\sigma^2$')
-
-    ax_intercept_trace.set_xlim(0, n_iterations)
+    trace_axes[0].get_shared_x_axes().join(trace_axes[0], *trace_axes[1:])
+    trace_axes[0].set_xlim(0, n_iterations)
 
     plt.tight_layout()
 
@@ -130,9 +118,10 @@ def compute_kde(trace):
     return posterior_support, posterior_kde
 
 
-def plot_autocorrelation(traces, x_names, max_lags):
+def plot_autocorrelation(traces, max_lags):
 
-    n_variables = len(traces.keys())
+    variable_names = list(traces.keys())
+    n_variables = len(variable_names)
     n_chains = traces['intercept'].shape[1]
 
     fig, ax = plt.subplots(nrows = n_variables,
@@ -141,17 +130,18 @@ def plot_autocorrelation(traces, x_names, max_lags):
                            sharex = 'all',
                            sharey = 'all')
 
-    parameters = ['intercept', *x_names, 'sigma2']
-
     for i in range(n_chains):
         ax[0, i].set_title(f'Chain {i + 1}')
-        for j, parameter in enumerate(parameters, 0):
-            acorr = compute_autocorrelation(vector = np.asarray(traces[parameter][:, i]).reshape(-1),
+        for j, variable in enumerate(variable_names, 0):
+            acorr = compute_autocorrelation(vector = np.asarray(traces[variable][:, i]).reshape(-1),
                                             max_lags = max_lags)
             ax[j, i].stem(acorr, markerfmt = ' ', basefmt = ' ')
 
-    for i, parameter in enumerate(parameters, 0):
-        ax[i, 0].set_ylabel(parameter)
+    for i, variable in enumerate(variable_names, 0):
+        if variable != 'sigma2':
+            ax[i, 0].set_ylabel(variable)
+        else:
+            ax[i, 0].set_ylabel('$\sigma^2$')
         ax[i, 0].set_yticks([-1, 0, 1])
 
     ax[0, 0].set_xlim(-1, max_lags)
@@ -163,43 +153,43 @@ def plot_autocorrelation(traces, x_names, max_lags):
     plt.show()
 
 
-def print_autocorrelation(traces, x_names, lags):
+def print_autocorrelation(traces, lags):
 
     n_chains = traces['intercept'].shape[1]
-    acorr_summary = pd.DataFrame(columns = ['intercept', *x_names, 'sigma2'],
+    acorr_summary = pd.DataFrame(columns = list(traces.keys()),
                                  index = [f'Lag {lag}' for lag in lags])
 
-    for parameter in acorr_summary.columns:
-        param_acorr = []
+    for variable in acorr_summary.columns:
+        variable_acorr = []
         for i in range(n_chains):
-            param_chain_acorr = compute_autocorrelation(vector = np.asarray(traces[parameter][:, i]).reshape(-1),
-                                                        max_lags = max(lags) + 1)
-            param_acorr.append(param_chain_acorr[lags])
-        param_acorr = np.array(param_acorr)
-        acorr_summary[parameter] = param_acorr.mean(axis = 0)
+            variable_chain_acorr = compute_autocorrelation(vector = np.asarray(traces[variable][:, i]).reshape(-1),
+                                                           max_lags = max(lags) + 1)
+            variable_acorr.append(variable_chain_acorr[lags])
+        variable_acorr = np.array(variable_acorr)
+        acorr_summary[variable] = variable_acorr.mean(axis = 0)
 
-    print(acorr_summary)
+    print(acorr_summary.to_string())
 
 
-def compute_effective_sample_size(traces, x_names):
+def compute_effective_sample_size(traces):
 
     n_chains = traces['intercept'].shape[1]
-    ess_summary = pd.DataFrame(columns = ['intercept', *x_names, 'sigma2'],
+    ess_summary = pd.DataFrame(columns = list(traces.keys()),
                                index = ['Effective Sample Size'])
 
-    for parameter in ess_summary.columns:
-        param_ess = []
+    for variable in ess_summary.columns:
+        variable_ess = []
         for i in range(n_chains):
-            vector = np.asarray(traces[parameter][:, i]).reshape(-1)
+            vector = np.asarray(traces[variable][:, i]).reshape(-1)
             n = len(vector)
-            param_chain_acorr = compute_autocorrelation(vector = vector, max_lags = n)
-            indexes = np.arange(2, len(param_chain_acorr), 1)
-            indexes = indexes[(param_chain_acorr[1:-1] + param_chain_acorr[2:] < 0) & (indexes%2 == 1)]
-            i = indexes[0] if indexes.size > 0 else len(param_chain_acorr) + 1
-            ess = n/(1 + 2*np.abs(param_chain_acorr[1:i - 1].sum()))
-            param_ess.append(ess)
+            variable_chain_acorr = compute_autocorrelation(vector = vector, max_lags = n)
+            indexes = np.arange(2, len(variable_chain_acorr), 1)
+            indexes = indexes[(variable_chain_acorr[1:-1] + variable_chain_acorr[2:] < 0) & (indexes%2 == 1)]
+            i = indexes[0] if indexes.size > 0 else len(variable_chain_acorr) + 1
+            ess = n/(1 + 2*np.abs(variable_chain_acorr[1:i - 1].sum()))
+            variable_ess.append(ess)
 
-        ess_summary[parameter] = np.sum(param_ess)
+        ess_summary[variable] = np.sum(variable_ess)
 
     with pd.option_context('display.precision', 2):
         print(ess_summary.to_string())
@@ -215,21 +205,21 @@ def compute_autocorrelation(vector, max_lags):
     return autocorrelation
 
 
-def print_summary(traces, x_names, quantiles):
+def print_summary(traces, quantiles):
 
     n_iterations, n_chains = traces['intercept'].shape
     summary = pd.DataFrame(columns = [f'{100*q}%'.replace('.0%', '%') for q in quantiles],
-                           index = ['intercept', *x_names, 'sigma2'])
+                           index = list(traces.keys()))
     summary['Mean'] = np.nan
 
-    for parameter in summary.index:
+    for variable in summary.index:
         for q in quantiles:
-            summary.loc[parameter, f'{100*q}%'.replace('.0%', '%')] = np.quantile(np.asarray(traces[parameter]).reshape(-1), q)
-        summary.loc[parameter, 'Mean'] = traces[parameter].mean()
+            summary.loc[variable, f'{100*q}%'.replace('.0%', '%')] = np.quantile(np.asarray(traces[variable]).reshape(-1), q)
+        summary.loc[variable, 'Mean'] = traces[variable].mean()
 
-    cols = list(summary.columns)
-    cols.insert(0, cols.pop(cols.index('Mean')))
-    summary = summary.loc[:, cols]
+    columns = list(summary.columns)
+    columns.insert(0, columns.pop(columns.index('Mean')))
+    summary = summary.loc[:, columns]
 
     print(f'Number of chains:      {n_chains:>5}')
     print(f'Sample size per chian: {n_iterations:>5}')
