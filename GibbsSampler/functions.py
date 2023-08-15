@@ -195,6 +195,30 @@ def print_autocorrelation(traces, x_names, lags):
     print(acorr_summary)
 
 
+def compute_effective_sample_size(traces, x_names):
+
+    n_chains = traces['intercept'].shape[1]
+    ess_summary = pd.DataFrame(columns = ['intercept', *x_names, 'sigma2'],
+                               index = ['Effective Sample Size'])
+
+    for parameter in ess_summary.columns:
+        param_ess = []
+        for i in range(n_chains):
+            vector = np.asarray(traces[parameter][:, i]).reshape(-1)
+            n = len(vector)
+            param_chain_acorr = compute_autocorrelation(vector = vector, max_lags = n)
+            indexes = np.arange(2, len(param_chain_acorr), 1)
+            indexes = indexes[(param_chain_acorr[1:-1] + param_chain_acorr[2:] < 0) & (indexes%2 == 1)]
+            i = indexes[0] if indexes.size > 0 else len(param_chain_acorr) + 1
+            ess = n/(1 + 2*np.abs(param_chain_acorr[1:i - 1].sum()))
+            param_ess.append(ess)
+
+        ess_summary[parameter] = np.sum(param_ess)
+
+    with pd.option_context('display.precision', 2):
+        print(ess_summary)
+
+
 def compute_autocorrelation(vector, max_lags):
 
     normalized_vector = vector - vector.mean()
