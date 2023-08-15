@@ -66,7 +66,10 @@ class GibbsSampler:
         compute_effective_sample_size(traces = self.traces,
                                       x_names = list(self.initial_values.keys()))
 
-    def summary(self):
+    def summary(self, quantiles = None):
+
+        quantiles = [0.025, 0.25, 0.5, 0.75, 0.975] if quantiles is None else quantiles
 
         print_summary(traces = self.traces,
-                      x_names = list(self.initial_values.keys()))
+                      x_names = list(self.initial_values.keys()),
+                      quantiles = quantiles)

@@ -202,7 +202,7 @@ def compute_effective_sample_size(traces, x_names):
         ess_summary[parameter] = np.sum(param_ess)
 
     with pd.option_context('display.precision', 2):
-        print(ess_summary)
+        print(ess_summary.to_string())
 
 
 def compute_autocorrelation(vector, max_lags):
@@ -215,17 +215,16 @@ def compute_autocorrelation(vector, max_lags):
     return autocorrelation
 
 
-def print_summary(traces, x_names):
+def print_summary(traces, x_names, quantiles):
 
-    quantiles = [0.025, 0.25, 0.5, 0.75, 0.975]
     n_iterations, n_chains = traces['intercept'].shape
-    summary = pd.DataFrame(columns = [f'{100*q}%' for q in quantiles],
+    summary = pd.DataFrame(columns = [f'{100*q}%'.replace('.0%', '%') for q in quantiles],
                            index = ['intercept', *x_names, 'sigma2'])
     summary['Mean'] = np.nan
 
     for parameter in summary.index:
         for q in quantiles:
-            summary.loc[parameter, f'{100*q}%'] = np.quantile(np.asarray(traces[parameter]).reshape(-1), q)
+            summary.loc[parameter, f'{100*q}%'.replace('.0%', '%')] = np.quantile(np.asarray(traces[parameter]).reshape(-1), q)
         summary.loc[parameter, 'Mean'] = traces[parameter].mean()
 
     cols = list(summary.columns)
@@ -237,4 +236,4 @@ def print_summary(traces, x_names):
     print()
     print('Empirical mean and quantiles for each variable:')
     print()
-    print(summary)
+    print(summary.to_string())
