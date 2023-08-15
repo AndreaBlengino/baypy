@@ -37,7 +37,7 @@ def sampler(n_iterations, burn_in_iterations, n_chains, data, y_name, initial_va
 
     beta = [np.hstack((initial_value_intercept, list(initial_values.values()))) for _ in range(n_chains)]
 
-    for _ in range(burn_in_iterations):
+    for i in range(burn_in_iterations + n_iterations):
 
         sigma2 = [sample_sigma2(Y = Y,
                                 X = X,
@@ -51,25 +51,11 @@ def sampler(n_iterations, burn_in_iterations, n_chains, data, y_name, initial_va
                             Sigma_0_inv = Sigma_0_inv,
                             Sigma_0_inv_Beta_0 = Sigma_0_inv_Beta_0) for i in range(n_chains)]
 
-    for _ in range(n_iterations):
-
-        sigma2 = [sample_sigma2(Y = Y,
-                                X = X,
-                                beta = beta[i],
-                                T_1 = T_1,
-                                theta_0 = theta_0) for i in range(n_chains)]
-
-        beta = [sample_beta(XtX = XtX,
-                            XtY = XtY,
-                            sigma2 = sigma2[i],
-                            Sigma_0_inv = Sigma_0_inv,
-                            Sigma_0_inv_Beta_0 = Sigma_0_inv_Beta_0) for i in range(n_chains)]
-
-
-        for i in range(n_chains):
-            traces['sigma2'][i].append(sigma2[i])
-            traces['intercept'][i].append(beta[i][0])
-            [traces[x_k][i].append(beta[i][k]) for k, x_k in enumerate(list(initial_values.keys()), 1)]
+        if i > burn_in_iterations:
+            for j in range(n_chains):
+                traces['sigma2'][j].append(sigma2[j])
+                traces['intercept'][j].append(beta[j][0])
+                [traces[x_k][j].append(beta[j][k]) for k, x_k in enumerate(list(initial_values.keys()), 1)]
 
     traces = {parameter: np.matrix(trace).transpose() for parameter, trace in traces.items()}
 
