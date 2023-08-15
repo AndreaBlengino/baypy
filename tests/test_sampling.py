@@ -50,9 +50,16 @@ def test_set_initial_values(sampler):
     sampler.set_initial_values(values = initial_values)
 
     assert sampler.initial_values == initial_values
+    assert 'intercept' in sampler.initial_values.keys()
 
 @mark.set_input
 def test_set_prior(sampler):
     sampler.set_prior(prior = prior)
 
     assert sampler.prior == prior
+    assert 'intercept' in sampler.prior.keys()
+    assert 'sigma2' in sampler.prior.keys()
+    assert all(['mean' in prior[regressor].keys() for regressor in prior.keys() if regressor != 'sigma2'])
+    assert all(['variance' in prior[regressor].keys() for regressor in prior.keys() if regressor != 'sigma2'])
+    assert 'shape' in sampler.prior['sigma2'].keys()
+    assert 'scale' in sampler.prior['sigma2'].keys()
