@@ -10,7 +10,7 @@ def sampler(n_iterations, burn_in_iterations, n_chains, data, y_name, variable_n
     regressor_names.pop(regressor_names.index('sigma2'))
 
     beta_0 = [prior[x]['mean'] for x in regressor_names]
-    Beta_0 = np.matrix(beta_0).transpose()
+    Beta_0 = np.array(beta_0)[np.newaxis].transpose()
 
     sigma_0 = [prior[x]['variance'] for x in regressor_names]
     Sigma_0 = np.zeros((len(sigma_0), len(sigma_0)))
@@ -25,10 +25,10 @@ def sampler(n_iterations, burn_in_iterations, n_chains, data, y_name, variable_n
 
     Y = data[y_name]
     data['intercept'] = 1
-    X = np.asmatrix(data[regressor_names])
+    X = np.array(data[regressor_names])
 
     XtX = np.dot(X.transpose(), X)
-    XtY = np.dot(X.transpose(), Y).transpose()
+    XtY = np.dot(X.transpose(), Y)[np.newaxis].transpose()
     Sigma_0_inv_Beta_0 = np.dot(Sigma_0_inv, Beta_0)
 
     traces = {variable: [[] for _ in range(n_chains)] for variable in variable_names}
@@ -54,7 +54,7 @@ def sampler(n_iterations, burn_in_iterations, n_chains, data, y_name, variable_n
                 [traces[regressor][j].append(beta[j][k]) for k, regressor in enumerate(regressor_names, 0)]
                 traces['sigma2'][j].append(sigma2[j])
 
-    traces = {variable: np.matrix(trace).transpose() for variable, trace in traces.items()}
+    traces = {variable: np.array(trace).transpose() for variable, trace in traces.items()}
 
     return traces
 

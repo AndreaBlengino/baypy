@@ -36,6 +36,13 @@ prior = {'x_1': {'mean': 0,
          'sigma2': {'shape': sigma2_sample_size,
                     'scale': sigma2_sample_size*sigma2_variance}}
 
+n_iterations = 1000
+burn_in_iterations = 50
+n_chains = 3
+
+q_min = 0.025
+q_max = 0.975
+
 
 @mark.set_input
 def test_set_data(sampler):
@@ -63,3 +70,32 @@ def test_set_prior(sampler):
     assert all(['variance' in prior[regressor].keys() for regressor in prior.keys() if regressor != 'sigma2'])
     assert 'shape' in sampler.prior['sigma2'].keys()
     assert 'scale' in sampler.prior['sigma2'].keys()
+
+@mark.analysis
+def test_run(sampler):
+    sampler.set_data(data = data,
+                     y_name = 'y')
+    sampler.set_initial_values(values = initial_values)
+    sampler.set_prior(prior = prior)
+
+    sampler.run(n_iterations = n_iterations,
+                burn_in_iterations = burn_in_iterations,
+                n_chains = n_chains)
+
+    regressor_names = ['intercept', 'x_1', 'x_2', 'x_3', 'x_1 * x_2']
+
+    data_tmp = data.copy()
+    data_tmp['intercept'] = 1
+    results = np.linalg.lstsq(a = data[regressor_names],
+                              b = data['y'],
+                              rcond = None)[0]
+
+    assert sampler.traces.keys() == prior.keys()
+    assert all(np.array([trace.shape for trace in sampler.traces.values()])[:, 0] == n_iterations)
+    assert all(np.array([trace.shape for trace in sampler.traces.values()])[:, 1] == n_chains)
+
+    for i, regressor in enumerate(regressor_names, 0):
+        lower_bound = np.quantile(np.asarray(sampler.traces[regressor]).reshape(-1), q_min)
+        upper_bound = np.quantile(np.asarray(sampler.traces[regressor]).reshape(-1), q_max)
+
+        assert lower_bound <= results[i] <= upper_bound
