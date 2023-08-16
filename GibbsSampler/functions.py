@@ -205,25 +205,53 @@ def compute_autocorrelation(vector, max_lags):
     return autocorrelation
 
 
-def print_summary(traces, quantiles):
+def print_summary(traces, alpha, quantiles):
 
     n_iterations, n_chains = traces['intercept'].shape
-    summary = pd.DataFrame(columns = [f'{100*q}%'.replace('.0%', '%') for q in quantiles],
-                           index = list(traces.keys()))
+
+    summary = pd.DataFrame(index = list(traces.keys()))
+    quantiles_summary = pd.DataFrame(index = list(traces.keys()))
     summary['Mean'] = np.nan
+    summary['SD'] = np.nan
+    summary['HPD min'] = np.nan
+    summary['HPD max'] = np.nan
+    for q in quantiles:
+        quantiles_summary[f'{100*q}%'.replace('.0%', '%')] = np.nan
 
     for variable in summary.index:
-        for q in quantiles:
-            summary.loc[variable, f'{100*q}%'.replace('.0%', '%')] = np.quantile(np.asarray(traces[variable]).reshape(-1), q)
         summary.loc[variable, 'Mean'] = traces[variable].mean()
+        summary.loc[variable, 'SD'] = traces[variable].std()
+        hpdi_min, hpdi_max = compute_HPD_interval(x = np.sort(np.asarray(traces[variable]).reshape(-1)),
+                                                  alpha = alpha)
+        summary.loc[variable, 'HPD min'] = hpdi_min
+        summary.loc[variable, 'HPD max'] = hpdi_max
+        for q in quantiles:
+            quantiles_summary.loc[variable, f'{100*q}%'.replace('.0%', '%')] = np.quantile(np.asarray(traces[variable]).reshape(-1), q)
 
-    columns = list(summary.columns)
-    columns.insert(0, columns.pop(columns.index('Mean')))
-    summary = summary.loc[:, columns]
+    credibility_mass = f'{100*(1 - alpha)}%'.replace('.0%', '%')
 
-    print(f'Number of chains:      {n_chains:>5}')
-    print(f'Sample size per chian: {n_iterations:>5}')
+    print(f'Number of chains:      {n_chains:>6}')
+    print(f'Sample size per chian: {n_iterations:>6}')
     print()
-    print('Empirical mean and quantiles for each variable:')
+    print(f'Empirical mean, standard deviation, {credibility_mass} HPD interval for each variable:')
     print()
     print(summary.to_string())
+    print()
+    print(f'Quantiles for each variable:')
+    print()
+    print(quantiles_summary.to_string())
+
+
+def compute_HPD_interval(x, alpha):
+
+    n = len(x)
+    credibility_mass = 1 - alpha
+
+    interval_idx_included = int(np.floor(credibility_mass*n))
+    n_intervals = n - interval_idx_included
+    interval_width = x[interval_idx_included:] - x[:n_intervals]
+    min_idx = np.argmin(interval_width)
+    hpdi_min = x[min_idx]
+    hpdi_max = x[min_idx + interval_idx_included]
+
+    return hpdi_min, hpdi_max
