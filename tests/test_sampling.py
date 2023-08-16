@@ -1,6 +1,7 @@
-from pytest import mark
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from pytest import mark
 
 
 np.random.seed(42)
@@ -114,3 +115,18 @@ def test_summary(sampler):
         upper_bound = np.quantile(np.asarray(sampler.traces[regressor]).reshape(-1), q_max)
 
         assert lower_bound <= results[i] <= upper_bound
+
+
+@mark.results
+def test_plot(sampler, monkeypatch):
+    sampler.set_data(data = data,
+                     y_name = 'y')
+    sampler.set_initial_values(values = initial_values)
+    sampler.set_prior(prior = prior)
+
+    sampler.run(n_iterations = n_iterations,
+                burn_in_iterations = burn_in_iterations,
+                n_chains = n_chains)
+
+    monkeypatch.setattr(plt, 'show', lambda: None)
+    sampler.plot()
