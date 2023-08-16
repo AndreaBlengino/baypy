@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from scipy.stats import invgamma, multivariate_normal, gaussian_kde
+from scipy.stats import invgamma, multivariate_normal, gaussian_kde, norm
 
 
 def sampler(n_iterations, burn_in_iterations, n_chains, data, y_name, variable_names, initial_values, prior):
@@ -276,3 +276,20 @@ def plot_residuals(traces, data, y_name):
     ax.set_ylabel('Residuals')
 
     plt.show()
+
+
+def predict_distribution(traces, data):
+
+    pred = pd.DataFrame()
+    for regressor, trace in traces.items():
+        pred[regressor] = np.asarray(trace).reshape(-1)
+
+    pred['mean'] = pred['intercept']
+    for regressor in traces.keys():
+        if regressor not in ['intercept', 'sigma2']:
+            pred['mean'] += pred[regressor]*data[regressor]
+    pred['standard deviation'] = np.sqrt(pred['sigma2'])
+
+    return norm.rvs(loc = pred['mean'],
+                    scale = pred['standard deviation'],
+                    size = len(pred))

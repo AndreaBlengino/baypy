@@ -5,6 +5,7 @@ from .functions import print_autocorrelation
 from .functions import compute_effective_sample_size
 from .functions import print_summary
 from .functions import plot_residuals
+from .functions import predict_distribution
 
 
 class GibbsSampler:
@@ -78,3 +79,8 @@ class GibbsSampler:
         plot_residuals(traces = self.traces,
                        data = self.data.copy(),
                        y_name = self.y_name)
+
+    def predict_distribution(self, data):
+
+        return predict_distribution(traces = self.traces,
+                                    data = data)
