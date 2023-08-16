@@ -255,3 +255,24 @@ def compute_HPD_interval(x, alpha):
     hpdi_max = x[min_idx + interval_idx_included]
 
     return hpdi_min, hpdi_max
+
+
+def plot_residuals(traces, data, y_name):
+
+    data['intercept'] = 1
+    data['predicted'] = 0
+
+    for regressor, trace in traces.items():
+        if regressor != 'sigma2':
+            data['predicted'] += data[regressor]*np.asarray(trace).reshape(-1).mean()
+    data['residuals'] = data[y_name] - data['predicted']
+
+    fig, ax = plt.subplots()
+
+    ax.plot(data['predicted'], data['residuals'],
+            marker = 'o', linestyle = '', alpha = 0.5)
+
+    ax.set_xlabel('Predicted')
+    ax.set_ylabel('Residuals')
+
+    plt.show()

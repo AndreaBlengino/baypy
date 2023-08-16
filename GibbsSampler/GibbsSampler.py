@@ -4,6 +4,7 @@ from .functions import plot_autocorrelation
 from .functions import print_autocorrelation
 from .functions import compute_effective_sample_size
 from .functions import print_summary
+from .functions import plot_residuals
 
 
 class GibbsSampler:
@@ -71,3 +72,9 @@ class GibbsSampler:
         print_summary(traces = self.traces,
                       alpha = alpha,
                       quantiles = quantiles)
+
+    def plot_residuals(self):
+
+        plot_residuals(traces = self.traces,
+                       data = self.data.copy(),
+                       y_name = self.y_name)
