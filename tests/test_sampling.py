@@ -45,31 +45,32 @@ q_max = 0.975
 
 
 @mark.set_input
-def test_set_data(sampler):
-    sampler.set_data(data = data,
-                     y_name = 'y')
+class TestSetInput:
 
-    assert sampler.data.equals(data)
-    assert sampler.y_name == 'y'
+    def test_set_data(self, sampler):
+        sampler.set_data(data = data,
+                         y_name = 'y')
 
-@mark.set_input
-def test_set_initial_values(sampler):
-    sampler.set_initial_values(values = initial_values)
+        assert sampler.data.equals(data)
+        assert sampler.y_name == 'y'
 
-    assert sampler.initial_values == initial_values
-    assert 'intercept' in sampler.initial_values.keys()
+    def test_set_initial_values(self, sampler):
+        sampler.set_initial_values(values = initial_values)
 
-@mark.set_input
-def test_set_prior(sampler):
-    sampler.set_prior(prior = prior)
+        assert sampler.initial_values == initial_values
+        assert 'intercept' in sampler.initial_values.keys()
 
-    assert sampler.prior == prior
-    assert 'intercept' in sampler.prior.keys()
-    assert 'sigma2' in sampler.prior.keys()
-    assert all(['mean' in prior[regressor].keys() for regressor in prior.keys() if regressor != 'sigma2'])
-    assert all(['variance' in prior[regressor].keys() for regressor in prior.keys() if regressor != 'sigma2'])
-    assert 'shape' in sampler.prior['sigma2'].keys()
-    assert 'scale' in sampler.prior['sigma2'].keys()
+    def test_set_prior(self, sampler):
+        sampler.set_prior(prior = prior)
+
+        assert sampler.prior == prior
+        assert 'intercept' in sampler.prior.keys()
+        assert 'sigma2' in sampler.prior.keys()
+        assert all(['mean' in prior[regressor].keys() for regressor in prior.keys() if regressor != 'sigma2'])
+        assert all(['variance' in prior[regressor].keys() for regressor in prior.keys() if regressor != 'sigma2'])
+        assert 'shape' in sampler.prior['sigma2'].keys()
+        assert 'scale' in sampler.prior['sigma2'].keys()
+
 
 @mark.analysis
 def test_run(sampler):
@@ -82,6 +83,24 @@ def test_run(sampler):
                 burn_in_iterations = burn_in_iterations,
                 n_chains = n_chains)
 
+    assert sampler.traces.keys() == prior.keys()
+    assert all(np.array([trace.shape for trace in sampler.traces.values()])[:, 0] == n_iterations)
+    assert all(np.array([trace.shape for trace in sampler.traces.values()])[:, 1] == n_chains)
+
+
+@mark.results
+def test_summary(sampler):
+    sampler.set_data(data = data,
+                     y_name = 'y')
+    sampler.set_initial_values(values = initial_values)
+    sampler.set_prior(prior = prior)
+
+    sampler.run(n_iterations = n_iterations,
+                burn_in_iterations = burn_in_iterations,
+                n_chains = n_chains)
+
+    sampler.summary()
+
     regressor_names = ['intercept', 'x_1', 'x_2', 'x_3', 'x_1 * x_2']
 
     data_tmp = data.copy()
@@ -89,10 +108,6 @@ def test_run(sampler):
     results = np.linalg.lstsq(a = data[regressor_names],
                               b = data['y'],
                               rcond = None)[0]
-
-    assert sampler.traces.keys() == prior.keys()
-    assert all(np.array([trace.shape for trace in sampler.traces.values()])[:, 0] == n_iterations)
-    assert all(np.array([trace.shape for trace in sampler.traces.values()])[:, 1] == n_chains)
 
     for i, regressor in enumerate(regressor_names, 0):
         lower_bound = np.quantile(np.asarray(sampler.traces[regressor]).reshape(-1), q_min)
