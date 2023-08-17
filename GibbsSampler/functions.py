@@ -98,8 +98,8 @@ def plot(traces):
             ax_i_trace.set_title(f'Trace of {variable}')
             ax_i_density.set_title(f'Density of {variable}')
         else:
-            ax_i_trace.set_title(f'Trace of $\sigma^2$')
-            ax_i_density.set_title(f'Density of $\sigma^2$')
+            ax_i_trace.set_title(r'Trace of $\sigma^2$')
+            ax_i_density.set_title(r'Density of $\sigma^2$')
 
         trace_axes.append(ax_i_trace)
 
@@ -142,7 +142,7 @@ def plot_autocorrelation(traces, max_lags):
         if variable != 'sigma2':
             ax[i, 0].set_ylabel(variable)
         else:
-            ax[i, 0].set_ylabel('$\sigma^2$')
+            ax[i, 0].set_ylabel(r'$\sigma^2$')
         ax[i, 0].set_yticks([-1, 0, 1])
 
     ax[0, 0].set_xlim(-1, max_lags)
