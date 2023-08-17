@@ -120,6 +120,20 @@ class TestDiagnostics:
         sampler.effective_sample_size()
 
 
+    def test_plot_autocorrelation(self, sampler, monkeypatch):
+        sampler.set_data(data = data,
+                         y_name = 'y')
+        sampler.set_initial_values(values = initial_values)
+        sampler.set_prior(prior = prior)
+
+        sampler.run(n_iterations = n_iterations,
+                    burn_in_iterations = burn_in_iterations,
+                    n_chains = n_chains)
+
+        monkeypatch.setattr(plt, 'show', lambda: None)
+        sampler.plot_autocorrelation()
+
+
 @mark.results
 class TestResults:
 
