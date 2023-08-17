@@ -55,11 +55,13 @@ class TestSetInput:
         assert sampler.data.equals(data)
         assert sampler.y_name == 'y'
 
+
     def test_set_initial_values(self, sampler):
         sampler.set_initial_values(values = initial_values)
 
         assert sampler.initial_values == initial_values
         assert 'intercept' in sampler.initial_values.keys()
+
 
     def test_set_prior(self, sampler):
         sampler.set_prior(prior = prior)
@@ -90,57 +92,73 @@ def test_run(sampler):
 
 
 @mark.diagnostics
-def test_autocorrelation_summary(sampler):
-    sampler.set_data(data = data,
-                     y_name = 'y')
-    sampler.set_initial_values(values = initial_values)
-    sampler.set_prior(prior = prior)
+class TestDiagnostics:
 
-    sampler.run(n_iterations = n_iterations,
-                burn_in_iterations = burn_in_iterations,
-                n_chains = n_chains)
+    def test_autocorrelation_summary(self, sampler):
+        sampler.set_data(data = data,
+                         y_name = 'y')
+        sampler.set_initial_values(values = initial_values)
+        sampler.set_prior(prior = prior)
 
-    sampler.autocorrelation_summary()
+        sampler.run(n_iterations = n_iterations,
+                    burn_in_iterations = burn_in_iterations,
+                    n_chains = n_chains)
+
+        sampler.autocorrelation_summary()
 
 
-@mark.results
-def test_summary(sampler):
-    sampler.set_data(data = data,
-                     y_name = 'y')
-    sampler.set_initial_values(values = initial_values)
-    sampler.set_prior(prior = prior)
+    def test_effective_sample_size(self, sampler):
+        sampler.set_data(data = data,
+                         y_name = 'y')
+        sampler.set_initial_values(values = initial_values)
+        sampler.set_prior(prior = prior)
 
-    sampler.run(n_iterations = n_iterations,
-                burn_in_iterations = burn_in_iterations,
-                n_chains = n_chains)
+        sampler.run(n_iterations = n_iterations,
+                    burn_in_iterations = burn_in_iterations,
+                    n_chains = n_chains)
 
-    sampler.summary()
-
-    regressor_names = ['intercept', 'x_1', 'x_2', 'x_3', 'x_1 * x_2']
-
-    data_tmp = data.copy()
-    data_tmp['intercept'] = 1
-    results = np.linalg.lstsq(a = data[regressor_names],
-                              b = data['y'],
-                              rcond = None)[0]
-
-    for i, regressor in enumerate(regressor_names, 0):
-        lower_bound = np.quantile(np.asarray(sampler.traces[regressor]).reshape(-1), q_min)
-        upper_bound = np.quantile(np.asarray(sampler.traces[regressor]).reshape(-1), q_max)
-
-        assert lower_bound <= results[i] <= upper_bound
+        sampler.effective_sample_size()
 
 
 @mark.results
-def test_plot(sampler, monkeypatch):
-    sampler.set_data(data = data,
-                     y_name = 'y')
-    sampler.set_initial_values(values = initial_values)
-    sampler.set_prior(prior = prior)
+class TestResults:
 
-    sampler.run(n_iterations = n_iterations,
-                burn_in_iterations = burn_in_iterations,
-                n_chains = n_chains)
+    def test_summary(self, sampler):
+        sampler.set_data(data = data,
+                         y_name = 'y')
+        sampler.set_initial_values(values = initial_values)
+        sampler.set_prior(prior = prior)
 
-    monkeypatch.setattr(plt, 'show', lambda: None)
-    sampler.plot()
+        sampler.run(n_iterations = n_iterations,
+                    burn_in_iterations = burn_in_iterations,
+                    n_chains = n_chains)
+
+        sampler.summary()
+
+        regressor_names = ['intercept', 'x_1', 'x_2', 'x_3', 'x_1 * x_2']
+
+        data_tmp = data.copy()
+        data_tmp['intercept'] = 1
+        results = np.linalg.lstsq(a = data[regressor_names],
+                                  b = data['y'],
+                                  rcond = None)[0]
+
+        for i, regressor in enumerate(regressor_names, 0):
+            lower_bound = np.quantile(np.asarray(sampler.traces[regressor]).reshape(-1), q_min)
+            upper_bound = np.quantile(np.asarray(sampler.traces[regressor]).reshape(-1), q_max)
+
+            assert lower_bound <= results[i] <= upper_bound
+
+
+    def test_plot(self, sampler, monkeypatch):
+        sampler.set_data(data = data,
+                         y_name = 'y')
+        sampler.set_initial_values(values = initial_values)
+        sampler.set_prior(prior = prior)
+
+        sampler.run(n_iterations = n_iterations,
+                    burn_in_iterations = burn_in_iterations,
+                    n_chains = n_chains)
+
+        monkeypatch.setattr(plt, 'show', lambda: None)
+        sampler.plot()
