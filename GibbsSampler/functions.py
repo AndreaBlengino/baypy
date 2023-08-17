@@ -103,7 +103,8 @@ def plot(traces):
 
         trace_axes.append(ax_i_trace)
 
-    trace_axes[0].get_shared_x_axes().join(trace_axes[0], *trace_axes[1:])
+    for ax_i in trace_axes[1:]:
+        ax_i.sharex(trace_axes[0])
     trace_axes[0].set_xlim(0, n_iterations)
 
     plt.tight_layout()
