@@ -66,13 +66,34 @@ def sampler():
     return sampler
 
 
+@fixture(params = ['model', 1, 1.1, {'model': 1}, True, (0, 1), [0, 1], {0, 1}, None])
+def regression_model_type_error(request):
+    return request.param
+
+
 @fixture(params = [{'n_iterations': 1000,
                     'burn_in_iterations': 50,
                     'n_chains': 3},
                    {'n_iterations': 100,
                     'burn_in_iterations': 50,
-                    'n_chains': 5}])
+                    'n_chains': 5},
+                   {'n_iterations': 100,
+                    'burn_in_iterations': 0,
+                    'n_chains': 3}])
 def regression_parameters(request):
+    return request.param
+
+
+@fixture(params = [{'n_iterations': -1,
+                    'burn_in_iterations': 50,
+                    'n_chains': 3},
+                   {'n_iterations': 1000,
+                    'burn_in_iterations': -1,
+                    'n_chains': 3},
+                   {'n_iterations': 1000,
+                    'burn_in_iterations': 50,
+                    'n_chains': -1}])
+def regression_parameters_value_error(request):
     return request.param
 
 
