@@ -1,5 +1,5 @@
 import numpy as np
-from pytest import mark
+from pytest import fixture, mark
 
 
 sigma2_sample_size = 5
@@ -18,17 +18,13 @@ priors = {'x_1': {'mean': 0,
           'sigma2': {'shape': sigma2_sample_size,
                      'scale': sigma2_sample_size*sigma2_variance}}
 
-n_iterations = 1000
-burn_in_iterations = 50
-n_chains = 3
-
 
 @mark.regression
-def test_sample(sampler):
-    sampler.sample(n_iterations = n_iterations,
-                   burn_in_iterations = burn_in_iterations,
-                   n_chains = n_chains)
+def test_sample(sampler, regression_parameters):
+    sampler.sample(n_iterations = regression_parameters['n_iterations'],
+                   burn_in_iterations = regression_parameters['burn_in_iterations'],
+                   n_chains = regression_parameters['n_chains'])
 
     assert sampler.posteriors.keys() == priors.keys()
-    assert all(np.array([posterior.shape for posterior in sampler.posteriors.values()])[:, 0] == n_iterations)
-    assert all(np.array([posterior.shape for posterior in sampler.posteriors.values()])[:, 1] == n_chains)
+    assert all(np.array([posterior.shape for posterior in sampler.posteriors.values()])[:, 0] == regression_parameters['n_iterations'])
+    assert all(np.array([posterior.shape for posterior in sampler.posteriors.values()])[:, 1] == regression_parameters['n_chains'])

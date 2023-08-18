@@ -50,27 +50,33 @@ prediction_data = {'x_1': 20, 'x_2': 5, 'x_3': -45}
 prediction_data['x_1 * x_2'] = prediction_data['x_1']*prediction_data['x_2']
 
 
-@fixture(scope = 'function')
+@fixture(scope = 'session')
 def empty_model():
     model = gs.Model()
     return model
 
 
-@fixture(scope = 'function')
-def model(empty_model):
-    empty_model.set_data(data = data, y_name = 'y')
-    empty_model.set_initial_values(values = initial_values)
-    empty_model.set_priors(priors = priors)
-    return empty_model
-
-
-@fixture(scope = 'function')
-def sampler(model):
+@fixture(scope = 'session')
+def sampler():
+    model = gs.Model()
+    model.set_data(data = data, y_name = 'y')
+    model.set_initial_values(values = initial_values)
+    model.set_priors(priors = priors)
     sampler = gs.LinearRegression(model = model)
     return sampler
 
 
-@fixture(scope = 'function')
+@fixture(params = [{'n_iterations': 1000,
+                    'burn_in_iterations': 50,
+                    'n_chains': 3},
+                   {'n_iterations': 100,
+                    'burn_in_iterations': 50,
+                    'n_chains': 5}])
+def regression_parameters(request):
+    return request.param
+
+
+@fixture(scope = 'session')
 def posteriors(sampler):
     sampler.sample(n_iterations = n_iterations,
                    burn_in_iterations = burn_in_iterations,
