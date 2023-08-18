@@ -42,28 +42,30 @@ priors = {'x_1': {'mean': 0,
 @mark.model
 class TestModel:
 
-    def test_set_data(self, model):
-        model.set_data(data = data,
-                       y_name = 'y')
+    def test_set_data(self, empty_model):
+        empty_model.set_data(data = data, y_name = 'y')
 
-        assert model.data.equals(data)
-        assert model.y_name == 'y'
-
-
-    def test_set_initial_values(self, model):
-        model.set_initial_values(values = initial_values)
-
-        assert model.initial_values == initial_values
-        assert 'intercept' in model.initial_values.keys()
+        assert empty_model.data.equals(data)
+        assert empty_model.y_name == 'y'
 
 
-    def test_set_priors(self, model):
-        model.set_priors(priors = priors)
+    def test_set_initial_values(self, empty_model):
+        empty_model.set_initial_values(values = initial_values)
 
-        assert model.priors == priors
-        assert 'intercept' in model.priors.keys()
-        assert 'sigma2' in model.priors.keys()
+        assert empty_model.initial_values == initial_values
+        assert 'intercept' in empty_model.initial_values.keys()
+
+
+    def test_set_priors(self, empty_model):
+        empty_model.set_priors(priors = priors)
+
+        assert empty_model.priors == priors
+        assert 'intercept' in empty_model.priors.keys()
+        assert 'sigma2' in empty_model.priors.keys()
         assert all(['mean' in priors[regressor].keys() for regressor in priors.keys() if regressor != 'sigma2'])
         assert all(['variance' in priors[regressor].keys() for regressor in priors.keys() if regressor != 'sigma2'])
-        assert 'shape' in model.priors['sigma2'].keys()
-        assert 'scale' in model.priors['sigma2'].keys()
+        assert 'shape' in empty_model.priors['sigma2'].keys()
+        assert 'scale' in empty_model.priors['sigma2'].keys()
+        assert empty_model.variable_names is not None
+        assert empty_model.variable_names[0] == 'intercept'
+        assert 'sigma2' in empty_model.variable_names
