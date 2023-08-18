@@ -1,8 +1,14 @@
 from pytest import fixture
-from GibbsSampler import GibbsSampler
+import GibbsSampler as gs
 
 
 @fixture(scope = 'function')
-def sampler():
-    sampler = GibbsSampler()
+def model():
+    model = gs.Model()
+    return model
+
+
+@fixture(scope = 'function')
+def sampler(model):
+    sampler = gs.LinearRegression(model = model)
     return sampler
