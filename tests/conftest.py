@@ -56,6 +56,65 @@ def empty_model():
     return model
 
 
+@fixture(params = [{'data': 'data', 'y_name': 'y_name'},
+                   {'data': 1, 'y_name': 'y_name'},
+                   {'data': 1.1, 'y_name': 'y_name'},
+                   {'data': True, 'y_name': 'y_name'},
+                   {'data': (0, 1), 'y_name': 'y_name'},
+                   {'data': [0, 1], 'y_name': 'y_name'},
+                   {'data': {0, 1}, 'y_name': 'y_name'},
+                   {'data': None, 'y_name': 'y_name'},
+                   {'data': pd.DataFrame(), 'y_name': 1},
+                   {'data': pd.DataFrame(), 'y_name': 1.1},
+                   {'data': pd.DataFrame(), 'y_name': True},
+                   {'data': pd.DataFrame(), 'y_name': (0, 1)},
+                   {'data': pd.DataFrame(), 'y_name': [0, 1]},
+                   {'data': pd.DataFrame(), 'y_name': {0, 1}},
+                   {'data': pd.DataFrame(), 'y_name': None}])
+def model_set_data_type_error(request):
+    return request.param
+
+
+@fixture(params = [{'data': pd.DataFrame(), 'y_name': 'y_name'},
+                   {'data': pd.DataFrame(columns = ['not_y_name'], index = [0]), 'y_name': 'y_name'}])
+def model_set_data_value_error(request):
+    return request.param
+
+
+@fixture(params = ['initial_values', 1, 1.1, True, (0, 1), [0, 1], {0, 1}, None])
+def model_set_initial_value_type_error(request):
+    return request.param
+
+
+@fixture(params = ['priors', 1, 1.1, True, (0, 1), [0, 1], {0, 1}, None,
+                   {'intercept': 'intercept', 'sigma2': 'sigma2'},
+                   {'intercept': 1, 'sigma2': 1},
+                   {'intercept': 1.1, 'sigma2': 1.1},
+                   {'intercept': True, 'sigma2': True},
+                   {'intercept': (0, 1), 'sigma2': (0, 1)},
+                   {'intercept': [0, 1], 'sigma2': [0, 1]},
+                   {'intercept': {0, 1}, 'sigma2': {0, 1}},
+                   {'intercept': None, 'sigma2': None}])
+def model_set_priors_type_error(request):
+    return request.param
+
+
+@fixture(params = [{},
+                   {'intercept': {}, 'sigma2': {}},
+                   {'intercept': {'m': 0, 'variance': 1}, 'sigma2': {'shape': 1, 'scale': 1}},
+                   {'intercept': {'mean': 0, 'v': 1}, 'sigma2': {'shape': 1, 'scale': 1}},
+                   {'intercept': {'mean': 0, 'variance': 1}, 'sigma2': {'s': 1, 'scale': 1}},
+                   {'intercept': {'mean': 0, 'variance': 1}, 'sigma2': {'shape': 1, 's': 1}}])
+def model_set_priors_value_error(request):
+    return request.param
+
+
+@fixture(params = [{'regressor': 1, 'sigma2': 2},
+                   {'intercept': 1, 'regressor': 2}])
+def model_set_priors_key_error(request):
+    return request.param
+
+
 @fixture(scope = 'session')
 def sampler():
     model = gs.Model()
