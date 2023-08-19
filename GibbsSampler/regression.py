@@ -12,6 +12,20 @@ class LinearRegression:
         if not isinstance(model, Model):
             raise TypeError("Parameter 'model' must be an instance of 'GibbsSampler.model.Model'")
 
+        for initial_value in model.initial_values.keys():
+            if (initial_value != 'intercept') and (initial_value not in model.data.columns):
+                raise ValueError(f"Column '{initial_value}' not found in 'Model.data'")
+
+            if initial_value not in model.priors.keys():
+                raise ValueError(f"Missing '{initial_value}' prior value")
+
+        for prior in model.priors.keys():
+            if (prior not in  ['intercept', 'sigma2']) and (prior not in model.data.columns):
+                raise ValueError(f"Column '{initial_value}' not found in 'Model.data'")
+
+            if (prior != 'sigma2') and (prior not in model.initial_values.keys()):
+                raise ValueError(f"Missing '{prior}' initial value")
+
         self.model = model
         self.posteriors = None
 
