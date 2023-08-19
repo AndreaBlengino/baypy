@@ -21,25 +21,35 @@ priors = {'x_1': {'mean': 0,
 
 
 @mark.regression
-class TestRegression:
+class TestLinearRegressionInit:
 
-    def test___init__raises_type_error(self, regression_model_type_error):
+
+    def test_raises_type_error(self, linear_regression_init_type_error):
         with raises(TypeError):
-            gs.LinearRegression(model = regression_model_type_error)
+            gs.LinearRegression(model = linear_regression_init_type_error)
 
 
-    def test_sample(self, sampler, regression_parameters):
-        sampler.sample(n_iterations = regression_parameters['n_iterations'],
-                       burn_in_iterations = regression_parameters['burn_in_iterations'],
-                       n_chains = regression_parameters['n_chains'])
+    def test_raises_value_error(self, linear_regression_init_value_error):
+        with raises(ValueError):
+            gs.LinearRegression(model = linear_regression_init_value_error)
+
+
+@mark.regression
+class TestLinearRegressionSample:
+
+
+    def test_method(self, sampler, linear_regression_sample):
+        sampler.sample(n_iterations = linear_regression_sample['n_iterations'],
+                       burn_in_iterations = linear_regression_sample['burn_in_iterations'],
+                       n_chains = linear_regression_sample['n_chains'])
 
         assert sampler.posteriors.keys() == priors.keys()
-        assert all(np.array([posterior.shape for posterior in sampler.posteriors.values()])[:, 0] == regression_parameters['n_iterations'])
-        assert all(np.array([posterior.shape for posterior in sampler.posteriors.values()])[:, 1] == regression_parameters['n_chains'])
+        assert all(np.array([posterior.shape for posterior in sampler.posteriors.values()])[:, 0] == linear_regression_sample['n_iterations'])
+        assert all(np.array([posterior.shape for posterior in sampler.posteriors.values()])[:, 1] == linear_regression_sample['n_chains'])
 
 
-    def test_sample_raises_value_error(self, sampler, regression_parameters_value_error):
+    def test_raises_value_error(self, sampler, linear_regression_sample_value_error):
         with raises(ValueError):
-            sampler.sample(n_iterations = regression_parameters_value_error['n_iterations'],
-                           burn_in_iterations = regression_parameters_value_error['burn_in_iterations'],
-                           n_chains = regression_parameters_value_error['n_chains'])
+            sampler.sample(n_iterations = linear_regression_sample_value_error['n_iterations'],
+                           burn_in_iterations = linear_regression_sample_value_error['burn_in_iterations'],
+                           n_chains = linear_regression_sample_value_error['n_chains'])

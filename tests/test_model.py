@@ -42,6 +42,7 @@ priors = {'x_1': {'mean': 0,
 @mark.model
 class TestModelSetData:
 
+
     def test_method(self, empty_model):
         empty_model.set_data(data = data, y_name = 'y')
 
@@ -63,6 +64,7 @@ class TestModelSetData:
 
 @mark.model
 class TestModelSetInitialValues:
+
 
     def test_method(self, empty_model):
         empty_model.set_initial_values(values = initial_values)
@@ -88,6 +90,7 @@ class TestModelSetInitialValues:
 
 @mark.model
 class TestModelSetPriors:
+
 
     def test_method(self, empty_model):
         empty_model.set_priors(priors = priors)

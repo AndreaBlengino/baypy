@@ -28,6 +28,7 @@ prediction_data['x_1 * x_2'] = prediction_data['x_1']*prediction_data['x_2']
 @mark.analysis
 class TestAnalysis:
 
+
     def test_summary(self, posteriors):
         gs.analysis.summary(posteriors)
 

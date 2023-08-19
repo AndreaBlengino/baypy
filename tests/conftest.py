@@ -50,6 +50,69 @@ prediction_data = {'x_1': 20, 'x_2': 5, 'x_3': -45}
 prediction_data['x_1 * x_2'] = prediction_data['x_1']*prediction_data['x_2']
 
 
+model_initial_value_not_in_data = gs.Model()
+model_initial_value_not_in_data.set_data(data = pd.DataFrame(columns = ['x', 'z'], index = [0]),
+                                         y_name = 'z')
+model_initial_value_not_in_data.set_initial_values(values = {'x': 0,
+                                                             'y': 0,
+                                                             'intercept': 0})
+model_initial_value_not_in_data.set_priors(priors = {'x': {'mean': 0,
+                                                           'variance': 1},
+                                                     'y': {'mean': 0,
+                                                           'variance': 1},
+                                                     'intercept': {'mean': 0,
+                                                                   'variance': 1},
+                                                     'sigma2': {'shape': 1,
+                                                                'scale': 1}})
+
+model_initial_value_not_in_priors = gs.Model()
+model_initial_value_not_in_priors.set_data(data = pd.DataFrame(columns = ['x', 'y', 'z'], index = [0]),
+                                           y_name = 'z')
+model_initial_value_not_in_priors.set_initial_values(values = {'x': 0,
+                                                               'y': 0,
+                                                               'intercept': 0})
+model_initial_value_not_in_priors.set_priors(priors = {'x': {'mean': 0,
+                                                             'variance': 1},
+                                                       'intercept': {'mean': 0,
+                                                                     'variance': 1},
+                                                       'sigma2': {'shape': 1,
+                                                                  'scale': 1}})
+
+model_prior_not_in_data = gs.Model()
+model_prior_not_in_data.set_data(data = pd.DataFrame(columns = ['x', 'y', 'z'], index = [0]),
+                                 y_name = 'z')
+model_prior_not_in_data.set_initial_values(values = {'x': 0,
+                                                     'y': 0,
+                                                     'intercept': 0})
+model_prior_not_in_data.set_priors(priors = {'x': {'mean': 0,
+                                                   'variance': 1},
+                                             'y': {'mean': 0,
+                                                   'variance': 1},
+                                             'w': {'mean': 0,
+                                                   'variance': 1},
+                                             'intercept': {'mean': 0,
+                                                           'variance': 1},
+                                             'sigma2': {'shape': 1,
+                                                        'scale': 1}})
+
+model_prior_not_in_initial_values = gs.Model()
+model_prior_not_in_initial_values.set_data(data = pd.DataFrame(columns = ['x', 'y', 'w', 'z'], index = [0]),
+                                           y_name = 'z')
+model_prior_not_in_initial_values.set_initial_values(values = {'x': 0,
+                                                               'y': 0,
+                                                               'intercept': 0})
+model_prior_not_in_initial_values.set_priors(priors = {'x': {'mean': 0,
+                                                             'variance': 1},
+                                                       'y': {'mean': 0,
+                                                             'variance': 1},
+                                                       'w': {'mean': 0,
+                                                             'variance': 1},
+                                                       'intercept': {'mean': 0,
+                                                                     'variance': 1},
+                                                       'sigma2': {'shape': 1,
+                                                                  'scale': 1}})
+
+
 @fixture(scope = 'session')
 def empty_model():
     model = gs.Model()
@@ -126,7 +189,15 @@ def sampler():
 
 
 @fixture(params = ['model', 1, 1.1, {'model': 1}, True, (0, 1), [0, 1], {0, 1}, None])
-def regression_model_type_error(request):
+def linear_regression_init_type_error(request):
+    return request.param
+
+
+@fixture(params = [model_initial_value_not_in_data,
+                   model_initial_value_not_in_priors,
+                   model_prior_not_in_data,
+                   model_prior_not_in_initial_values])
+def linear_regression_init_value_error(request):
     return request.param
 
 
@@ -139,7 +210,7 @@ def regression_model_type_error(request):
                    {'n_iterations': 100,
                     'burn_in_iterations': 0,
                     'n_chains': 3}])
-def regression_parameters(request):
+def linear_regression_sample(request):
     return request.param
 
 
@@ -152,7 +223,7 @@ def regression_parameters(request):
                    {'n_iterations': 1000,
                     'burn_in_iterations': 50,
                     'n_chains': -1}])
-def regression_parameters_value_error(request):
+def linear_regression_sample_value_error(request):
     return request.param
 
 
