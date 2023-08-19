@@ -10,7 +10,7 @@ class LinearRegression:
     def __init__(self, model):
 
         if not isinstance(model, Model):
-            raise TypeError('Parameter model must be an instance of GibbsSampler.model.Model')
+            raise TypeError("Parameter 'model' must be an instance of 'GibbsSampler.model.Model'")
 
         self.model = model
         self.posteriors = None
@@ -19,13 +19,13 @@ class LinearRegression:
     def sample(self, n_iterations, burn_in_iterations, n_chains):
 
         if n_iterations <= 0:
-            raise ValueError('Parameter n_iteration must be greater than 0')
+            raise ValueError("Parameter 'n_iteration' must be greater than 0")
 
         if burn_in_iterations < 0:
-            raise ValueError('Parameter burn_in_iterations must be greater than or equal to 0')
+            raise ValueError("Parameter 'burn_in_iterations' must be greater than or equal to 0")
 
         if n_chains <= 0:
-            raise ValueError('Parameter n_chains must be greater than 0')
+            raise ValueError("Parameter 'n_chains' must be greater than 0")
 
         data = self.model.data.copy()
 
