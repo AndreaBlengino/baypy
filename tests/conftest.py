@@ -227,6 +227,83 @@ def linear_regression_sample_value_error(request):
     return request.param
 
 
+@fixture(params = [{'posteriors': 'posteriors', 'max_lags': 30},
+                   {'posteriors': 1, 'max_lags': 30},
+                   {'posteriors': 1.1, 'max_lags': 30},
+                   {'posteriors': True, 'max_lags': 30},
+                   {'posteriors': (0, 1), 'max_lags': 30},
+                   {'posteriors': [0, 1], 'max_lags': 30},
+                   {'posteriors': {0, 1}, 'max_lags': 30},
+                   {'posteriors': None, 'max_lags': 30},
+                   {'posteriors': {'intercept': [0], 'sigma2': np.array([0])}, 'max_lags': 30},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'max_lags': {'30': 30}},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'max_lags': 'max_lags'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'max_lags': 1.1},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'max_lags': (0, 1)},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'max_lags': [0, 1]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'max_lags': {0, 1}},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'max_lags': None}])
+def diagnostics_autocorrelation_plot_type_error(request):
+    return request.param
+
+
+@fixture(params = [{'posteriors': {'sigma2': np.array([0])}, 'max_lags': 30},
+                   {'posteriors': {'intercept': np.array([0])}, 'max_lags': 30},
+                   {'posteriors': {'intercept': np.array([]), 'sigma2': np.array([0])}, 'max_lags': 30},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'max_lags': -1}])
+def diagnostics_autocorrelation_plot_value_error(request):
+    return request.param
+
+
+@fixture(params = [{'posteriors': 'posteriors', 'lags': 30},
+                   {'posteriors': 1, 'lags': 30},
+                   {'posteriors': 1.1, 'lags': 30},
+                   {'posteriors': True, 'lags': 30},
+                   {'posteriors': (0, 1), 'lags': 30},
+                   {'posteriors': [0, 1], 'lags': 30},
+                   {'posteriors': {0, 1}, 'lags': 30},
+                   {'posteriors': None, 'lags': 30},
+                   {'posteriors': {'intercept': [0], 'sigma2': np.array([0])}, 'lags': 30},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'lags': 'lags'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'lags': 1},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'lags': 1.1},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'lags': True},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'lags': (0, 1)},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'lags': {'30': 30}},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'lags': {0, 1}},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'lags': ['lag']},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'lags': [1.1]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'lags': [(0, 1)]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'lags': [[0, 1]]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'lags': [{0, 1}]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'lags': [{'lag': 1}]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'lags': [None]}])
+def diagnostics_autocorrelation_summary_type_error(request):
+    return request.param
+
+
+@fixture(params = [{'posteriors': {'sigma2': np.array([0])}, 'lags': [0, 1, 5, 10, 30]},
+                   {'posteriors': {'intercept': np.array([0])}, 'lags': [0, 1, 5, 10, 30]},
+                   {'posteriors': {'intercept': np.array([]), 'sigma2': np.array([0])}, 'lags': [0, 1, 5, 10, 30]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'lags': []},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'lags': [-1]}])
+def diagnostics_autocorrelation_summary_value_error(request):
+    return request.param
+
+
+@fixture(params = ['posteriors', 1, 1.1, True, (0, 1), [0, 1], {0, 1}, None,
+                   {'intercept': [0], 'sigma2': np.array([0])}])
+def diagnostics_effective_sample_size_type_error(request):
+    return request.param
+
+
+@fixture(params = [{'sigma2': np.array([0])},
+                   {'intercept': np.array([0])},
+                   {'intercept': np.array([]), 'sigma2': np.array([0])}])
+def diagnostics_effective_sample_size_value_error(request):
+    return request.param
+
+
 @fixture(scope = 'session')
 def posteriors(sampler):
     sampler.sample(n_iterations = n_iterations,
