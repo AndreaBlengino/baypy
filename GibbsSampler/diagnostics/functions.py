@@ -6,9 +6,28 @@ from ..utils import flatten_matrix
 
 def autocorrelation_plot(posteriors, max_lags = 30):
 
+    if not isinstance(posteriors, dict):
+        raise TypeError(f"Parameter 'posteriors' must be a dictionary")
+
+    if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
+        raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
+
+    for posterior in ['intercept', 'sigma2']:
+        if posterior not in posteriors.keys():
+            raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+
+    for posterior, posterior_samples in posteriors.items():
+        if posterior_samples.size == 0:
+            raise ValueError(f"Posterior '{posterior}' data is empty")
+
+    if not isinstance(max_lags, int):
+        raise TypeError("Parameter 'max_lags' must be a integer")
+    if max_lags <= 0:
+        raise ValueError("Parameter 'max_lags' must be greater than 0")
+
     variable_names = list(posteriors.keys())
     n_variables = len(variable_names)
-    n_chains = posteriors['intercept'].shape[1]
+    n_iterations, n_chains = posteriors['intercept'].shape
 
     fig, ax = plt.subplots(nrows = n_variables,
                            ncols = n_chains,
@@ -30,7 +49,7 @@ def autocorrelation_plot(posteriors, max_lags = 30):
             ax[i, 0].set_ylabel(r'$\sigma^2$')
         ax[i, 0].set_yticks([-1, 0, 1])
 
-    ax[0, 0].set_xlim(-1, max_lags)
+    ax[0, 0].set_xlim(-1, min(max_lags, n_iterations))
     ax[0, 0].set_ylim(-1, 1)
 
     plt.tight_layout()
@@ -40,6 +59,30 @@ def autocorrelation_plot(posteriors, max_lags = 30):
 
 
 def autocorrelation_summary(posteriors, lags = None):
+
+    if not isinstance(posteriors, dict):
+        raise TypeError(f"Parameter 'posteriors' must be a dictionary")
+
+    if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
+        raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
+
+    for posterior in ['intercept', 'sigma2']:
+        if posterior not in posteriors.keys():
+            raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+
+    for posterior, posterior_samples in posteriors.items():
+        if posterior_samples.size == 0:
+            raise ValueError(f"Posterior '{posterior}' data is empty")
+
+    if lags is not None:
+        if not isinstance(lags, list):
+            raise TypeError("Parameter 'lags' must be a list")
+        if not lags:
+            raise ValueError("Parameter 'lags' cannot be an empty list")
+        if not all([isinstance(lag, int) for lag in lags]):
+            raise TypeError("Parameter 'lags' must contain only integers")
+        if any([lag < 0 for lag in lags]):
+            raise ValueError("Parameter 'lags' cannot contain negative integers")
 
     lags = [0, 1, 5, 10, 30] if lags is None else lags
 
@@ -60,6 +103,20 @@ def autocorrelation_summary(posteriors, lags = None):
 
 
 def effective_sample_size(posteriors):
+
+    if not isinstance(posteriors, dict):
+        raise TypeError(f"Parameter 'posteriors' must be a dictionary")
+
+    if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
+        raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
+
+    for posterior in ['intercept', 'sigma2']:
+        if posterior not in posteriors.keys():
+            raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+
+    for posterior, posterior_samples in posteriors.items():
+        if posterior_samples.size == 0:
+            raise ValueError(f"Posterior '{posterior}' data is empty")
 
     n_chains = posteriors['intercept'].shape[1]
     ess_summary = pd.DataFrame(columns = list(posteriors.keys()),
