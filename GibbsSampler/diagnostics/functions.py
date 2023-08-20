@@ -35,25 +35,46 @@ def autocorrelation_plot(posteriors, max_lags = 30):
                            sharex = 'all',
                            sharey = 'all')
 
-    for i in range(n_chains):
-        ax[0, i].set_title(f'Chain {i + 1}')
+    if n_chains > 1:
+        for i in range(n_chains):
+            ax[0, i].set_title(f'Chain {i + 1}')
+            for j, variable in enumerate(variable_names, 0):
+                acorr = _compute_autocorrelation(vector = flatten_matrix(posteriors[variable][:, i]),
+                                                 max_lags = max_lags)
+                ax[j, i].stem(acorr, markerfmt = ' ', basefmt = ' ')
+
+        for i, variable in enumerate(variable_names, 0):
+            if variable != 'sigma2':
+                ax[i, 0].set_ylabel(variable)
+            else:
+                ax[i, 0].set_ylabel(r'$\sigma^2$')
+            ax[i, 0].set_yticks([-1, 0, 1])
+
+        ax[0, 0].set_xlim(-1, min(max_lags, n_iterations))
+        ax[0, 0].set_ylim(-1, 1)
+
+        plt.tight_layout()
+        plt.subplots_adjust(left = 0.1)
+
+    else:
+        ax[0].set_title('Chain 1')
         for j, variable in enumerate(variable_names, 0):
-            acorr = _compute_autocorrelation(vector = flatten_matrix(posteriors[variable][:, i]),
+            acorr = _compute_autocorrelation(vector = flatten_matrix(posteriors[variable]),
                                              max_lags = max_lags)
-            ax[j, i].stem(acorr, markerfmt = ' ', basefmt = ' ')
+            ax[j].stem(acorr, markerfmt = ' ', basefmt = ' ')
 
-    for i, variable in enumerate(variable_names, 0):
-        if variable != 'sigma2':
-            ax[i, 0].set_ylabel(variable)
-        else:
-            ax[i, 0].set_ylabel(r'$\sigma^2$')
-        ax[i, 0].set_yticks([-1, 0, 1])
+        for i, variable in enumerate(variable_names, 0):
+            if variable != 'sigma2':
+                ax[i].set_ylabel(variable)
+            else:
+                ax[i].set_ylabel(r'$\sigma^2$')
+            ax[i].set_yticks([-1, 0, 1])
 
-    ax[0, 0].set_xlim(-1, min(max_lags, n_iterations))
-    ax[0, 0].set_ylim(-1, 1)
+        ax[0].set_xlim(-1, min(max_lags, n_iterations))
+        ax[0].set_ylim(-1, 1)
 
-    plt.tight_layout()
-    plt.subplots_adjust(left = 0.1)
+        plt.tight_layout()
+        plt.subplots_adjust(left = 0.14)
 
     plt.show()
 
