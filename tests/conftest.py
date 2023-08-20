@@ -469,6 +469,46 @@ def analysis_predict_distribution_value_error(request):
     return request.param
 
 
+@fixture(params = [{'posteriors': 'posteriors', 'data': pd.DataFrame(), 'y_name': 'y_name'},
+                   {'posteriors': 1, 'data': pd.DataFrame(), 'y_name': 'y_name'},
+                   {'posteriors': 1.1, 'data': pd.DataFrame(), 'y_name': 'y_name'},
+                   {'posteriors': True, 'data': pd.DataFrame(), 'y_name': 'y_name'},
+                   {'posteriors': (0, 1), 'data': pd.DataFrame(), 'y_name': 'y_name'},
+                   {'posteriors': [0, 1], 'data': pd.DataFrame(), 'y_name': 'y_name'},
+                   {'posteriors': {0, 1}, 'data': pd.DataFrame(), 'y_name': 'y_name'},
+                   {'posteriors': None, 'data': pd.DataFrame(), 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': [0], 'sigma2': np.array([0])}, 'data': pd.DataFrame(), 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': 'data', 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': 1, 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': 1.1, 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': True, 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': (0, 1), 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': [0, 1], 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': {0, 1}, 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': {'0': 1}, 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': None, 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': pd.DataFrame(), 'y_name': 1},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': pd.DataFrame(), 'y_name': 1.1},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': pd.DataFrame(), 'y_name': True},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': pd.DataFrame(), 'y_name': (0, 1)},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': pd.DataFrame(), 'y_name': [0, 1]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': pd.DataFrame(), 'y_name': {0, 1}},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': pd.DataFrame(), 'y_name': {'y_name': 1}},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': pd.DataFrame(), 'y_name': None}])
+def analysis_compute_dic_type_error(request):
+    return request.param
+
+
+@fixture(params = [{'posteriors': {'sigma2': np.array([0])}, 'data': pd.DataFrame(columns = ['y_name'], index = [0]), 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0])}, 'data': pd.DataFrame(columns = ['y_name'], index = [0]), 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([]), 'sigma2': np.array([0])}, 'data': pd.DataFrame(columns = ['y_name'], index = [0]), 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0]), 'x': np.array([0])}, 'data': pd.DataFrame(columns = ['y_name'], index = [0]), 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': pd.DataFrame(), 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': pd.DataFrame(columns = ['not_y_name'], index = [0]), 'y_name': 'y_name'}])
+def analysis_compute_dic_value_error(request):
+    return request.param
+
+
 @fixture(scope = 'session')
 def posteriors(sampler, general_testing_data):
     sampler.sample(n_iterations = general_testing_data['n_iterations'],

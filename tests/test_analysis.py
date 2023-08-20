@@ -108,3 +108,27 @@ class TestAnalysisPredictDistribution:
         with raises(ValueError):
             gs.analysis.predict_distribution(posteriors = analysis_predict_distribution_value_error['posteriors'],
                                              data = analysis_predict_distribution_value_error['data'])
+
+
+@mark.analysis
+class TestAnalysisComputeDIC:
+
+
+    def test_method(self, posteriors, general_testing_data):
+        gs.analysis.compute_DIC(posteriors = posteriors,
+                                data = general_testing_data['data'],
+                                y_name = general_testing_data['y_name'])
+
+
+    def test_raises_type_error(self, analysis_compute_dic_type_error):
+        with raises(TypeError):
+            gs.analysis.compute_DIC(posteriors = analysis_compute_dic_type_error['posteriors'],
+                                    data = analysis_compute_dic_type_error['data'],
+                                    y_name = analysis_compute_dic_type_error['y_name'])
+
+
+    def test_raises_value_error(self, analysis_compute_dic_value_error):
+        with raises(ValueError):
+            gs.analysis.compute_DIC(posteriors = analysis_compute_dic_value_error['posteriors'],
+                                    data = analysis_compute_dic_value_error['data'],
+                                    y_name = analysis_compute_dic_value_error['y_name'])
