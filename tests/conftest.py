@@ -304,6 +304,136 @@ def diagnostics_effective_sample_size_value_error(request):
     return request.param
 
 
+@fixture(params = ['posteriors', 1, 1.1, True, (0, 1), [0, 1], {0, 1}, None,
+                   {'intercept': [0], 'sigma2': np.array([0])}])
+def analysis_trace_plot_type_error(request):
+    return request.param
+
+
+@fixture(params = [{'sigma2': np.array([0])},
+                   {'intercept': np.array([0])},
+                   {'intercept': np.array([]), 'sigma2': np.array([0])}])
+def analysis_trace_plot_value_error(request):
+    return request.param
+
+
+@fixture(params = [{'posteriors': 'posteriors', 'alpha': 0.05, 'quantiles': [0.1, 0.9]},
+                   {'posteriors': 1, 'alpha': 0.05,'quantiles': [0.1, 0.9]},
+                   {'posteriors': 1.1, 'alpha': 0.05, 'quantiles': [0.1, 0.9]},
+                   {'posteriors': True, 'alpha': 0.05, 'quantiles': [0.1, 0.9]},
+                   {'posteriors': (0, 1), 'alpha': 0.05, 'quantiles': [0.1, 0.9]},
+                   {'posteriors': [0, 1], 'alpha': 0.05, 'quantiles': [0.1, 0.9]},
+                   {'posteriors': {0, 1}, 'alpha': 0.05, 'quantiles': [0.1, 0.9]},
+                   {'posteriors': None, 'alpha': 0.05, 'quantiles': [0.1, 0.9]},
+                   {'posteriors': {'intercept': [0], 'sigma2': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': 'alpha', 'quantiles': [0.1, 0.9]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': 2, 'quantiles': [0.1, 0.9]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': (0, 1), 'quantiles': [0.1, 0.9]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': [0, 1], 'quantiles': [0.1, 0.9]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': {0, 1}, 'quantiles': [0.1, 0.9]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': {'0': 1}, 'quantiles': [0.1, 0.9]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': None, 'quantiles': [0.1, 0.9]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': 0.05, 'quantiles': 'quantiles'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': 0.05, 'quantiles': 1},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': 0.05, 'quantiles': 1.1},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': 0.05, 'quantiles': True},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': 0.05, 'quantiles': (0, 1)},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': 0.05, 'quantiles': {'0.1': 0.1}},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': 0.05, 'quantiles': {0, 1}},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': 0.05, 'quantiles': ['quantiles']},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': 0.05, 'quantiles': [1]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': 0.05, 'quantiles': [(0, 1)]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': 0.05, 'quantiles': [[0, 1]]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': 0.05, 'quantiles': [{0, 1}]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': 0.05, 'quantiles': [{'quantiles': 1}]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': 0.05, 'quantiles': [None]}])
+def analysis_summary_type_error(request):
+    return request.param
+
+
+@fixture(params = [{'posteriors': {'sigma2': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9]},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9]},
+                   {'posteriors': {'intercept': np.array([]), 'sigma2': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': -0.5, 'quantiles': [0.1, 0.9]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': 1.5, 'quantiles': [0.1, 0.9]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': 0.05, 'quantiles': []},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': 0.05, 'quantiles': [-0.5]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'alpha': 0.05, 'quantiles': [1.5]}])
+def analysis_summary_value_error(request):
+    return request.param
+
+
+@fixture(params = [{'posteriors': 'posteriors', 'data': pd.DataFrame(), 'y_name': 'y_name'},
+                   {'posteriors': 1, 'data': pd.DataFrame(), 'y_name': 'y_name'},
+                   {'posteriors': 1.1, 'data': pd.DataFrame(), 'y_name': 'y_name'},
+                   {'posteriors': True, 'data': pd.DataFrame(), 'y_name': 'y_name'},
+                   {'posteriors': (0, 1), 'data': pd.DataFrame(), 'y_name': 'y_name'},
+                   {'posteriors': [0, 1], 'data': pd.DataFrame(), 'y_name': 'y_name'},
+                   {'posteriors': {0, 1}, 'data': pd.DataFrame(), 'y_name': 'y_name'},
+                   {'posteriors': None, 'data': pd.DataFrame(), 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': [0], 'sigma2': np.array([0])}, 'data': pd.DataFrame(), 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': 'data', 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': 1, 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': 1.1, 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': True, 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': (0, 1), 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': [0, 1], 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': {0, 1}, 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': {'0': 1}, 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': None, 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': pd.DataFrame(), 'y_name': 1},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': pd.DataFrame(), 'y_name': 1.1},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': pd.DataFrame(), 'y_name': True},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': pd.DataFrame(), 'y_name': (0, 1)},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': pd.DataFrame(), 'y_name': [0, 1]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': pd.DataFrame(), 'y_name': {0, 1}},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': pd.DataFrame(), 'y_name': {'y_name': 1}},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': pd.DataFrame(), 'y_name': None}])
+def analysis_residuals_plot_type_error(request):
+    return request.param
+
+
+@fixture(params = [{'posteriors': {'sigma2': np.array([0])}, 'data': pd.DataFrame(columns = ['y_name'], index = [0]), 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0])}, 'data': pd.DataFrame(columns = ['y_name'], index = [0]), 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([]), 'sigma2': np.array([0])}, 'data': pd.DataFrame(columns = ['y_name'], index = [0]), 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0]), 'x': np.array([0])}, 'data': pd.DataFrame(columns = ['y_name'], index = [0]), 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': pd.DataFrame(), 'y_name': 'y_name'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': pd.DataFrame(columns = ['not_y_name'], index = [0]), 'y_name': 'y_name'}])
+def analysis_residuals_plot_value_error(request):
+    return request.param
+
+
+@fixture(params = [{'posteriors': 'posteriors', 'data': {'regressor': 1}},
+                   {'posteriors': 1, 'data': {'regressor': 1}},
+                   {'posteriors': 1.1, 'data': {'regressor': 1}},
+                   {'posteriors': True, 'data': {'regressor': 1}},
+                   {'posteriors': (0, 1), 'data': {'regressor': 1}},
+                   {'posteriors': [0, 1], 'data': {'regressor': 1}},
+                   {'posteriors': {0, 1}, 'data': {'regressor': 1}},
+                   {'posteriors': None, 'data': {'regressor': 1}},
+                   {'posteriors': {'intercept': [0], 'sigma2': np.array([0])}, 'data': {'regressor': 1}},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': 'data'},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': 1},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': 1.1},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': True},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': (0, 1)},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': [0, 1]},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': {0, 1}},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': pd.DataFrame()},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0])}, 'data': None}])
+def analysis_predict_distribution_type_error(request):
+    return request.param
+
+
+@fixture(params = [{'posteriors': {'sigma2': np.array([0]), 'x': np.array([0])}, 'data': {'x': 1}},
+                   {'posteriors': {'intercept': np.array([0]), 'x': np.array([0])}, 'data': {'x': 1}},
+                   {'posteriors': {'intercept': np.array([]), 'sigma2': np.array([0]), 'x': np.array([0])}, 'data': {'x': 1}},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0]), 'x': np.array([0])}, 'data': {}},
+                   {'posteriors': {'intercept': np.array([0]), 'sigma2': np.array([0]), 'x': np.array([0])}, 'data': {'x': 1, 'z': 1}}])
+def analysis_predict_distribution_value_error(request):
+    return request.param
+
+
 @fixture(scope = 'session')
 def posteriors(sampler):
     sampler.sample(n_iterations = n_iterations,

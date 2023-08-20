@@ -2,7 +2,7 @@ import GibbsSampler as gs
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from pytest import mark
+from pytest import mark, raises
 
 
 np.random.seed(42)
@@ -26,10 +26,29 @@ prediction_data['x_1 * x_2'] = prediction_data['x_1']*prediction_data['x_2']
 
 
 @mark.analysis
-class TestAnalysis:
+class TestAnalysisTracePlot:
 
 
-    def test_summary(self, posteriors):
+    def test_method(self, posteriors, monkeypatch):
+        monkeypatch.setattr(plt, 'show', lambda: None)
+        gs.analysis.trace_plot(posteriors)
+
+
+    def test_raises_type_error(self, analysis_trace_plot_type_error):
+        with raises(TypeError):
+            gs.analysis.trace_plot(analysis_trace_plot_type_error)
+
+
+    def test_raises_value_error(self, analysis_trace_plot_value_error):
+        with raises(ValueError):
+            gs.analysis.trace_plot(analysis_trace_plot_value_error)
+
+
+@mark.analysis
+class TestAnalysisSummary:
+
+
+    def test_method(self, posteriors):
         gs.analysis.summary(posteriors)
 
         data_tmp = data.copy()
@@ -45,17 +64,47 @@ class TestAnalysis:
             assert lower_bound <= linear_model_results[i] <= upper_bound
 
 
-    def test_trace_plot(self, posteriors, monkeypatch):
-        monkeypatch.setattr(plt, 'show', lambda: None)
-        gs.analysis.trace_plot(posteriors)
+    def test_raises_type_error(self, analysis_summary_type_error):
+        with raises(TypeError):
+            gs.analysis.summary(posteriors = analysis_summary_type_error['posteriors'],
+                                alpha = analysis_summary_type_error['alpha'],
+                                quantiles = analysis_summary_type_error['quantiles'])
 
 
-    def test_residuals_plot(self, posteriors, monkeypatch):
+    def test_raises_value_error(self, analysis_summary_value_error):
+        with raises(ValueError):
+            gs.analysis.summary(posteriors = analysis_summary_value_error['posteriors'],
+                                alpha = analysis_summary_value_error['alpha'],
+                                quantiles = analysis_summary_value_error['quantiles'])
+
+
+@mark.analysis
+class TestAnalysisResidualsPlot:
+
+
+    def test_method(self, posteriors, monkeypatch):
         monkeypatch.setattr(plt, 'show', lambda: None)
         gs.analysis.residuals_plot(posteriors = posteriors, data = data, y_name = 'y')
 
 
-    def test_predict_distribution(self, posteriors):
+    def test_raises_type_error(self, analysis_residuals_plot_type_error):
+        with raises(TypeError):
+            gs.analysis.residuals_plot(posteriors = analysis_residuals_plot_type_error['posteriors'],
+                                       data = analysis_residuals_plot_type_error['data'],
+                                       y_name = analysis_residuals_plot_type_error['y_name'])
+
+    def test_raises_value_error(self, analysis_residuals_plot_value_error):
+        with raises(ValueError):
+            gs.analysis.residuals_plot(posteriors = analysis_residuals_plot_value_error['posteriors'],
+                                       data = analysis_residuals_plot_value_error['data'],
+                                       y_name = analysis_residuals_plot_value_error['y_name'])
+
+
+@mark.analysis
+class TestAnalysisPredictDistribution:
+
+
+    def test_method(self, posteriors):
         predicted = gs.analysis.predict_distribution(posteriors = posteriors, data = prediction_data)
 
         lower_bound = np.quantile(predicted, q_min)
@@ -70,3 +119,13 @@ class TestAnalysis:
                                                                    linear_model_results[1:])
 
         assert lower_bound <= linear_model_prediction <= upper_bound
+
+    def test_raises_type_error(self, analysis_predict_distribution_type_error):
+        with raises(TypeError):
+            gs.analysis.predict_distribution(posteriors = analysis_predict_distribution_type_error['posteriors'],
+                                             data = analysis_predict_distribution_type_error['data'])
+
+    def test_raises_value_error(self, analysis_predict_distribution_value_error):
+        with raises(ValueError):
+            gs.analysis.predict_distribution(posteriors = analysis_predict_distribution_value_error['posteriors'],
+                                             data = analysis_predict_distribution_value_error['data'])
