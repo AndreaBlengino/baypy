@@ -172,17 +172,18 @@ def residuals_plot(posteriors, data, y_name):
     if y_name not in data.columns:
         raise ValueError(f"Column '{y_name}' not found in 'data'")
 
-    data['intercept'] = 1
-    data['predicted'] = 0
+    data_tmp = data.copy()
+    data_tmp['intercept'] = 1
+    data_tmp['predicted'] = 0
 
     for regressor, posterior in posteriors.items():
         if regressor != 'sigma2':
-            data['predicted'] += data[regressor]*flatten_matrix(posterior).mean()
-    data['residuals'] = data[y_name] - data['predicted']
+            data_tmp['predicted'] += data_tmp[regressor]*flatten_matrix(posterior).mean()
+    data_tmp['residuals'] = data_tmp[y_name] - data_tmp['predicted']
 
     fig, ax = plt.subplots()
 
-    ax.plot(data['predicted'], data['residuals'],
+    ax.plot(data_tmp['predicted'], data_tmp['residuals'],
             marker = 'o', linestyle = '', alpha = 0.5)
 
     ax.set_xlabel('Predicted')
