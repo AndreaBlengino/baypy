@@ -15,6 +15,8 @@ data['x_1 * x_2'] = data['x_1']*data['x_2']
 
 data['y'] = 3*data['x_1'] - 20*data['x_2'] - data['x_3'] - 5*data['x_1 * x_2'] + 13 + 1*np.random.randn(N)
 
+y_name = 'y'
+
 initial_values = {'x_1': 1,
                   'x_2': 2,
                   'x_3': 3,
@@ -37,9 +39,6 @@ priors = {'x_1': {'mean': 0,
           'sigma2': {'shape': sigma2_sample_size,
                      'scale': sigma2_sample_size*sigma2_variance}}
 
-n_iterations = 1000
-burn_in_iterations = 50
-n_chains = 3
 
 regressor_names = ['intercept', 'x_1', 'x_2', 'x_3', 'x_1 * x_2']
 
@@ -113,6 +112,44 @@ model_prior_not_in_initial_values.set_priors(priors = {'x': {'mean': 0,
                                                                   'scale': 1}})
 
 
+@fixture(scope = 'session',
+         params = [{'data': data,
+                    'y_name': y_name,
+                    'initial_values': initial_values,
+                    'priors': priors,
+                    'n_iterations': 1000,
+                    'burn_in_iterations': 50,
+                    'n_chains': 3,
+                    'regressor_names': regressor_names,
+                    'q_min': q_min,
+                    'q_max': q_max,
+                    'prediction_data': prediction_data},
+                   {'data': data,
+                    'y_name': y_name,
+                    'initial_values': initial_values,
+                    'priors': priors,
+                    'n_iterations': 100,
+                    'burn_in_iterations': 50,
+                    'n_chains': 5,
+                    'regressor_names': regressor_names,
+                    'q_min': q_min,
+                    'q_max': q_max,
+                    'prediction_data': prediction_data},
+                   {'data': data,
+                    'y_name': y_name,
+                    'initial_values': initial_values,
+                    'priors': priors,
+                    'n_iterations': 1000,
+                    'burn_in_iterations': 0,
+                    'n_chains': 3,
+                    'regressor_names': regressor_names,
+                    'q_min': q_min,
+                    'q_max': q_max,
+                    'prediction_data': prediction_data}])
+def general_testing_data(request):
+    return request.param
+
+
 @fixture(scope = 'session')
 def empty_model():
     model = gs.Model()
@@ -179,11 +216,11 @@ def model_set_priors_key_error(request):
 
 
 @fixture(scope = 'session')
-def sampler():
+def sampler(general_testing_data):
     model = gs.Model()
-    model.set_data(data = data, y_name = 'y')
-    model.set_initial_values(values = initial_values)
-    model.set_priors(priors = priors)
+    model.set_data(data = general_testing_data['data'], y_name = general_testing_data['y_name'])
+    model.set_initial_values(values = general_testing_data['initial_values'])
+    model.set_priors(priors = general_testing_data['priors'])
     sampler = gs.LinearRegression(model = model)
     return sampler
 
@@ -198,19 +235,6 @@ def linear_regression_init_type_error(request):
                    model_prior_not_in_data,
                    model_prior_not_in_initial_values])
 def linear_regression_init_value_error(request):
-    return request.param
-
-
-@fixture(params = [{'n_iterations': 1000,
-                    'burn_in_iterations': 50,
-                    'n_chains': 3},
-                   {'n_iterations': 100,
-                    'burn_in_iterations': 50,
-                    'n_chains': 5},
-                   {'n_iterations': 100,
-                    'burn_in_iterations': 0,
-                    'n_chains': 3}])
-def linear_regression_sample(request):
     return request.param
 
 
@@ -435,8 +459,8 @@ def analysis_predict_distribution_value_error(request):
 
 
 @fixture(scope = 'session')
-def posteriors(sampler):
-    sampler.sample(n_iterations = n_iterations,
-                   burn_in_iterations = burn_in_iterations,
-                   n_chains = n_chains)
+def posteriors(sampler, general_testing_data):
+    sampler.sample(n_iterations = general_testing_data['n_iterations'],
+                   burn_in_iterations = general_testing_data['burn_in_iterations'],
+                   n_chains = general_testing_data['n_chains'])
     return sampler.posteriors

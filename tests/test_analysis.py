@@ -1,28 +1,7 @@
 import GibbsSampler as gs
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 from pytest import mark, raises
-
-
-np.random.seed(42)
-
-N = 50
-data = pd.DataFrame()
-data['x_1'] = np.random.uniform(low = 0, high = 100, size = N)
-data['x_2'] = np.random.uniform(low = -10, high = 10, size = N)
-data['x_3'] = np.random.uniform(low = -50, high = -40, size = N)
-data['x_1 * x_2'] = data['x_1']*data['x_2']
-
-data['y'] = 3*data['x_1'] - 20*data['x_2'] - data['x_3'] - 5*data['x_1 * x_2'] + 13 + 1*np.random.randn(N)
-
-regressor_names = ['intercept', 'x_1', 'x_2', 'x_3', 'x_1 * x_2']
-
-q_min = 0.025
-q_max = 0.975
-
-prediction_data = {'x_1': 20, 'x_2': 5, 'x_3': -45}
-prediction_data['x_1 * x_2'] = prediction_data['x_1']*prediction_data['x_2']
 
 
 @mark.analysis
@@ -48,18 +27,18 @@ class TestAnalysisTracePlot:
 class TestAnalysisSummary:
 
 
-    def test_method(self, posteriors):
+    def test_method(self, posteriors, general_testing_data):
         gs.analysis.summary(posteriors)
 
-        data_tmp = data.copy()
+        data_tmp = general_testing_data['data'].copy()
         data_tmp['intercept'] = 1
-        linear_model_results = np.linalg.lstsq(a = data_tmp[regressor_names],
-                                               b = data_tmp['y'],
+        linear_model_results = np.linalg.lstsq(a = data_tmp[general_testing_data['regressor_names']],
+                                               b = data_tmp[general_testing_data['y_name']],
                                                rcond = None)[0]
 
-        for i, regressor in enumerate(regressor_names, 0):
-            lower_bound = np.quantile(np.asarray(posteriors[regressor]).reshape(-1), q_min)
-            upper_bound = np.quantile(np.asarray(posteriors[regressor]).reshape(-1), q_max)
+        for i, regressor in enumerate(general_testing_data['regressor_names'], 0):
+            lower_bound = np.quantile(np.asarray(posteriors[regressor]).reshape(-1), general_testing_data['q_min'])
+            upper_bound = np.quantile(np.asarray(posteriors[regressor]).reshape(-1), general_testing_data['q_max'])
 
             assert lower_bound <= linear_model_results[i] <= upper_bound
 
@@ -82,9 +61,9 @@ class TestAnalysisSummary:
 class TestAnalysisResidualsPlot:
 
 
-    def test_method(self, posteriors, monkeypatch):
+    def test_method(self, posteriors, general_testing_data, monkeypatch):
         monkeypatch.setattr(plt, 'show', lambda: None)
-        gs.analysis.residuals_plot(posteriors = posteriors, data = data, y_name = 'y')
+        gs.analysis.residuals_plot(posteriors = posteriors, data = general_testing_data['data'], y_name = general_testing_data['y_name'])
 
 
     def test_raises_type_error(self, analysis_residuals_plot_type_error):
@@ -104,18 +83,18 @@ class TestAnalysisResidualsPlot:
 class TestAnalysisPredictDistribution:
 
 
-    def test_method(self, posteriors):
-        predicted = gs.analysis.predict_distribution(posteriors = posteriors, data = prediction_data)
+    def test_method(self, posteriors, general_testing_data):
+        predicted = gs.analysis.predict_distribution(posteriors = posteriors, data = general_testing_data['prediction_data'])
 
-        lower_bound = np.quantile(predicted, q_min)
-        upper_bound = np.quantile(predicted, q_max)
+        lower_bound = np.quantile(predicted, general_testing_data['q_min'])
+        upper_bound = np.quantile(predicted, general_testing_data['q_max'])
 
-        data_tmp = data.copy()
+        data_tmp = general_testing_data['data'].copy()
         data_tmp['intercept'] = 1
-        linear_model_results = np.linalg.lstsq(a = data_tmp[regressor_names],
-                                               b = data_tmp['y'],
+        linear_model_results = np.linalg.lstsq(a = data_tmp[general_testing_data['regressor_names']],
+                                               b = data_tmp[general_testing_data['y_name']],
                                                rcond = None)[0]
-        linear_model_prediction = linear_model_results[0] + np.dot(np.array(list(prediction_data.values())),
+        linear_model_prediction = linear_model_results[0] + np.dot(np.array(list(general_testing_data['prediction_data'].values())),
                                                                    linear_model_results[1:])
 
         assert lower_bound <= linear_model_prediction <= upper_bound
