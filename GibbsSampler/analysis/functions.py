@@ -231,3 +231,86 @@ def predict_distribution(posteriors, data):
     return norm.rvs(loc = pred['mean'],
                     scale = pred['standard deviation'],
                     size = len(pred))
+
+
+def compute_DIC(posteriors, data, y_name):
+
+    if not isinstance(posteriors, dict):
+        raise TypeError(f"Parameter 'posteriors' must be a dictionary")
+
+    if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
+        raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
+
+    for posterior in ['intercept', 'sigma2']:
+        if posterior not in posteriors.keys():
+            raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+
+    for posterior, posterior_samples in posteriors.items():
+        if posterior_samples.size == 0:
+            raise ValueError(f"Posterior '{posterior}' data is empty")
+        if (posterior not in ['intercept', 'sigma2']) and (posterior not in data.columns):
+            raise ValueError(f"Column '{posterior}' not found in 'data'")
+
+    if not isinstance(data, pd.DataFrame):
+        raise TypeError("Parameter 'data' must be an instance of 'pandas.DataFrame'")
+
+    if not isinstance(y_name, str):
+        raise TypeError("Parameter 'y_name' must be a string")
+
+    if data.empty:
+        raise ValueError("Parameter 'data' cannot be an empty 'pandas.DataFrame'")
+
+    if y_name not in data.columns:
+        raise ValueError(f"Column '{y_name}' not found in 'data'")
+
+    data_tmp = data.copy()
+    deviance_at_posterior_means = _compute_deviace_at_posterior_means(posteriors = posteriors,
+                                                                      data = data_tmp,
+                                                                      y_name = y_name)
+    posterior_mean_deviance = _compute_posterior_mean_deviance(posteriors = posteriors,
+                                                               data = data_tmp,
+                                                               y_name = y_name)
+    effective_number_of_parameters = posterior_mean_deviance - deviance_at_posterior_means
+    DIC = effective_number_of_parameters + posterior_mean_deviance
+
+    print(f"Deviance at posterior means     {deviance_at_posterior_means:>12.2f}")
+    print(f"Posterior mean deviance         {posterior_mean_deviance:>12.2f}")
+    print(f"Effective number of parameteres {effective_number_of_parameters:>12.2f}")
+    print(f"Deviace Information Criterion   {DIC:>12.2f}")
+
+
+def _compute_deviace_at_posterior_means(posteriors, data, y_name):
+
+    posterior_means = {posterior: flatten_matrix(posterior_data).mean()
+                       for posterior, posterior_data in posteriors.items() if posterior != 'sigma2'}
+    sigma2 = flatten_matrix(posteriors['sigma2']).mean()
+
+    data['intercept'] = 1
+    data['mean'] = 0
+    for posterior, posterior_mean in posterior_means.items():
+        data['mean'] += data[posterior]*posterior_mean
+
+    data['likelyhood'] = 1/np.sqrt(2*np.pi*sigma2)*np.exp((data[y_name] - data['mean'])**2/2/sigma2)
+
+    return -2*np.sum(np.log(data['likelyhood']))
+
+
+def _compute_posterior_mean_deviance(posteriors, data, y_name):
+
+    data['intercept'] = 1
+    deviance = []
+
+    for i in range(posteriors['intercept'].shape[0]):
+        data['mean'] = 0
+        data['sigma2'] = 0
+        for posterior, posterior_data in posteriors.items():
+            if posterior != 'sigma2':
+                data['mean'] += data[posterior]*posterior_data[i, :].mean()
+            else:
+                data['sigma2'] = posterior_data[i, :].mean()
+
+        data['likelyhood'] = 1/np.sqrt(2*np.pi*data['sigma2'])*np.exp((data[y_name] - data['mean'])**2/2/data['sigma2'])
+
+        deviance.append(-2*np.sum(np.log(data['likelyhood'])))
+
+    return np.mean(deviance)
