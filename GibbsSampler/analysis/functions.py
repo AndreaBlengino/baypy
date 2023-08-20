@@ -7,6 +7,20 @@ from ..utils import flatten_matrix
 
 def trace_plot(posteriors):
 
+    if not isinstance(posteriors, dict):
+        raise TypeError(f"Parameter 'posteriors' must be a dictionary")
+
+    if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
+        raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
+
+    for posterior in ['intercept', 'sigma2']:
+        if posterior not in posteriors.keys():
+            raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+
+    for posterior, posterior_samples in posteriors.items():
+        if posterior_samples.size == 0:
+            raise ValueError(f"Posterior '{posterior}' data is empty")
+
     variable_names = list(posteriors.keys())
     n_variables = len(variable_names)
     n_iterations = len(posteriors['intercept'])
@@ -46,6 +60,35 @@ def _compute_kde(posterior):
 
 
 def summary(posteriors, alpha = 0.05, quantiles = None):
+
+    if not isinstance(posteriors, dict):
+        raise TypeError(f"Parameter 'posteriors' must be a dictionary")
+
+    if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
+        raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
+
+    for posterior in ['intercept', 'sigma2']:
+        if posterior not in posteriors.keys():
+            raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+
+    for posterior, posterior_samples in posteriors.items():
+        if posterior_samples.size == 0:
+            raise ValueError(f"Posterior '{posterior}' data is empty")
+
+    if (not isinstance(alpha, float)) and (alpha not in [0, 1]):
+        raise TypeError("Parameter 'alpha' must be a float")
+    if (alpha < 0) or (alpha > 1):
+        raise ValueError("Parameter 'alpha' must be between 0 and 1")
+
+    if quantiles is not None:
+        if not isinstance(quantiles, list):
+            raise TypeError("Parameter 'quantiles' must be a list")
+        if not quantiles:
+            raise ValueError("Parameter 'quantiles' cannot be an empty list")
+        if not all([isinstance(quantile, float) for quantile in quantiles]):
+            raise TypeError("Parameter 'quantiles' must contain only float")
+        if any([(quantile < 0) or (quantile > 1) for quantile in quantiles]):
+            raise ValueError("Parameter 'quantiles' cannot contain only floats between 0 and 1")
 
     quantiles = [0.025, 0.25, 0.5, 0.75, 0.975] if quantiles is None else quantiles
 
@@ -101,6 +144,34 @@ def _compute_hpd_interval(x, alpha):
 
 def residuals_plot(posteriors, data, y_name):
 
+    if not isinstance(posteriors, dict):
+        raise TypeError(f"Parameter 'posteriors' must be a dictionary")
+
+    if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
+        raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
+
+    for posterior in ['intercept', 'sigma2']:
+        if posterior not in posteriors.keys():
+            raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+
+    for posterior, posterior_samples in posteriors.items():
+        if posterior_samples.size == 0:
+            raise ValueError(f"Posterior '{posterior}' data is empty")
+        if (posterior not in ['intercept', 'sigma2']) and (posterior not in data.columns):
+            raise ValueError(f"Column '{posterior}' not found in 'data'")
+
+    if not isinstance(data, pd.DataFrame):
+        raise TypeError("Parameter 'data' must be an instance of 'pandas.DataFrame'")
+
+    if not isinstance(y_name, str):
+        raise TypeError("Parameter 'y_name' must be a string")
+
+    if data.empty:
+        raise ValueError("Parameter 'data' cannot be an empty 'pandas.DataFrame'")
+
+    if y_name not in data.columns:
+        raise ValueError(f"Column '{y_name}' not found in 'data'")
+
     data['intercept'] = 1
     data['predicted'] = 0
 
@@ -121,6 +192,30 @@ def residuals_plot(posteriors, data, y_name):
 
 
 def predict_distribution(posteriors, data):
+
+    if not isinstance(posteriors, dict):
+        raise TypeError(f"Parameter 'posteriors' must be a dictionary")
+
+    if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
+        raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
+
+    for posterior in ['intercept', 'sigma2']:
+        if posterior not in posteriors.keys():
+            raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+
+    for posterior, posterior_samples in posteriors.items():
+        if posterior_samples.size == 0:
+            raise ValueError(f"Posterior '{posterior}' data is empty")
+
+    if not isinstance(data, dict):
+        raise TypeError("Parameter 'data' must be a dictionary")
+
+    if len(data) == 0:
+        raise ValueError("Parameter 'data' cannot be an empty dictionary")
+
+    for regressor in data.keys():
+        if regressor not in posteriors.keys():
+            raise ValueError(f"Regressor '{regressor}' not found in 'posteriors' keys")
 
     pred = pd.DataFrame()
     for regressor, posterior in posteriors.items():
