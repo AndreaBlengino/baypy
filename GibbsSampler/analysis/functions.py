@@ -13,7 +13,7 @@ def trace_plot(posteriors):
     if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
         raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
 
-    for posterior in ['intercept', 'sigma2']:
+    for posterior in ['intercept', 'variance']:
         if posterior not in posteriors.keys():
             raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
 
@@ -34,12 +34,8 @@ def trace_plot(posteriors):
         ax_i_trace.plot(posteriors[variable], linewidth = 0.5)
         ax_i_density.plot(*_compute_kde(posteriors[variable].flatten()))
 
-        if variable != 'sigma2':
-            ax_i_trace.set_title(f'Trace of {variable}')
-            ax_i_density.set_title(f'Density of {variable}')
-        else:
-            ax_i_trace.set_title(r'Trace of $\sigma^2$')
-            ax_i_density.set_title(r'Density of $\sigma^2$')
+        ax_i_trace.set_title(f'Trace of {variable}')
+        ax_i_density.set_title(f'Density of {variable}')
 
         trace_axes.append(ax_i_trace)
 
@@ -67,7 +63,7 @@ def summary(posteriors, alpha = 0.05, quantiles = None):
     if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
         raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
 
-    for posterior in ['intercept', 'sigma2']:
+    for posterior in ['intercept', 'variance']:
         if posterior not in posteriors.keys():
             raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
 
@@ -142,7 +138,7 @@ def _compute_hpd_interval(x, alpha):
     return hpdi_min, hpdi_max
 
 
-def residuals_plot(posteriors, data, y_name):
+def residuals_plot(posteriors, data, response_variable):
 
     if not isinstance(posteriors, dict):
         raise TypeError(f"Parameter 'posteriors' must be a dictionary")
@@ -150,36 +146,36 @@ def residuals_plot(posteriors, data, y_name):
     if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
         raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
 
-    for posterior in ['intercept', 'sigma2']:
+    for posterior in ['intercept', 'variance']:
         if posterior not in posteriors.keys():
             raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
 
     for posterior, posterior_samples in posteriors.items():
         if posterior_samples.size == 0:
             raise ValueError(f"Posterior '{posterior}' data is empty")
-        if (posterior not in ['intercept', 'sigma2']) and (posterior not in data.columns):
+        if (posterior not in ['intercept', 'variance']) and (posterior not in data.columns):
             raise ValueError(f"Column '{posterior}' not found in 'data'")
 
     if not isinstance(data, pd.DataFrame):
         raise TypeError("Parameter 'data' must be an instance of 'pandas.DataFrame'")
 
-    if not isinstance(y_name, str):
-        raise TypeError("Parameter 'y_name' must be a string")
+    if not isinstance(response_variable, str):
+        raise TypeError("Parameter 'response_variable' must be a string")
 
     if data.empty:
         raise ValueError("Parameter 'data' cannot be an empty 'pandas.DataFrame'")
 
-    if y_name not in data.columns:
-        raise ValueError(f"Column '{y_name}' not found in 'data'")
+    if response_variable not in data.columns:
+        raise ValueError(f"Column '{response_variable}' not found in 'data'")
 
     data_tmp = data.copy()
     data_tmp['intercept'] = 1
     data_tmp['predicted'] = 0
 
-    for regressor, posterior in posteriors.items():
-        if regressor != 'sigma2':
-            data_tmp['predicted'] += data_tmp[regressor]*flatten_matrix(posterior).mean()
-    data_tmp['residuals'] = data_tmp[y_name] - data_tmp['predicted']
+    for posterior, posterior_samples in posteriors.items():
+        if posterior != 'variance':
+            data_tmp['predicted'] += data_tmp[posterior]*flatten_matrix(posterior_samples).mean()
+    data_tmp['residuals'] = data_tmp[response_variable] - data_tmp['predicted']
 
     fig, ax = plt.subplots()
 
@@ -192,7 +188,7 @@ def residuals_plot(posteriors, data, y_name):
     plt.show()
 
 
-def predict_distribution(posteriors, data):
+def predict_distribution(posteriors, predictors):
 
     if not isinstance(posteriors, dict):
         raise TypeError(f"Parameter 'posteriors' must be a dictionary")
@@ -200,7 +196,7 @@ def predict_distribution(posteriors, data):
     if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
         raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
 
-    for posterior in ['intercept', 'sigma2']:
+    for posterior in ['intercept', 'variance']:
         if posterior not in posteriors.keys():
             raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
 
@@ -208,32 +204,32 @@ def predict_distribution(posteriors, data):
         if posterior_samples.size == 0:
             raise ValueError(f"Posterior '{posterior}' data is empty")
 
-    if not isinstance(data, dict):
-        raise TypeError("Parameter 'data' must be a dictionary")
+    if not isinstance(predictors, dict):
+        raise TypeError("Parameter 'predictors' must be a dictionary")
 
-    if len(data) == 0:
-        raise ValueError("Parameter 'data' cannot be an empty dictionary")
+    if len(predictors) == 0:
+        raise ValueError("Parameter 'predictors' cannot be an empty dictionary")
 
-    for regressor in data.keys():
+    for regressor in predictors.keys():
         if regressor not in posteriors.keys():
             raise ValueError(f"Regressor '{regressor}' not found in 'posteriors' keys")
 
-    pred = pd.DataFrame()
-    for regressor, posterior in posteriors.items():
-        pred[regressor] = flatten_matrix(posterior)
+    prediction = pd.DataFrame()
+    for posterior, posterior_samples in posteriors.items():
+        prediction[posterior] = flatten_matrix(posterior_samples)
 
-    pred['mean'] = pred['intercept']
+    prediction['mean'] = prediction['intercept']
     for regressor in posteriors.keys():
-        if regressor not in ['intercept', 'sigma2']:
-            pred['mean'] += pred[regressor]*data[regressor]
-    pred['standard deviation'] = np.sqrt(pred['sigma2'])
+        if regressor not in ['intercept', 'variance']:
+            prediction['mean'] += prediction[regressor]*predictors[regressor]
+    prediction['standard deviation'] = np.sqrt(prediction['variance'])
 
-    return norm.rvs(loc = pred['mean'],
-                    scale = pred['standard deviation'],
-                    size = len(pred))
+    return norm.rvs(loc = prediction['mean'],
+                    scale = prediction['standard deviation'],
+                    size = len(prediction))
 
 
-def compute_DIC(posteriors, data, y_name):
+def compute_DIC(posteriors, data, response_variable):
 
     if not isinstance(posteriors, dict):
         raise TypeError(f"Parameter 'posteriors' must be a dictionary")
@@ -241,35 +237,35 @@ def compute_DIC(posteriors, data, y_name):
     if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
         raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
 
-    for posterior in ['intercept', 'sigma2']:
+    for posterior in ['intercept', 'variance']:
         if posterior not in posteriors.keys():
             raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
 
     for posterior, posterior_samples in posteriors.items():
         if posterior_samples.size == 0:
             raise ValueError(f"Posterior '{posterior}' data is empty")
-        if (posterior not in ['intercept', 'sigma2']) and (posterior not in data.columns):
+        if (posterior not in ['intercept', 'variance']) and (posterior not in data.columns):
             raise ValueError(f"Column '{posterior}' not found in 'data'")
 
     if not isinstance(data, pd.DataFrame):
         raise TypeError("Parameter 'data' must be an instance of 'pandas.DataFrame'")
 
-    if not isinstance(y_name, str):
-        raise TypeError("Parameter 'y_name' must be a string")
+    if not isinstance(response_variable, str):
+        raise TypeError("Parameter 'response_variable' must be a string")
 
     if data.empty:
         raise ValueError("Parameter 'data' cannot be an empty 'pandas.DataFrame'")
 
-    if y_name not in data.columns:
-        raise ValueError(f"Column '{y_name}' not found in 'data'")
+    if response_variable not in data.columns:
+        raise ValueError(f"Column '{response_variable}' not found in 'data'")
 
     data_tmp = data.copy()
     deviance_at_posterior_means = _compute_deviace_at_posterior_means(posteriors = posteriors,
                                                                       data = data_tmp,
-                                                                      y_name = y_name)
+                                                                      response_variable = response_variable)
     posterior_mean_deviance = _compute_posterior_mean_deviance(posteriors = posteriors,
                                                                data = data_tmp,
-                                                               y_name = y_name)
+                                                               response_variable = response_variable)
     effective_number_of_parameters = posterior_mean_deviance - deviance_at_posterior_means
     DIC = effective_number_of_parameters + posterior_mean_deviance
 
@@ -279,37 +275,37 @@ def compute_DIC(posteriors, data, y_name):
     print(f"Deviace Information Criterion   {DIC:>12.2f}")
 
 
-def _compute_deviace_at_posterior_means(posteriors, data, y_name):
+def _compute_deviace_at_posterior_means(posteriors, data, response_variable):
 
-    posterior_means = {posterior: flatten_matrix(posterior_data).mean()
-                       for posterior, posterior_data in posteriors.items() if posterior != 'sigma2'}
-    sigma2 = flatten_matrix(posteriors['sigma2']).mean()
+    posterior_means = {posterior: flatten_matrix(posterior_samples).mean()
+                       for posterior, posterior_samples in posteriors.items() if posterior != 'variance'}
+    variance = flatten_matrix(posteriors['variance']).mean()
 
     data['intercept'] = 1
     data['mean'] = 0
     for posterior, posterior_mean in posterior_means.items():
         data['mean'] += data[posterior]*posterior_mean
 
-    data['likelyhood'] = 1/np.sqrt(2*np.pi*sigma2)*np.exp((data[y_name] - data['mean'])**2/2/sigma2)
+    data['likelyhood'] = 1/np.sqrt(2*np.pi*variance)*np.exp((data[response_variable] - data['mean'])**2/2/variance)
 
     return -2*np.sum(np.log(data['likelyhood']))
 
 
-def _compute_posterior_mean_deviance(posteriors, data, y_name):
+def _compute_posterior_mean_deviance(posteriors, data, response_variable):
 
     data['intercept'] = 1
     deviance = []
 
     for i in range(posteriors['intercept'].shape[0]):
         data['mean'] = 0
-        data['sigma2'] = 0
-        for posterior, posterior_data in posteriors.items():
-            if posterior != 'sigma2':
-                data['mean'] += data[posterior]*posterior_data[i, :].mean()
+        data['variance'] = 0
+        for posterior, posterior_samples in posteriors.items():
+            if posterior != 'variance':
+                data['mean'] += data[posterior]*posterior_samples[i, :].mean()
             else:
-                data['sigma2'] = posterior_data[i, :].mean()
+                data['variance'] = posterior_samples[i, :].mean()
 
-        data['likelyhood'] = 1/np.sqrt(2*np.pi*data['sigma2'])*np.exp((data[y_name] - data['mean'])**2/2/data['sigma2'])
+        data['likelyhood'] = 1/np.sqrt(2*np.pi*data['variance'])*np.exp((data[response_variable] - data['mean'])**2/2/data['variance'])
 
         deviance.append(-2*np.sum(np.log(data['likelyhood'])))
 

@@ -33,7 +33,7 @@ class TestAnalysisSummary:
         data_tmp = general_testing_data['data'].copy()
         data_tmp['intercept'] = 1
         linear_model_results = np.linalg.lstsq(a = data_tmp[general_testing_data['regressor_names']],
-                                               b = data_tmp[general_testing_data['y_name']],
+                                               b = data_tmp[general_testing_data['response_variable']],
                                                rcond = None)[0]
 
         for i, regressor in enumerate(general_testing_data['regressor_names'], 0):
@@ -63,20 +63,22 @@ class TestAnalysisResidualsPlot:
 
     def test_method(self, posteriors, general_testing_data, monkeypatch):
         monkeypatch.setattr(plt, 'show', lambda: None)
-        gs.analysis.residuals_plot(posteriors = posteriors, data = general_testing_data['data'], y_name = general_testing_data['y_name'])
+        gs.analysis.residuals_plot(posteriors = posteriors,
+                                   data = general_testing_data['data'],
+                                   response_variable = general_testing_data['response_variable'])
 
 
     def test_raises_type_error(self, analysis_residuals_plot_type_error):
         with raises(TypeError):
             gs.analysis.residuals_plot(posteriors = analysis_residuals_plot_type_error['posteriors'],
                                        data = analysis_residuals_plot_type_error['data'],
-                                       y_name = analysis_residuals_plot_type_error['y_name'])
+                                       response_variable = analysis_residuals_plot_type_error['response_variable'])
 
     def test_raises_value_error(self, analysis_residuals_plot_value_error):
         with raises(ValueError):
             gs.analysis.residuals_plot(posteriors = analysis_residuals_plot_value_error['posteriors'],
                                        data = analysis_residuals_plot_value_error['data'],
-                                       y_name = analysis_residuals_plot_value_error['y_name'])
+                                       response_variable = analysis_residuals_plot_value_error['response_variable'])
 
 
 @mark.analysis
@@ -84,7 +86,7 @@ class TestAnalysisPredictDistribution:
 
 
     def test_method(self, posteriors, general_testing_data):
-        predicted = gs.analysis.predict_distribution(posteriors = posteriors, data = general_testing_data['prediction_data'])
+        predicted = gs.analysis.predict_distribution(posteriors = posteriors, predictors = general_testing_data['predictors'])
 
         lower_bound = np.quantile(predicted, general_testing_data['q_min'])
         upper_bound = np.quantile(predicted, general_testing_data['q_max'])
@@ -92,9 +94,9 @@ class TestAnalysisPredictDistribution:
         data_tmp = general_testing_data['data'].copy()
         data_tmp['intercept'] = 1
         linear_model_results = np.linalg.lstsq(a = data_tmp[general_testing_data['regressor_names']],
-                                               b = data_tmp[general_testing_data['y_name']],
+                                               b = data_tmp[general_testing_data['response_variable']],
                                                rcond = None)[0]
-        linear_model_prediction = linear_model_results[0] + np.dot(np.array(list(general_testing_data['prediction_data'].values())),
+        linear_model_prediction = linear_model_results[0] + np.dot(np.array(list(general_testing_data['predictors'].values())),
                                                                    linear_model_results[1:])
 
         assert lower_bound <= linear_model_prediction <= upper_bound
@@ -102,12 +104,12 @@ class TestAnalysisPredictDistribution:
     def test_raises_type_error(self, analysis_predict_distribution_type_error):
         with raises(TypeError):
             gs.analysis.predict_distribution(posteriors = analysis_predict_distribution_type_error['posteriors'],
-                                             data = analysis_predict_distribution_type_error['data'])
+                                             predictors = analysis_predict_distribution_type_error['predictors'])
 
     def test_raises_value_error(self, analysis_predict_distribution_value_error):
         with raises(ValueError):
             gs.analysis.predict_distribution(posteriors = analysis_predict_distribution_value_error['posteriors'],
-                                             data = analysis_predict_distribution_value_error['data'])
+                                             predictors = analysis_predict_distribution_value_error['predictors'])
 
 
 @mark.analysis
@@ -117,18 +119,18 @@ class TestAnalysisComputeDIC:
     def test_method(self, posteriors, general_testing_data):
         gs.analysis.compute_DIC(posteriors = posteriors,
                                 data = general_testing_data['data'],
-                                y_name = general_testing_data['y_name'])
+                                response_variable = general_testing_data['response_variable'])
 
 
     def test_raises_type_error(self, analysis_compute_dic_type_error):
         with raises(TypeError):
             gs.analysis.compute_DIC(posteriors = analysis_compute_dic_type_error['posteriors'],
                                     data = analysis_compute_dic_type_error['data'],
-                                    y_name = analysis_compute_dic_type_error['y_name'])
+                                    response_variable = analysis_compute_dic_type_error['response_variable'])
 
 
     def test_raises_value_error(self, analysis_compute_dic_value_error):
         with raises(ValueError):
             gs.analysis.compute_DIC(posteriors = analysis_compute_dic_value_error['posteriors'],
                                     data = analysis_compute_dic_value_error['data'],
-                                    y_name = analysis_compute_dic_value_error['y_name'])
+                                    response_variable = analysis_compute_dic_value_error['response_variable'])

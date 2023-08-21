@@ -20,10 +20,10 @@ class LinearRegression:
                 raise ValueError(f"Missing '{initial_value}' prior value")
 
         for prior in model.priors.keys():
-            if (prior not in  ['intercept', 'sigma2']) and (prior not in model.data.columns):
+            if (prior not in  ['intercept', 'variance']) and (prior not in model.data.columns):
                 raise ValueError(f"Column '{initial_value}' not found in 'Model.data'")
 
-            if (prior != 'sigma2') and (prior not in model.initial_values.keys()):
+            if (prior != 'variance') and (prior not in model.initial_values.keys()):
                 raise ValueError(f"Missing '{prior}' initial value")
 
         self.model = model
@@ -44,7 +44,7 @@ class LinearRegression:
         data = self.model.data.copy()
 
         regressor_names = self.model.variable_names.copy()
-        regressor_names.pop(regressor_names.index('sigma2'))
+        regressor_names.pop(regressor_names.index('variance'))
 
         beta_0 = [self.model.priors[x]['mean'] for x in regressor_names]
         Beta_0 = np.array(beta_0)[np.newaxis].transpose()
@@ -54,13 +54,13 @@ class LinearRegression:
         np.fill_diagonal(Sigma_0, sigma_0)
         Sigma_0_inv = np.linalg.inv(Sigma_0)
 
-        T_0 = self.model.priors['sigma2']['shape']
-        theta_0 = self.model.priors['sigma2']['scale']
+        T_0 = self.model.priors['variance']['shape']
+        theta_0 = self.model.priors['variance']['scale']
 
         n = len(data)
         T_1 = T_0 + n
 
-        Y = data[self.model.y_name]
+        Y = data[self.model.response_variable]
         data['intercept'] = 1
         X = np.array(data[regressor_names])
 
@@ -89,8 +89,8 @@ class LinearRegression:
             if i >= burn_in_iterations:
                 for j in range(n_chains):
                     [self.posteriors[regressor][j].append(beta[j][k]) for k, regressor in enumerate(regressor_names, 0)]
-                    self.posteriors['sigma2'][j].append(sigma2[j])
+                    self.posteriors['variance'][j].append(sigma2[j])
 
-        self.posteriors = {variable: np.array(posterior).transpose() for variable, posterior in self.posteriors.items()}
+        self.posteriors = {posterior: np.array(posterior_samples).transpose() for posterior, posterior_samples in self.posteriors.items()}
 
         return self.posteriors

@@ -7,28 +7,28 @@ class Model:
     def __init__(self):
 
         self.data = None
-        self.y_name = None
+        self.response_variable = None
         self.initial_values = None
         self.priors = None
         self.variable_names = None
 
 
-    def set_data(self, data, y_name):
+    def set_data(self, data, response_variable):
 
         if not isinstance(data, pd.DataFrame):
             raise TypeError("Parameter 'data' must be an instance of 'pandas.DataFrame'")
 
-        if not isinstance(y_name, str):
-            raise TypeError("Parameter 'y_name' must be a string")
+        if not isinstance(response_variable, str):
+            raise TypeError("Parameter 'response_variable' must be a string")
 
         if data.empty:
             raise ValueError("Parameter 'data' cannot be an empty 'pandas.DataFrame'")
 
-        if y_name not in data.columns:
-            raise ValueError(f"Column '{y_name}' not found in 'data'")
+        if response_variable not in data.columns:
+            raise ValueError(f"Column '{response_variable}' not found in 'data'")
 
         self.data = data
-        self.y_name = y_name
+        self.response_variable = response_variable
 
 
     def set_initial_values(self, values):
@@ -56,15 +56,15 @@ class Model:
         if 'intercept' not in priors.keys():
             raise KeyError("Parameter 'priors' must contain a 'intercept' key")
 
-        if 'sigma2' not in priors.keys():
-            raise KeyError("Parameter 'priors' must contain a 'sigma2' key")
+        if 'variance' not in priors.keys():
+            raise KeyError("Parameter 'priors' must contain a 'variance' key")
 
         for prior, values in priors.items():
             if not isinstance(values, dict):
                 raise TypeError(f"The value of prior '{prior}' must be a dictionary")
             if len(values) == 0:
                 raise ValueError(f"The value of prior '{prior}' cannot be an empty dictionary")
-            if prior != 'sigma2':
+            if prior != 'variance':
                 if set(values.keys()) != {'mean', 'variance'}:
                     raise ValueError(f"The value of prior '{prior}' must be a dictionary "
                                      f"containing 'mean' and 'variance' keys only")

@@ -12,7 +12,7 @@ def autocorrelation_plot(posteriors, max_lags = 30):
     if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
         raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
 
-    for posterior in ['intercept', 'sigma2']:
+    for posterior in ['intercept', 'variance']:
         if posterior not in posteriors.keys():
             raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
 
@@ -44,10 +44,7 @@ def autocorrelation_plot(posteriors, max_lags = 30):
                 ax[j, i].stem(acorr, markerfmt = ' ', basefmt = ' ')
 
         for i, variable in enumerate(variable_names, 0):
-            if variable != 'sigma2':
-                ax[i, 0].set_ylabel(variable)
-            else:
-                ax[i, 0].set_ylabel(r'$\sigma^2$')
+            ax[i, 0].set_ylabel(variable)
             ax[i, 0].set_yticks([-1, 0, 1])
 
         ax[0, 0].set_xlim(-1, min(max_lags, n_iterations))
@@ -64,10 +61,7 @@ def autocorrelation_plot(posteriors, max_lags = 30):
             ax[j].stem(acorr, markerfmt = ' ', basefmt = ' ')
 
         for i, variable in enumerate(variable_names, 0):
-            if variable != 'sigma2':
-                ax[i].set_ylabel(variable)
-            else:
-                ax[i].set_ylabel(r'$\sigma^2$')
+            ax[i].set_ylabel(variable)
             ax[i].set_yticks([-1, 0, 1])
 
         ax[0].set_xlim(-1, min(max_lags, n_iterations))
@@ -87,7 +81,7 @@ def autocorrelation_summary(posteriors, lags = None):
     if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
         raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
 
-    for posterior in ['intercept', 'sigma2']:
+    for posterior in ['intercept', 'variance']:
         if posterior not in posteriors.keys():
             raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
 
@@ -131,7 +125,7 @@ def effective_sample_size(posteriors):
     if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
         raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
 
-    for posterior in ['intercept', 'sigma2']:
+    for posterior in ['intercept', 'variance']:
         if posterior not in posteriors.keys():
             raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
 
