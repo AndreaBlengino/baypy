@@ -1,16 +1,17 @@
+from abc import ABC, abstractmethod
 from .functions import sample_sigma2
 from .functions import sample_beta
 from .model import Model
 import numpy as np
 
 
-class LinearRegression:
+class Regression(ABC):
 
 
+    @abstractmethod
     def __init__(self, model):
-
         if not isinstance(model, Model):
-            raise TypeError("Parameter 'model' must be an instance of 'GibbsSampler.model.Model'")
+            raise TypeError(f"Parameter 'model' must be an instance of '{Model.__module__}.{Model.__name__}'")
 
         for initial_value in model.initial_values.keys():
             if (initial_value != 'intercept') and (initial_value not in model.data.columns):
@@ -26,12 +27,9 @@ class LinearRegression:
             if (prior != 'variance') and (prior not in model.initial_values.keys()):
                 raise ValueError(f"Missing '{prior}' initial value")
 
-        self.model = model
-        self.posteriors = None
 
-
+    @abstractmethod
     def sample(self, n_iterations, burn_in_iterations, n_chains):
-
         if n_iterations <= 0:
             raise ValueError("Parameter 'n_iteration' must be greater than 0")
 
@@ -41,6 +39,20 @@ class LinearRegression:
         if n_chains <= 0:
             raise ValueError("Parameter 'n_chains' must be greater than 0")
 
+
+class LinearRegression(Regression):
+
+
+    def __init__(self, model):
+
+        super().__init__(model = model)
+        self.model = model
+        self.posteriors = None
+
+
+    def sample(self, n_iterations, burn_in_iterations, n_chains):
+
+        super().sample(n_iterations = n_iterations, burn_in_iterations = burn_in_iterations, n_chains = n_chains)
         data = self.model.data.copy()
 
         regressor_names = self.model.variable_names.copy()

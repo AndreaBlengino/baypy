@@ -1,20 +1,17 @@
+from abc import ABC, abstractmethod
 import pandas as pd
 
 
-class Model:
+class Model(ABC):
 
 
+    @abstractmethod
     def __init__(self):
-
-        self.data = None
-        self.response_variable = None
-        self.initial_values = None
-        self.priors = None
-        self.variable_names = None
+        pass
 
 
+    @abstractmethod
     def set_data(self, data, response_variable):
-
         if not isinstance(data, pd.DataFrame):
             raise TypeError("Parameter 'data' must be an instance of 'pandas.DataFrame'")
 
@@ -27,12 +24,9 @@ class Model:
         if response_variable not in data.columns:
             raise ValueError(f"Column '{response_variable}' not found in 'data'")
 
-        self.data = data
-        self.response_variable = response_variable
 
-
+    @abstractmethod
     def set_initial_values(self, values):
-
         if not isinstance(values, dict):
             raise TypeError("Parameter 'values' must be a dictionary")
 
@@ -42,11 +36,9 @@ class Model:
         if 'intercept' not in values.keys():
             raise KeyError("Parameter 'values' must contain a 'intercept' key")
 
-        self.initial_values = values
 
-
+    @abstractmethod
     def set_priors(self, priors):
-
         if not isinstance(priors, dict):
             raise TypeError("Parameter 'priors' must be a dictionary")
 
@@ -73,6 +65,36 @@ class Model:
                     raise ValueError(f"The value of prior '{prior}' must be a dictionary "
                                      f"containing 'shape' and 'scale' keys only")
 
+
+class LinearModel(Model):
+
+
+    def __init__(self):
+
+        super().__init__()
+        self.data = None
+        self.response_variable = None
+        self.initial_values = None
+        self.priors = None
+        self.variable_names = None
+
+
+    def set_data(self, data, response_variable):
+
+        super().set_data(data = data, response_variable = response_variable)
+        self.data = data
+        self.response_variable = response_variable
+
+
+    def set_initial_values(self, values):
+
+        super().set_initial_values(values = values)
+        self.initial_values = values
+
+
+    def set_priors(self, priors):
+
+        super().set_priors(priors = priors)
         self.priors = priors
         self.variable_names = list(self.priors.keys())
         self.variable_names.insert(0, self.variable_names.pop(self.variable_names.index('intercept')))

@@ -49,7 +49,7 @@ predictors = {'x_1': 20, 'x_2': 5, 'x_3': -45}
 predictors['x_1 * x_2'] = predictors['x_1']*predictors['x_2']
 
 
-model_initial_value_not_in_data = gs.Model()
+model_initial_value_not_in_data = gs.LinearModel()
 model_initial_value_not_in_data.set_data(data = pd.DataFrame(columns = ['x', 'z'], index = [0]),
                                          response_variable = 'z')
 model_initial_value_not_in_data.set_initial_values(values = {'x': 0,
@@ -64,7 +64,7 @@ model_initial_value_not_in_data.set_priors(priors = {'x': {'mean': 0,
                                                      'variance': {'shape': 1,
                                                                   'scale': 1}})
 
-model_initial_value_not_in_priors = gs.Model()
+model_initial_value_not_in_priors = gs.LinearModel()
 model_initial_value_not_in_priors.set_data(data = pd.DataFrame(columns = ['x', 'y', 'z'], index = [0]),
                                            response_variable = 'z')
 model_initial_value_not_in_priors.set_initial_values(values = {'x': 0,
@@ -77,7 +77,7 @@ model_initial_value_not_in_priors.set_priors(priors = {'x': {'mean': 0,
                                                        'variance': {'shape': 1,
                                                                     'scale': 1}})
 
-model_prior_not_in_data = gs.Model()
+model_prior_not_in_data = gs.LinearModel()
 model_prior_not_in_data.set_data(data = pd.DataFrame(columns = ['x', 'y', 'z'], index = [0]),
                                  response_variable = 'z')
 model_prior_not_in_data.set_initial_values(values = {'x': 0,
@@ -94,7 +94,7 @@ model_prior_not_in_data.set_priors(priors = {'x': {'mean': 0,
                                              'variance': {'shape': 1,
                                                           'scale': 1}})
 
-model_prior_not_in_initial_values = gs.Model()
+model_prior_not_in_initial_values = gs.LinearModel()
 model_prior_not_in_initial_values.set_data(data = pd.DataFrame(columns = ['x', 'y', 'w', 'z'], index = [0]),
                                            response_variable = 'z')
 model_prior_not_in_initial_values.set_initial_values(values = {'x': 0,
@@ -163,7 +163,7 @@ def general_testing_data(request):
 
 @fixture(scope = 'session')
 def empty_model():
-    model = gs.Model()
+    model = gs.LinearModel()
     return model
 
 
@@ -228,7 +228,7 @@ def model_set_priors_key_error(request):
 
 @fixture(scope = 'session')
 def sampler(general_testing_data):
-    model = gs.Model()
+    model = gs.LinearModel()
     model.set_data(data = general_testing_data['data'], response_variable = general_testing_data['response_variable'])
     model.set_initial_values(values = general_testing_data['initial_values'])
     model.set_priors(priors = general_testing_data['priors'])
