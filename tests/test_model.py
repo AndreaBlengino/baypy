@@ -41,14 +41,14 @@ class TestModelSetInitialValues:
             empty_model.set_initial_values(model_set_initial_value_type_error)
 
 
-    def test_raises_value_error(self, empty_model):
-        with raises(ValueError):
-            empty_model.set_initial_values({})
-
-
     def test_raises_key_error(self, empty_model):
         with raises(KeyError):
             empty_model.set_initial_values({'regressor': 1})
+
+
+    def test_raises_value_error(self, empty_model):
+        with raises(ValueError):
+            empty_model.set_initial_values({})
 
 
 @mark.model
@@ -75,12 +75,11 @@ class TestModelSetPriors:
             empty_model.set_priors(model_set_priors_type_error)
 
 
-    def test_raises_value_error(self, empty_model, model_set_priors_value_error):
-        with raises(ValueError):
-            empty_model.set_priors(model_set_priors_value_error)
-
-
     def test_raises_key_error(self, empty_model, model_set_priors_key_error):
         with raises(KeyError):
             empty_model.set_priors(model_set_priors_key_error)
 
+
+    def test_raises_value_error(self, empty_model, model_set_priors_value_error):
+        with raises(ValueError):
+            empty_model.set_priors(model_set_priors_value_error)

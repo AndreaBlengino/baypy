@@ -48,6 +48,31 @@ q_max = 0.975
 predictors = {'x_1': 20, 'x_2': 5, 'x_3': -45}
 predictors['x_1 * x_2'] = predictors['x_1']*predictors['x_2']
 
+model_no_data = gs.LinearModel()
+model_no_data.set_initial_values(values = {'x': 0,
+                                           'intercept': 0})
+model_no_data.set_priors(priors = {'x': {'mean': 0,
+                                         'variance': 1},
+                                   'intercept': {'mean': 0,
+                                                 'variance': 1},
+                                   'variance': {'shape': 1,
+                                                'scale': 1}})
+
+model_no_initial_values = gs.LinearModel()
+model_no_initial_values.set_data(data = pd.DataFrame(columns = ['x', 'z'], index = [0]),
+                                 response_variable = 'z')
+model_no_initial_values.set_priors(priors = {'x': {'mean': 0,
+                                                   'variance': 1},
+                                             'intercept': {'mean': 0,
+                                                           'variance': 1},
+                                             'variance': {'shape': 1,
+                                                          'scale': 1}})
+
+model_no_priors = gs.LinearModel()
+model_no_priors.set_data(data = pd.DataFrame(columns = ['x', 'z'], index = [0]),
+                         response_variable = 'z')
+model_no_priors.set_initial_values(values = {'x': 0,
+                                             'intercept': 0})
 
 model_initial_value_not_in_data = gs.LinearModel()
 model_initial_value_not_in_data.set_data(data = pd.DataFrame(columns = ['x', 'z'], index = [0]),
@@ -210,19 +235,18 @@ def model_set_priors_type_error(request):
     return request.param
 
 
-@fixture(params = [{},
-                   {'intercept': {}, 'variance': {}},
+@fixture(params = [{'regressor': 1, 'variance': 2},
+                   {'intercept': 1, 'regressor': 2},
                    {'intercept': {'m': 0, 'variance': 1}, 'variance': {'shape': 1, 'scale': 1}},
                    {'intercept': {'mean': 0, 'v': 1}, 'variance': {'shape': 1, 'scale': 1}},
                    {'intercept': {'mean': 0, 'variance': 1}, 'variance': {'s': 1, 'scale': 1}},
                    {'intercept': {'mean': 0, 'variance': 1}, 'variance': {'shape': 1, 's': 1}}])
-def model_set_priors_value_error(request):
+def model_set_priors_key_error(request):
     return request.param
 
 
-@fixture(params = [{'regressor': 1, 'variance': 2},
-                   {'intercept': 1, 'regressor': 2}])
-def model_set_priors_key_error(request):
+@fixture(params = [{}, {'intercept': {}, 'variance': {}}])
+def model_set_priors_value_error(request):
     return request.param
 
 
@@ -241,7 +265,10 @@ def linear_regression_init_type_error(request):
     return request.param
 
 
-@fixture(params = [model_initial_value_not_in_data,
+@fixture(params = [model_no_data,
+                   model_no_initial_values,
+                   model_no_priors,
+                   model_initial_value_not_in_data,
                    model_initial_value_not_in_priors,
                    model_prior_not_in_data,
                    model_prior_not_in_initial_values])
@@ -249,15 +276,34 @@ def linear_regression_init_value_error(request):
     return request.param
 
 
-@fixture(params = [{'n_iterations': -1,
-                    'burn_in_iterations': 50,
-                    'n_chains': 3},
-                   {'n_iterations': 1000,
-                    'burn_in_iterations': -1,
-                    'n_chains': 3},
-                   {'n_iterations': 1000,
-                    'burn_in_iterations': 50,
-                    'n_chains': -1}])
+@fixture(params = [{'n_iterations': '100', 'burn_in_iterations': 50, 'n_chains': 3},
+                   {'n_iterations': 100.0, 'burn_in_iterations': 50, 'n_chains': 3},
+                   {'n_iterations': {'100': 100}, 'burn_in_iterations': 50, 'n_chains': 3},
+                   {'n_iterations': (100, 200), 'burn_in_iterations': 50, 'n_chains': 3},
+                   {'n_iterations': [100, 200], 'burn_in_iterations': 50, 'n_chains': 3},
+                   {'n_iterations': {100, 200}, 'burn_in_iterations': 50, 'n_chains': 3},
+                   {'n_iterations': None, 'burn_in_iterations': 50, 'n_chains': 3},
+                   {'n_iterations': 100, 'burn_in_iterations': '50', 'n_chains': 3},
+                   {'n_iterations': 100, 'burn_in_iterations': 50.0, 'n_chains': 3},
+                   {'n_iterations': 100, 'burn_in_iterations': {'50': 50}, 'n_chains': 3},
+                   {'n_iterations': 100, 'burn_in_iterations': (50, 100), 'n_chains': 3},
+                   {'n_iterations': 100, 'burn_in_iterations': [50, 100], 'n_chains': 3},
+                   {'n_iterations': 100, 'burn_in_iterations': {50, 100}, 'n_chains': 3},
+                   {'n_iterations': 100, 'burn_in_iterations': None, 'n_chains': 3},
+                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': '3'},
+                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3.0},
+                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': {'3': 3}},
+                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': (3, 6)},
+                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': [4, 6]},
+                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': {3, 6}},
+                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': None}])
+def linear_regression_sample_type_error(request):
+    return request.param
+
+
+@fixture(params = [{'n_iterations': -1, 'burn_in_iterations': 50, 'n_chains': 3},
+                   {'n_iterations': 1000, 'burn_in_iterations': -1, 'n_chains': 3},
+                   {'n_iterations': 1000, 'burn_in_iterations': 50, 'n_chains': -1}])
 def linear_regression_sample_value_error(request):
     return request.param
 
@@ -283,8 +329,12 @@ def diagnostics_autocorrelation_plot_type_error(request):
 
 
 @fixture(params = [{'posteriors': {'variance': np.array([0])}, 'max_lags': 30},
-                   {'posteriors': {'intercept': np.array([0])}, 'max_lags': 30},
-                   {'posteriors': {'intercept': np.array([]), 'variance': np.array([0])}, 'max_lags': 30},
+                   {'posteriors': {'intercept': np.array([0])}, 'max_lags': 30}])
+def diagnostics_autocorrelation_plot_key_error(request):
+    return request.param
+
+
+@fixture(params = [{'posteriors': {'intercept': np.array([]), 'variance': np.array([0])}, 'max_lags': 30},
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'max_lags': -1}])
 def diagnostics_autocorrelation_plot_value_error(request):
     return request.param
@@ -318,8 +368,12 @@ def diagnostics_autocorrelation_summary_type_error(request):
 
 
 @fixture(params = [{'posteriors': {'variance': np.array([0])}, 'lags': [0, 1, 5, 10, 30]},
-                   {'posteriors': {'intercept': np.array([0])}, 'lags': [0, 1, 5, 10, 30]},
-                   {'posteriors': {'intercept': np.array([]), 'variance': np.array([0])}, 'lags': [0, 1, 5, 10, 30]},
+                   {'posteriors': {'intercept': np.array([0])}, 'lags': [0, 1, 5, 10, 30]}])
+def diagnostics_autocorrelation_summary_key_error(request):
+    return request.param
+
+
+@fixture(params = [{'posteriors': {'intercept': np.array([]), 'variance': np.array([0])}, 'lags': [0, 1, 5, 10, 30]},
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'lags': []},
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'lags': [-1]}])
 def diagnostics_autocorrelation_summary_value_error(request):
@@ -333,9 +387,8 @@ def diagnostics_effective_sample_size_type_error(request):
 
 
 @fixture(params = [{'variance': np.array([0])},
-                   {'intercept': np.array([0])},
-                   {'intercept': np.array([]), 'variance': np.array([0])}])
-def diagnostics_effective_sample_size_value_error(request):
+                   {'intercept': np.array([0])}])
+def diagnostics_effective_sample_size_key_error(request):
     return request.param
 
 
@@ -346,9 +399,8 @@ def analysis_trace_plot_type_error(request):
 
 
 @fixture(params = [{'variance': np.array([0])},
-                   {'intercept': np.array([0])},
-                   {'intercept': np.array([]), 'variance': np.array([0])}])
-def analysis_trace_plot_value_error(request):
+                   {'intercept': np.array([0])}])
+def analysis_trace_plot_key_error(request):
     return request.param
 
 
@@ -387,8 +439,12 @@ def analysis_summary_type_error(request):
 
 
 @fixture(params = [{'posteriors': {'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9]},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9]},
-                   {'posteriors': {'intercept': np.array([]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9]},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9]}])
+def analysis_summary_key_error(request):
+    return request.param
+
+
+@fixture(params = [{'posteriors': {'intercept': np.array([]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9]},
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': -0.5, 'quantiles': [0.1, 0.9]},
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 1.5, 'quantiles': [0.1, 0.9]},
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': []},
@@ -429,8 +485,12 @@ def analysis_residuals_plot_type_error(request):
 
 
 @fixture(params = [{'posteriors': {'variance': np.array([0])}, 'data': pd.DataFrame(columns = ['response_variable'], index = [0]), 'response_variable': 'response_variable'},
-                   {'posteriors': {'intercept': np.array([0])}, 'data': pd.DataFrame(columns = ['response_variable'], index = [0]), 'response_variable': 'response_variable'},
-                   {'posteriors': {'intercept': np.array([]), 'variance': np.array([0])}, 'data': pd.DataFrame(columns = ['response_variable'], index = [0]), 'response_variable': 'response_variable'},
+                   {'posteriors': {'intercept': np.array([0])}, 'data': pd.DataFrame(columns = ['response_variable'], index = [0]), 'response_variable': 'response_variable'}])
+def analysis_residuals_plot_key_error(request):
+    return request.param
+
+
+@fixture(params = [{'posteriors': {'intercept': np.array([]), 'variance': np.array([0])}, 'data': pd.DataFrame(columns = ['response_variable'], index = [0]), 'response_variable': 'response_variable'},
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0]), 'x': np.array([0])}, 'data': pd.DataFrame(columns = ['response_variable'], index = [0]), 'response_variable': 'response_variable'},
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': 'response_variable'},
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(columns = ['not_response_variable'], index = [0]), 'response_variable': 'response_variable'}])
@@ -462,9 +522,13 @@ def analysis_predict_distribution_type_error(request):
 
 @fixture(params = [{'posteriors': {'variance': np.array([0]), 'x': np.array([0])}, 'predictors': {'x': 1}},
                    {'posteriors': {'intercept': np.array([0]), 'x': np.array([0])}, 'predictors': {'x': 1}},
-                   {'posteriors': {'intercept': np.array([]), 'variance': np.array([0]), 'x': np.array([0])}, 'predictors': {'x': 1}},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0]), 'x': np.array([0])}, 'predictors': {}},
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0]), 'x': np.array([0])}, 'predictors': {'x': 1, 'z': 1}}])
+def analysis_predict_distribution_key_error(request):
+    return request.param
+
+
+@fixture(params = [{'posteriors': {'intercept': np.array([]), 'variance': np.array([0]), 'x': np.array([0])}, 'predictors': {'x': 1}},
+                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0]), 'x': np.array([0])}, 'predictors': {}}])
 def analysis_predict_distribution_value_error(request):
     return request.param
 
@@ -500,8 +564,12 @@ def analysis_compute_dic_type_error(request):
 
 
 @fixture(params = [{'posteriors': {'variance': np.array([0])}, 'data': pd.DataFrame(columns = ['response_variable'], index = [0]), 'response_variable': 'response_variable'},
-                   {'posteriors': {'intercept': np.array([0])}, 'data': pd.DataFrame(columns = ['response_variable'], index = [0]), 'response_variable': 'response_variable'},
-                   {'posteriors': {'intercept': np.array([]), 'variance': np.array([0])}, 'data': pd.DataFrame(columns = ['response_variable'], index = [0]), 'response_variable': 'response_variable'},
+                   {'posteriors': {'intercept': np.array([0])}, 'data': pd.DataFrame(columns = ['response_variable'], index = [0]), 'response_variable': 'response_variable'}])
+def analysis_compute_dic_key_error(request):
+    return request.param
+
+
+@fixture(params = [{'posteriors': {'intercept': np.array([]), 'variance': np.array([0])}, 'data': pd.DataFrame(columns = ['response_variable'], index = [0]), 'response_variable': 'response_variable'},
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0]), 'x': np.array([0])}, 'data': pd.DataFrame(columns = ['response_variable'], index = [0]), 'response_variable': 'response_variable'},
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': 'response_variable'},
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(columns = ['not_response_variable'], index = [0]), 'response_variable': 'response_variable'}])

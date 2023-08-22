@@ -18,9 +18,14 @@ class TestAnalysisTracePlot:
             gs.analysis.trace_plot(analysis_trace_plot_type_error)
 
 
-    def test_raises_value_error(self, analysis_trace_plot_value_error):
+    def test_raises_key_error(self, analysis_trace_plot_key_error):
+        with raises(KeyError):
+            gs.analysis.trace_plot(analysis_trace_plot_key_error)
+
+
+    def test_raises_value_error(self):
         with raises(ValueError):
-            gs.analysis.trace_plot(analysis_trace_plot_value_error)
+            gs.analysis.trace_plot(posteriors = {'intercept': np.array([]), 'variance': np.array([0])})
 
 
 @mark.analysis
@@ -50,6 +55,13 @@ class TestAnalysisSummary:
                                 quantiles = analysis_summary_type_error['quantiles'])
 
 
+    def test_raises_key_error(self, analysis_summary_key_error):
+        with raises(KeyError):
+            gs.analysis.summary(posteriors = analysis_summary_key_error['posteriors'],
+                                alpha = analysis_summary_key_error['alpha'],
+                                quantiles = analysis_summary_key_error['quantiles'])
+
+
     def test_raises_value_error(self, analysis_summary_value_error):
         with raises(ValueError):
             gs.analysis.summary(posteriors = analysis_summary_value_error['posteriors'],
@@ -73,6 +85,13 @@ class TestAnalysisResidualsPlot:
             gs.analysis.residuals_plot(posteriors = analysis_residuals_plot_type_error['posteriors'],
                                        data = analysis_residuals_plot_type_error['data'],
                                        response_variable = analysis_residuals_plot_type_error['response_variable'])
+
+    def test_raises_key_error(self, analysis_residuals_plot_key_error):
+        with raises(KeyError):
+            gs.analysis.residuals_plot(posteriors = analysis_residuals_plot_key_error['posteriors'],
+                                       data = analysis_residuals_plot_key_error['data'],
+                                       response_variable = analysis_residuals_plot_key_error['response_variable'])
+
 
     def test_raises_value_error(self, analysis_residuals_plot_value_error):
         with raises(ValueError):
@@ -106,6 +125,12 @@ class TestAnalysisPredictDistribution:
             gs.analysis.predict_distribution(posteriors = analysis_predict_distribution_type_error['posteriors'],
                                              predictors = analysis_predict_distribution_type_error['predictors'])
 
+    def test_raises_key_error(self, analysis_predict_distribution_key_error):
+        with raises(KeyError):
+            gs.analysis.predict_distribution(posteriors = analysis_predict_distribution_key_error['posteriors'],
+                                             predictors = analysis_predict_distribution_key_error['predictors'])
+
+
     def test_raises_value_error(self, analysis_predict_distribution_value_error):
         with raises(ValueError):
             gs.analysis.predict_distribution(posteriors = analysis_predict_distribution_value_error['posteriors'],
@@ -127,6 +152,13 @@ class TestAnalysisComputeDIC:
             gs.analysis.compute_DIC(posteriors = analysis_compute_dic_type_error['posteriors'],
                                     data = analysis_compute_dic_type_error['data'],
                                     response_variable = analysis_compute_dic_type_error['response_variable'])
+
+
+    def test_raises_key_error(self, analysis_compute_dic_key_error):
+        with raises(KeyError):
+            gs.analysis.compute_DIC(posteriors = analysis_compute_dic_key_error['posteriors'],
+                                    data = analysis_compute_dic_key_error['data'],
+                                    response_variable = analysis_compute_dic_key_error['response_variable'])
 
 
     def test_raises_value_error(self, analysis_compute_dic_value_error):

@@ -31,6 +31,13 @@ class TestLinearRegressionSample:
         assert all(np.array([posterior_samples.shape for posterior_samples in sampler.posteriors.values()])[:, 1] == general_testing_data['n_chains'])
 
 
+    def test_raises_type_error(self, sampler, linear_regression_sample_type_error):
+        with raises(TypeError):
+            sampler.sample(n_iterations = linear_regression_sample_type_error['n_iterations'],
+                           burn_in_iterations = linear_regression_sample_type_error['burn_in_iterations'],
+                           n_chains = linear_regression_sample_type_error['n_chains'])
+
+
     def test_raises_value_error(self, sampler, linear_regression_sample_value_error):
         with raises(ValueError):
             sampler.sample(n_iterations = linear_regression_sample_value_error['n_iterations'],

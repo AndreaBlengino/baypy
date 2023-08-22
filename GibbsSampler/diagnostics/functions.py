@@ -14,7 +14,7 @@ def autocorrelation_plot(posteriors, max_lags = 30):
 
     for posterior in ['intercept', 'variance']:
         if posterior not in posteriors.keys():
-            raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+            raise KeyError(f"Parameter 'posteriors' must contain a '{posterior}' key")
 
     for posterior, posterior_samples in posteriors.items():
         if posterior_samples.size == 0:
@@ -83,7 +83,7 @@ def autocorrelation_summary(posteriors, lags = None):
 
     for posterior in ['intercept', 'variance']:
         if posterior not in posteriors.keys():
-            raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+            raise KeyError(f"Parameter 'posteriors' must contain a '{posterior}' key")
 
     for posterior, posterior_samples in posteriors.items():
         if posterior_samples.size == 0:
@@ -127,7 +127,7 @@ def effective_sample_size(posteriors):
 
     for posterior in ['intercept', 'variance']:
         if posterior not in posteriors.keys():
-            raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+            raise KeyError(f"Parameter 'posteriors' must contain a '{posterior}' key")
 
     for posterior, posterior_samples in posteriors.items():
         if posterior_samples.size == 0:

@@ -7,7 +7,12 @@ class Model(ABC):
 
     @abstractmethod
     def __init__(self):
-        pass
+
+        self.data = None
+        self.response_variable = None
+        self.initial_values = None
+        self.priors = None
+        self.variable_names = None
 
 
     @abstractmethod
@@ -58,12 +63,12 @@ class Model(ABC):
                 raise ValueError(f"The value of prior '{prior}' cannot be an empty dictionary")
             if prior != 'variance':
                 if set(values.keys()) != {'mean', 'variance'}:
-                    raise ValueError(f"The value of prior '{prior}' must be a dictionary "
-                                     f"containing 'mean' and 'variance' keys only")
+                    raise KeyError(f"The value of prior '{prior}' must be a dictionary "
+                                   f"containing 'mean' and 'variance' keys only")
             else:
                 if set(values.keys()) != {'shape', 'scale'}:
-                    raise ValueError(f"The value of prior '{prior}' must be a dictionary "
-                                     f"containing 'shape' and 'scale' keys only")
+                    raise KeyError(f"The value of prior '{prior}' must be a dictionary "
+                                   f"containing 'shape' and 'scale' keys only")
 
 
 class LinearModel(Model):
@@ -72,11 +77,6 @@ class LinearModel(Model):
     def __init__(self):
 
         super().__init__()
-        self.data = None
-        self.response_variable = None
-        self.initial_values = None
-        self.priors = None
-        self.variable_names = None
 
 
     def set_data(self, data, response_variable):

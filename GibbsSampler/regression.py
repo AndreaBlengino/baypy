@@ -13,6 +13,15 @@ class Regression(ABC):
         if not isinstance(model, Model):
             raise TypeError(f"Parameter 'model' must be an instance of '{Model.__module__}.{Model.__name__}'")
 
+        if (model.data is None) or (model.response_variable is None):
+            raise ValueError("Missing 'data' or 'response_variable' in 'model'")
+
+        if model.initial_values is None:
+            raise ValueError("Missing 'initial_values' in 'model'")
+
+        if model.priors is None:
+            raise ValueError("Missing 'priors' in 'model'")
+
         for initial_value in model.initial_values.keys():
             if (initial_value != 'intercept') and (initial_value not in model.data.columns):
                 raise ValueError(f"Column '{initial_value}' not found in 'Model.data'")
@@ -30,6 +39,15 @@ class Regression(ABC):
 
     @abstractmethod
     def sample(self, n_iterations, burn_in_iterations, n_chains):
+        if not isinstance(n_iterations, int):
+            raise TypeError("Parameter 'n_iteration' must be an integer")
+
+        if not isinstance(burn_in_iterations, int):
+            raise TypeError("Parameter 'burn_in_iterations' must be an integer")
+
+        if not isinstance(n_chains, int):
+            raise TypeError("Parameter 'n_chains' must be an integer")
+
         if n_iterations <= 0:
             raise ValueError("Parameter 'n_iteration' must be greater than 0")
 

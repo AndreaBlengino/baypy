@@ -15,7 +15,7 @@ def trace_plot(posteriors):
 
     for posterior in ['intercept', 'variance']:
         if posterior not in posteriors.keys():
-            raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+            raise KeyError(f"Parameter 'posteriors' must contain a '{posterior}' key")
 
     for posterior, posterior_samples in posteriors.items():
         if posterior_samples.size == 0:
@@ -65,7 +65,7 @@ def summary(posteriors, alpha = 0.05, quantiles = None):
 
     for posterior in ['intercept', 'variance']:
         if posterior not in posteriors.keys():
-            raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+            raise KeyError(f"Parameter 'posteriors' must contain a '{posterior}' key")
 
     for posterior, posterior_samples in posteriors.items():
         if posterior_samples.size == 0:
@@ -148,7 +148,7 @@ def residuals_plot(posteriors, data, response_variable):
 
     for posterior in ['intercept', 'variance']:
         if posterior not in posteriors.keys():
-            raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+            raise KeyError(f"Parameter 'posteriors' must contain a '{posterior}' key")
 
     for posterior, posterior_samples in posteriors.items():
         if posterior_samples.size == 0:
@@ -198,7 +198,7 @@ def predict_distribution(posteriors, predictors):
 
     for posterior in ['intercept', 'variance']:
         if posterior not in posteriors.keys():
-            raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+            raise KeyError(f"Parameter 'posteriors' must contain a '{posterior}' key")
 
     for posterior, posterior_samples in posteriors.items():
         if posterior_samples.size == 0:
@@ -212,7 +212,7 @@ def predict_distribution(posteriors, predictors):
 
     for regressor in predictors.keys():
         if regressor not in posteriors.keys():
-            raise ValueError(f"Regressor '{regressor}' not found in 'posteriors' keys")
+            raise KeyError(f"Regressor '{regressor}' not found in 'posteriors' keys")
 
     prediction = pd.DataFrame()
     for posterior, posterior_samples in posteriors.items():
@@ -239,7 +239,7 @@ def compute_DIC(posteriors, data, response_variable):
 
     for posterior in ['intercept', 'variance']:
         if posterior not in posteriors.keys():
-            raise ValueError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+            raise KeyError(f"Parameter 'posteriors' must contain a '{posterior}' key")
 
     for posterior, posterior_samples in posteriors.items():
         if posterior_samples.size == 0:
