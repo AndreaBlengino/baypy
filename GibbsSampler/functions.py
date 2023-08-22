@@ -1,9 +1,11 @@
 import numpy as np
+import pandas as pd
 from scipy.stats import invgamma, multivariate_normal
 from .utils import flatten_matrix
 
 
-def sample_sigma2(Y, X, beta, T_1, theta_0):
+def sample_sigma2(Y: pd.Series, X: np.ndarray, beta: np.ndarray, T_1: float, theta_0: float) -> float:
+
     Y_X_beta = Y - flatten_matrix(np.dot(X, beta))
     theta_1 = theta_0 + np.dot(Y_X_beta.transpose(), Y_X_beta)
 
@@ -12,7 +14,9 @@ def sample_sigma2(Y, X, beta, T_1, theta_0):
                         size = 1)[0]
 
 
-def sample_beta(XtX, XtY, sigma2, Sigma_0_inv, Sigma_0_inv_Beta_0):
+def sample_beta(XtX: np.ndarray, XtY: np.ndarray, sigma2: float, Sigma_0_inv: np.ndarray,
+                Sigma_0_inv_Beta_0: np.ndarray) -> np.ndarray:
+
     V = np.linalg.inv(Sigma_0_inv + XtX/sigma2)
     M = np.dot(V, Sigma_0_inv_Beta_0 + XtY/sigma2)
 

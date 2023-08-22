@@ -16,7 +16,7 @@ class Model(ABC):
 
 
     @abstractmethod
-    def set_data(self, data, response_variable):
+    def set_data(self, data: pd.DataFrame, response_variable: str) -> None:
         if not isinstance(data, pd.DataFrame):
             raise TypeError("Parameter 'data' must be an instance of 'pandas.DataFrame'")
 
@@ -31,7 +31,7 @@ class Model(ABC):
 
 
     @abstractmethod
-    def set_initial_values(self, values):
+    def set_initial_values(self, values: dict) -> None:
         if not isinstance(values, dict):
             raise TypeError("Parameter 'values' must be a dictionary")
 
@@ -43,7 +43,7 @@ class Model(ABC):
 
 
     @abstractmethod
-    def set_priors(self, priors):
+    def set_priors(self, priors: dict) -> None:
         if not isinstance(priors, dict):
             raise TypeError("Parameter 'priors' must be a dictionary")
 
@@ -79,20 +79,20 @@ class LinearModel(Model):
         super().__init__()
 
 
-    def set_data(self, data, response_variable):
+    def set_data(self, data: pd.DataFrame, response_variable: str) -> None:
 
         super().set_data(data = data, response_variable = response_variable)
         self.data = data
         self.response_variable = response_variable
 
 
-    def set_initial_values(self, values):
+    def set_initial_values(self, values: dict) -> None:
 
         super().set_initial_values(values = values)
         self.initial_values = values
 
 
-    def set_priors(self, priors):
+    def set_priors(self, priors: dict) -> None:
 
         super().set_priors(priors = priors)
         self.priors = priors

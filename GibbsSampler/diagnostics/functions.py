@@ -4,7 +4,7 @@ import pandas as pd
 from ..utils import flatten_matrix
 
 
-def autocorrelation_plot(posteriors, max_lags = 30):
+def autocorrelation_plot(posteriors: dict, max_lags: int = 30) -> None:
 
     if not isinstance(posteriors, dict):
         raise TypeError(f"Parameter 'posteriors' must be a dictionary")
@@ -73,7 +73,7 @@ def autocorrelation_plot(posteriors, max_lags = 30):
     plt.show()
 
 
-def autocorrelation_summary(posteriors, lags = None):
+def autocorrelation_summary(posteriors: dict, lags: list = None) -> None:
 
     if not isinstance(posteriors, dict):
         raise TypeError(f"Parameter 'posteriors' must be a dictionary")
@@ -117,7 +117,7 @@ def autocorrelation_summary(posteriors, lags = None):
     print(acorr_summary.to_string())
 
 
-def effective_sample_size(posteriors):
+def effective_sample_size(posteriors: dict) -> None:
 
     if not isinstance(posteriors, dict):
         raise TypeError(f"Parameter 'posteriors' must be a dictionary")
@@ -155,7 +155,7 @@ def effective_sample_size(posteriors):
         print(ess_summary.to_string())
 
 
-def _compute_autocorrelation(vector, max_lags):
+def _compute_autocorrelation(vector: np.ndarray, max_lags: int) -> np.ndarray:
 
     normalized_vector = vector - vector.mean()
     autocorrelation = np.correlate(normalized_vector, normalized_vector, 'full')[len(normalized_vector) - 1:]

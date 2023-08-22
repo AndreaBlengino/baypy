@@ -9,7 +9,7 @@ class Regression(ABC):
 
 
     @abstractmethod
-    def __init__(self, model):
+    def __init__(self, model: Model) -> None:
         if not isinstance(model, Model):
             raise TypeError(f"Parameter 'model' must be an instance of '{Model.__module__}.{Model.__name__}'")
 
@@ -38,7 +38,7 @@ class Regression(ABC):
 
 
     @abstractmethod
-    def sample(self, n_iterations, burn_in_iterations, n_chains):
+    def sample(self, n_iterations: int, burn_in_iterations: int, n_chains: int) -> dict:
         if not isinstance(n_iterations, int):
             raise TypeError("Parameter 'n_iteration' must be an integer")
 
@@ -61,14 +61,14 @@ class Regression(ABC):
 class LinearRegression(Regression):
 
 
-    def __init__(self, model):
+    def __init__(self, model: Model) -> None:
 
         super().__init__(model = model)
         self.model = model
         self.posteriors = None
 
 
-    def sample(self, n_iterations, burn_in_iterations, n_chains):
+    def sample(self, n_iterations: int, burn_in_iterations: int, n_chains: int) -> dict:
 
         super().sample(n_iterations = n_iterations, burn_in_iterations = burn_in_iterations, n_chains = n_chains)
         data = self.model.data.copy()

@@ -5,7 +5,7 @@ from scipy.stats import gaussian_kde, norm
 from ..utils import flatten_matrix
 
 
-def trace_plot(posteriors):
+def trace_plot(posteriors: dict) -> None:
 
     if not isinstance(posteriors, dict):
         raise TypeError(f"Parameter 'posteriors' must be a dictionary")
@@ -48,14 +48,14 @@ def trace_plot(posteriors):
     plt.show()
 
 
-def _compute_kde(posterior):
+def _compute_kde(posterior: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     posterior_support = np.linspace(np.min(posterior), np.max(posterior), 1000)
     posterior_kde = gaussian_kde(posterior)(posterior_support)
 
     return posterior_support, posterior_kde
 
 
-def summary(posteriors, alpha = 0.05, quantiles = None):
+def summary(posteriors: dict, alpha: float = 0.05, quantiles: list = None) -> None:
 
     if not isinstance(posteriors, dict):
         raise TypeError(f"Parameter 'posteriors' must be a dictionary")
@@ -123,7 +123,7 @@ def summary(posteriors, alpha = 0.05, quantiles = None):
     print(quantiles_summary.to_string())
 
 
-def _compute_hpd_interval(x, alpha):
+def _compute_hpd_interval(x: np.ndarray, alpha: float) -> tuple[float, float]:
 
     n = len(x)
     credibility_mass = 1 - alpha
@@ -138,7 +138,7 @@ def _compute_hpd_interval(x, alpha):
     return hpdi_min, hpdi_max
 
 
-def residuals_plot(posteriors, data, response_variable):
+def residuals_plot(posteriors: dict, data: pd.DataFrame, response_variable: str) -> None:
 
     if not isinstance(posteriors, dict):
         raise TypeError(f"Parameter 'posteriors' must be a dictionary")
@@ -188,7 +188,7 @@ def residuals_plot(posteriors, data, response_variable):
     plt.show()
 
 
-def predict_distribution(posteriors, predictors):
+def predict_distribution(posteriors: dict, predictors: dict) -> np.ndarray:
 
     if not isinstance(posteriors, dict):
         raise TypeError(f"Parameter 'posteriors' must be a dictionary")
@@ -229,7 +229,7 @@ def predict_distribution(posteriors, predictors):
                     size = len(prediction))
 
 
-def compute_DIC(posteriors, data, response_variable):
+def compute_DIC(posteriors: dict, data: pd.DataFrame, response_variable: str) -> None:
 
     if not isinstance(posteriors, dict):
         raise TypeError(f"Parameter 'posteriors' must be a dictionary")
@@ -275,7 +275,7 @@ def compute_DIC(posteriors, data, response_variable):
     print(f"Deviace Information Criterion   {DIC:>12.2f}")
 
 
-def _compute_deviace_at_posterior_means(posteriors, data, response_variable):
+def _compute_deviace_at_posterior_means(posteriors: dict, data: pd.DataFrame, response_variable: str) -> float:
 
     posterior_means = {posterior: flatten_matrix(posterior_samples).mean()
                        for posterior, posterior_samples in posteriors.items() if posterior != 'variance'}
@@ -291,7 +291,7 @@ def _compute_deviace_at_posterior_means(posteriors, data, response_variable):
     return -2*np.sum(np.log(data['likelyhood']))
 
 
-def _compute_posterior_mean_deviance(posteriors, data, response_variable):
+def _compute_posterior_mean_deviance(posteriors: dict, data: pd.DataFrame, response_variable: str) -> float:
 
     data['intercept'] = 1
     deviance = []
