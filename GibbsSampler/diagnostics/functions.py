@@ -99,7 +99,7 @@ def autocorrelation_summary(posteriors: dict, lags: list = None) -> None:
         if any([lag < 0 for lag in lags]):
             raise ValueError("Parameter 'lags' cannot contain negative integers")
 
-    lags = [0, 1, 5, 10, 30] if lags is None else lags
+    lags = [0, 1, 5, 10, 30] if lags is None else list(set(lags))
 
     n_chains = posteriors['intercept'].shape[1]
     acorr_summary = pd.DataFrame(columns = list(posteriors.keys()),
