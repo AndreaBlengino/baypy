@@ -1,36 +1,48 @@
+import pandas as pd
 from pytest import mark, raises
 
 
 @mark.model
-class TestModelSetData:
+class TestModelData:
 
 
-    def test_method(self, empty_model, general_testing_data):
-        empty_model.set_data(data = general_testing_data['data'],
-                             response_variable = general_testing_data['response_variable'])
+    def test_property(self, empty_model, general_testing_data):
+        empty_model.data = general_testing_data['data']
 
         assert empty_model.data.equals(general_testing_data['data'])
-        assert empty_model.response_variable == general_testing_data['response_variable']
 
 
-    def test_raises_type_error(self, empty_model, model_set_data_type_error):
+    def test_raises_type_error(self, empty_model, model_data_type_error):
         with raises(TypeError):
-            empty_model.set_data(data = model_set_data_type_error['data'],
-                                 response_variable = model_set_data_type_error['response_variable'])
+            empty_model.data = model_data_type_error
 
 
-    def test_raises_value_error(self, empty_model, model_set_data_value_error):
+    def test_raises_value_error(self, empty_model):
         with raises(ValueError):
-            empty_model.set_data(data = model_set_data_value_error['data'],
-                                 response_variable = model_set_data_value_error['response_variable'])
+            empty_model.data = pd.DataFrame()
 
 
 @mark.model
-class TestModelSetPriors:
+class TestModelResponseVariable:
 
 
-    def test_method(self, empty_model, general_testing_data):
-        empty_model.set_priors(priors = general_testing_data['priors'])
+    def test_property(self, empty_model, general_testing_data):
+        empty_model.response_variable = general_testing_data['response_variable']
+
+        assert empty_model.response_variable == general_testing_data['response_variable']
+
+
+    def test_raises_type_error(self, empty_model, model_response_variable_type_error):
+        with raises(TypeError):
+            empty_model.response_variable = model_response_variable_type_error
+
+
+@mark.model
+class TestModelPriors:
+
+
+    def test_property(self, empty_model, general_testing_data):
+        empty_model.priors = general_testing_data['priors']
 
         assert empty_model.priors == general_testing_data['priors']
         assert 'intercept' in empty_model.priors.keys()
@@ -44,16 +56,16 @@ class TestModelSetPriors:
         assert 'variance' in empty_model.variable_names
 
 
-    def test_raises_type_error(self, empty_model, model_set_priors_type_error):
+    def test_raises_type_error(self, empty_model, model_priors_type_error):
         with raises(TypeError):
-            empty_model.set_priors(model_set_priors_type_error)
+            empty_model.priors = model_priors_type_error
 
 
-    def test_raises_key_error(self, empty_model, model_set_priors_key_error):
+    def test_raises_key_error(self, empty_model, model_priors_key_error):
         with raises(KeyError):
-            empty_model.set_priors(model_set_priors_key_error)
+            empty_model.priors = model_priors_key_error
 
 
-    def test_raises_value_error(self, empty_model, model_set_priors_value_error):
+    def test_raises_value_error(self, empty_model, model_priors_value_error):
         with raises(ValueError):
-            empty_model.set_priors(model_set_priors_value_error)
+            empty_model.priors = model_priors_value_error

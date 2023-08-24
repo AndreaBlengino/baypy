@@ -8,29 +8,54 @@ class Model(ABC):
     @abstractmethod
     def __init__(self):
 
-        self.data = None
-        self.response_variable = None
-        self.priors = None
-        self.variable_names = None
+        self.__data = None
+        self.__response_variable = None
+        self.__priors = None
+        self.__variable_names = None
 
 
+    @property
     @abstractmethod
-    def set_data(self, data: pd.DataFrame, response_variable: str) -> None:
+    def data(self) -> pd.DataFrame:
+        return self.__data
+
+
+    @data.setter
+    @abstractmethod
+    def data(self, data: pd.DataFrame) -> None:
         if not isinstance(data, pd.DataFrame):
             raise TypeError("Parameter 'data' must be an instance of 'pandas.DataFrame'")
-
-        if not isinstance(response_variable, str):
-            raise TypeError("Parameter 'response_variable' must be a string")
 
         if data.empty:
             raise ValueError("Parameter 'data' cannot be an empty 'pandas.DataFrame'")
 
-        if response_variable not in data.columns:
-            raise ValueError(f"Column '{response_variable}' not found in 'data'")
+        self.__data = data
 
 
+    @property
     @abstractmethod
-    def set_priors(self, priors: dict) -> None:
+    def response_variable(self) -> str:
+        return self.__response_variable
+
+
+    @response_variable.setter
+    @abstractmethod
+    def response_variable(self, response_variable: str) -> None:
+        if not isinstance(response_variable, str):
+            raise TypeError("Parameter 'response_variable' must be a string")
+
+        self.__response_variable = response_variable
+
+
+    @property
+    @abstractmethod
+    def priors(self) -> dict:
+        return self.__priors
+
+
+    @priors.setter
+    @abstractmethod
+    def priors(self, priors: dict) -> None:
         if not isinstance(priors, dict):
             raise TypeError("Parameter 'priors' must be a dictionary")
 
@@ -55,6 +80,16 @@ class Model(ABC):
                     raise KeyError(f"The value of prior '{prior}' must be a dictionary "
                                    f"containing 'shape' and 'scale' keys only")
 
+        self.__priors = priors
+        self.__variable_names = list(self.priors.keys())
+        self.__variable_names.insert(0, self.__variable_names.pop(self.__variable_names.index('intercept')))
+
+
+    @property
+    @abstractmethod
+    def variable_names(self) -> list:
+        return self.__variable_names
+
 
 class LinearModel(Model):
 
@@ -64,16 +99,36 @@ class LinearModel(Model):
         super().__init__()
 
 
-    def set_data(self, data: pd.DataFrame, response_variable: str) -> None:
-
-        super().set_data(data = data, response_variable = response_variable)
-        self.data = data
-        self.response_variable = response_variable
+    @property
+    def data(self) -> pd.DataFrame:
+        return super().data
 
 
-    def set_priors(self, priors: dict) -> None:
+    @data.setter
+    def data(self, data: pd.DataFrame) -> None:
+        super(LinearModel, type(self)).data.fset(self, data)
 
-        super().set_priors(priors = priors)
-        self.priors = priors
-        self.variable_names = list(self.priors.keys())
-        self.variable_names.insert(0, self.variable_names.pop(self.variable_names.index('intercept')))
+
+    @property
+    def response_variable(self) -> str:
+        return super().response_variable
+
+
+    @response_variable.setter
+    def response_variable(self, response_variable: str) -> None:
+        super(LinearModel, type(self)).response_variable.fset(self, response_variable)
+
+
+    @property
+    def priors(self) -> dict:
+        return super().priors
+
+
+    @priors.setter
+    def priors(self, priors: dict) -> None:
+        super(LinearModel, type(self)).priors.fset(self, priors)
+
+
+    @property
+    def variable_names(self) -> list:
+        return super().variable_names

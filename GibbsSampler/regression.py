@@ -13,8 +13,14 @@ class Regression(ABC):
         if not isinstance(model, Model):
             raise TypeError(f"Parameter 'model' must be an instance of '{Model.__module__}.{Model.__name__}'")
 
-        if (model.data is None) or (model.response_variable is None):
-            raise ValueError("Missing 'data' or 'response_variable' in 'model'")
+        if model.data is None:
+            raise ValueError("Missing 'data' in 'model'")
+
+        if model.response_variable is None:
+            raise ValueError("Missing 'response_variable' in 'model'")
+
+        if model.response_variable not in model.data.columns:
+            raise ValueError(f"Column '{model.response_variable}' not found in 'data'")
 
         if model.priors is None:
             raise ValueError("Missing 'priors' in 'model'")
