@@ -8,9 +8,9 @@ jobs:
         uses: actions/checkout@master
       - name: Test
         run: |
-          pip install pytest coverage pytest-cov
+          pip install pytest coverage pytest-cov pytest-xdist
           pip install -r requirements.txt
-          python -m pytest --verbose --disable-pytest-warnings --cov=GibbsSampler --cov-report=xml
+          python -m pytest --verbose --disable-pytest-warnings --cov=GibbsSampler --cov-report=xml -nauto
       - name: Upload
         uses: codecov/codecov-action@v2
         with:
