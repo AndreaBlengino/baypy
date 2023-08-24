@@ -16,25 +16,15 @@ class Regression(ABC):
         if (model.data is None) or (model.response_variable is None):
             raise ValueError("Missing 'data' or 'response_variable' in 'model'")
 
-        if model.initial_values is None:
-            raise ValueError("Missing 'initial_values' in 'model'")
-
         if model.priors is None:
             raise ValueError("Missing 'priors' in 'model'")
 
-        for initial_value in model.initial_values.keys():
-            if (initial_value != 'intercept') and (initial_value not in model.data.columns):
-                raise ValueError(f"Column '{initial_value}' not found in 'Model.data'")
-
-            if initial_value not in model.priors.keys():
-                raise ValueError(f"Missing '{initial_value}' prior value")
-
         for prior in model.priors.keys():
             if (prior not in  ['intercept', 'variance']) and (prior not in model.data.columns):
-                raise ValueError(f"Column '{initial_value}' not found in 'Model.data'")
+                raise ValueError(f"Column '{prior}' not found in 'Model.data'")
 
-            if (prior != 'variance') and (prior not in model.initial_values.keys()):
-                raise ValueError(f"Missing '{prior}' initial value")
+        self.model = model
+        self.posteriors = None
 
 
     @abstractmethod
@@ -64,8 +54,6 @@ class LinearRegression(Regression):
     def __init__(self, model: Model) -> None:
 
         super().__init__(model = model)
-        self.model = model
-        self.posteriors = None
 
 
     def sample(self, n_iterations: int, burn_in_iterations: int, n_chains: int) -> dict:
@@ -100,7 +88,7 @@ class LinearRegression(Regression):
 
         self.posteriors = {variable: [[] for _ in range(n_chains)] for variable in self.model.variable_names}
 
-        beta = [[self.model.initial_values[regressor] for regressor in regressor_names] for _ in range(n_chains)]
+        beta = [[0 for _ in regressor_names] for _ in range(n_chains)]
 
         for i in range(burn_in_iterations + n_iterations):
 

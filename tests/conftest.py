@@ -17,12 +17,6 @@ data['y'] = 3*data['x_1'] - 20*data['x_2'] - data['x_3'] - 5*data['x_1 * x_2'] +
 
 response_variable = 'y'
 
-initial_values = {'x_1': 1,
-                  'x_2': 2,
-                  'x_3': 3,
-                  'x_1 * x_2': 4,
-                  'intercept': 5}
-
 variance_sample_size = 5
 variance_of_variance = 10
 
@@ -49,8 +43,6 @@ predictors = {'x_1': 20, 'x_2': 5, 'x_3': -45}
 predictors['x_1 * x_2'] = predictors['x_1']*predictors['x_2']
 
 model_no_data = gs.LinearModel()
-model_no_data.set_initial_values(values = {'x': 0,
-                                           'intercept': 0})
 model_no_data.set_priors(priors = {'x': {'mean': 0,
                                          'variance': 1},
                                    'intercept': {'mean': 0,
@@ -58,56 +50,13 @@ model_no_data.set_priors(priors = {'x': {'mean': 0,
                                    'variance': {'shape': 1,
                                                 'scale': 1}})
 
-model_no_initial_values = gs.LinearModel()
-model_no_initial_values.set_data(data = pd.DataFrame(columns = ['x', 'z'], index = [0]),
-                                 response_variable = 'z')
-model_no_initial_values.set_priors(priors = {'x': {'mean': 0,
-                                                   'variance': 1},
-                                             'intercept': {'mean': 0,
-                                                           'variance': 1},
-                                             'variance': {'shape': 1,
-                                                          'scale': 1}})
-
 model_no_priors = gs.LinearModel()
 model_no_priors.set_data(data = pd.DataFrame(columns = ['x', 'z'], index = [0]),
                          response_variable = 'z')
-model_no_priors.set_initial_values(values = {'x': 0,
-                                             'intercept': 0})
-
-model_initial_value_not_in_data = gs.LinearModel()
-model_initial_value_not_in_data.set_data(data = pd.DataFrame(columns = ['x', 'z'], index = [0]),
-                                         response_variable = 'z')
-model_initial_value_not_in_data.set_initial_values(values = {'x': 0,
-                                                             'y': 0,
-                                                             'intercept': 0})
-model_initial_value_not_in_data.set_priors(priors = {'x': {'mean': 0,
-                                                           'variance': 1},
-                                                     'y': {'mean': 0,
-                                                           'variance': 1},
-                                                     'intercept': {'mean': 0,
-                                                                   'variance': 1},
-                                                     'variance': {'shape': 1,
-                                                                  'scale': 1}})
-
-model_initial_value_not_in_priors = gs.LinearModel()
-model_initial_value_not_in_priors.set_data(data = pd.DataFrame(columns = ['x', 'y', 'z'], index = [0]),
-                                           response_variable = 'z')
-model_initial_value_not_in_priors.set_initial_values(values = {'x': 0,
-                                                               'y': 0,
-                                                               'intercept': 0})
-model_initial_value_not_in_priors.set_priors(priors = {'x': {'mean': 0,
-                                                             'variance': 1},
-                                                       'intercept': {'mean': 0,
-                                                                     'variance': 1},
-                                                       'variance': {'shape': 1,
-                                                                    'scale': 1}})
 
 model_prior_not_in_data = gs.LinearModel()
 model_prior_not_in_data.set_data(data = pd.DataFrame(columns = ['x', 'y', 'z'], index = [0]),
                                  response_variable = 'z')
-model_prior_not_in_data.set_initial_values(values = {'x': 0,
-                                                     'y': 0,
-                                                     'intercept': 0})
 model_prior_not_in_data.set_priors(priors = {'x': {'mean': 0,
                                                    'variance': 1},
                                              'y': {'mean': 0,
@@ -119,28 +68,10 @@ model_prior_not_in_data.set_priors(priors = {'x': {'mean': 0,
                                              'variance': {'shape': 1,
                                                           'scale': 1}})
 
-model_prior_not_in_initial_values = gs.LinearModel()
-model_prior_not_in_initial_values.set_data(data = pd.DataFrame(columns = ['x', 'y', 'w', 'z'], index = [0]),
-                                           response_variable = 'z')
-model_prior_not_in_initial_values.set_initial_values(values = {'x': 0,
-                                                               'y': 0,
-                                                               'intercept': 0})
-model_prior_not_in_initial_values.set_priors(priors = {'x': {'mean': 0,
-                                                             'variance': 1},
-                                                       'y': {'mean': 0,
-                                                             'variance': 1},
-                                                       'w': {'mean': 0,
-                                                             'variance': 1},
-                                                       'intercept': {'mean': 0,
-                                                                     'variance': 1},
-                                                       'variance': {'shape': 1,
-                                                                    'scale': 1}})
-
 
 @fixture(scope = 'session',
          params = [{'data': data,
                     'response_variable': response_variable,
-                    'initial_values': initial_values,
                     'priors': priors,
                     'n_iterations': 1000,
                     'burn_in_iterations': 50,
@@ -151,7 +82,6 @@ model_prior_not_in_initial_values.set_priors(priors = {'x': {'mean': 0,
                     'predictors': predictors},
                    {'data': data,
                     'response_variable': response_variable,
-                    'initial_values': initial_values,
                     'priors': priors,
                     'n_iterations': 100,
                     'burn_in_iterations': 50,
@@ -162,7 +92,6 @@ model_prior_not_in_initial_values.set_priors(priors = {'x': {'mean': 0,
                     'predictors': predictors},
                    {'data': data,
                     'response_variable': response_variable,
-                    'initial_values': initial_values,
                     'priors': priors,
                     'n_iterations': 1000,
                     'burn_in_iterations': 50,
@@ -173,7 +102,6 @@ model_prior_not_in_initial_values.set_priors(priors = {'x': {'mean': 0,
                     'predictors': predictors},
                    {'data': data,
                     'response_variable': response_variable,
-                    'initial_values': initial_values,
                     'priors': priors,
                     'n_iterations': 1000,
                     'burn_in_iterations': 0,
@@ -217,11 +145,6 @@ def model_set_data_value_error(request):
     return request.param
 
 
-@fixture(params = ['initial_values', 1, 1.1, True, (0, 1), [0, 1], {0, 1}, None])
-def model_set_initial_value_type_error(request):
-    return request.param
-
-
 @fixture(params = ['priors', 1, 1.1, True, (0, 1), [0, 1], {0, 1}, None,
                    {'intercept': 'intercept', 'variance': 'variance'},
                    {'intercept': 1, 'variance': 1},
@@ -254,7 +177,6 @@ def model_set_priors_value_error(request):
 def sampler(general_testing_data):
     model = gs.LinearModel()
     model.set_data(data = general_testing_data['data'], response_variable = general_testing_data['response_variable'])
-    model.set_initial_values(values = general_testing_data['initial_values'])
     model.set_priors(priors = general_testing_data['priors'])
     sampler = gs.LinearRegression(model = model)
     return sampler
@@ -266,12 +188,8 @@ def linear_regression_init_type_error(request):
 
 
 @fixture(params = [model_no_data,
-                   model_no_initial_values,
                    model_no_priors,
-                   model_initial_value_not_in_data,
-                   model_initial_value_not_in_priors,
-                   model_prior_not_in_data,
-                   model_prior_not_in_initial_values])
+                   model_prior_not_in_data])
 def linear_regression_init_value_error(request):
     return request.param
 

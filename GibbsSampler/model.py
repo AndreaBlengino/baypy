@@ -10,7 +10,6 @@ class Model(ABC):
 
         self.data = None
         self.response_variable = None
-        self.initial_values = None
         self.priors = None
         self.variable_names = None
 
@@ -31,18 +30,6 @@ class Model(ABC):
 
 
     @abstractmethod
-    def set_initial_values(self, values: dict) -> None:
-        if not isinstance(values, dict):
-            raise TypeError("Parameter 'values' must be a dictionary")
-
-        if len(values) == 0:
-            raise ValueError("Parameter 'values' cannot be an empty dictionary")
-
-        if 'intercept' not in values.keys():
-            raise KeyError("Parameter 'values' must contain a 'intercept' key")
-
-
-    @abstractmethod
     def set_priors(self, priors: dict) -> None:
         if not isinstance(priors, dict):
             raise TypeError("Parameter 'priors' must be a dictionary")
@@ -50,11 +37,9 @@ class Model(ABC):
         if len(priors) == 0:
             raise ValueError("Parameter 'priors' cannot be an empty dictionary")
 
-        if 'intercept' not in priors.keys():
-            raise KeyError("Parameter 'priors' must contain a 'intercept' key")
-
-        if 'variance' not in priors.keys():
-            raise KeyError("Parameter 'priors' must contain a 'variance' key")
+        for prior in ['intercept', 'variance']:
+            if prior not in priors.keys():
+                raise KeyError(f"Parameter 'priors' must contain a '{prior}' key")
 
         for prior, values in priors.items():
             if not isinstance(values, dict):
@@ -84,12 +69,6 @@ class LinearModel(Model):
         super().set_data(data = data, response_variable = response_variable)
         self.data = data
         self.response_variable = response_variable
-
-
-    def set_initial_values(self, values: dict) -> None:
-
-        super().set_initial_values(values = values)
-        self.initial_values = values
 
 
     def set_priors(self, priors: dict) -> None:

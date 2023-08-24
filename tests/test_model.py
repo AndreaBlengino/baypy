@@ -26,32 +26,6 @@ class TestModelSetData:
 
 
 @mark.model
-class TestModelSetInitialValues:
-
-
-    def test_method(self, empty_model, general_testing_data):
-        empty_model.set_initial_values(values = general_testing_data['initial_values'])
-
-        assert empty_model.initial_values == general_testing_data['initial_values']
-        assert 'intercept' in empty_model.initial_values.keys()
-
-
-    def test_raises_type_error(self, empty_model, model_set_initial_value_type_error):
-        with raises(TypeError):
-            empty_model.set_initial_values(model_set_initial_value_type_error)
-
-
-    def test_raises_key_error(self, empty_model):
-        with raises(KeyError):
-            empty_model.set_initial_values({'regressor': 1})
-
-
-    def test_raises_value_error(self, empty_model):
-        with raises(ValueError):
-            empty_model.set_initial_values({})
-
-
-@mark.model
 class TestModelSetPriors:
 
 
