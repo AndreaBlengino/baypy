@@ -60,7 +60,7 @@ Lag 30   0.005944         0.015346 -0.007005
 gs.diagnostics.autocorrelation_plot(posteriors = posteriors)
 ```
 
-<img src="examples/salary/autocorrelation_plot.png" width="830" height="720">
+<img src="autocorrelation_plot.png" width="830" height="720">
 
 ### Posteriors Analysis
 
@@ -70,13 +70,13 @@ Asses posterior analysis:
 gs.analysis.trace_plot(posteriors = posteriors)
 ```
 
-<img src="examples/salary/trace_plot.png" width="830" height="540">
+<img src="trace_plot.png" width="830" height="540">
 
 ```python
 gs.analysis.residuals_plot(posteriors = posteriors, data = data, response_variable = 'y')
 ```
 
-<img src="examples/salary/residual_plot.png" width="830" height="622">
+<img src="residuals_plot.png" width="830" height="622">
 
 ```python
 gs.analysis.summary(posteriors = posteriors)
@@ -126,7 +126,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-<img src="examples/salary/predict_distribution.png" width="830" height="622">
+<img src="predict_distribution.png" width="830" height="622">
 
 Comparing data to fitted model posteriors:
 
@@ -156,4 +156,4 @@ plt.tight_layout()
 plt.show()
 ```
 
-<img src="examples/salary/data_vs_model.png" width="830" height="622">
+<img src="data_vs_model.png" width="830" height="622">
