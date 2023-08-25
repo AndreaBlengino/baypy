@@ -42,6 +42,7 @@ def autocorrelation_plot(posteriors: dict, max_lags: int = 30) -> None:
                 acorr = _compute_autocorrelation(vector = flatten_matrix(posteriors[variable][:, i]),
                                                  max_lags = max_lags)
                 ax[j, i].stem(acorr, markerfmt = ' ', basefmt = ' ')
+                ax[j, i].tick_params(bottom = False, top = False, left = False, right = False)
 
         for i, variable in enumerate(variable_names, 0):
             ax[i, 0].set_ylabel(variable)

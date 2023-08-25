@@ -40,6 +40,8 @@ def trace_plot(posteriors: dict) -> None:
         else:
             ax_i_trace.set_title(f'Trace of {variable}')
             ax_i_density.set_title(f'Density of {variable}')
+        ax_i_trace.tick_params(bottom = False, top = False, left = False, right = False)
+        ax_i_density.tick_params(bottom = False, top = False, left = False, right = False)
         trace_axes.append(ax_i_trace)
 
     for ax_i in trace_axes[1:]:
@@ -187,6 +189,10 @@ def residuals_plot(posteriors: dict, data: pd.DataFrame, response_variable: str)
 
     ax.set_xlabel('Predicted')
     ax.set_ylabel('Residuals')
+
+    ax.tick_params(bottom = False, top = False, left = False, right = False)
+
+    plt.tight_layout()
 
     plt.show()
 
