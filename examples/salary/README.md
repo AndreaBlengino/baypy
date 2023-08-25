@@ -40,14 +40,16 @@ Asses the model convergence diagnostics:
 
 ```python
 gs.diagnostics.effective_sample_size(posteriors = posteriors)
-
+```
+```
                        intercept  YearsExperience  variance
 Effective Sample Size    1336.25          1328.85   1360.84
 ```
 
 ```python
 gs.diagnostics.autocorrelation_summary(posteriors = posteriors)
-
+```
+```
         intercept  YearsExperience  variance
 Lag 0    1.000000         1.000000  1.000000
 Lag 1    0.019390         0.039420  0.034288
@@ -86,7 +88,8 @@ gs.analysis.residuals_plot(posteriors = posteriors, data = data, response_variab
 
 ```python
 gs.analysis.summary(posteriors = posteriors)
-
+```
+```
 Number of chains:           3
 Sample size per chian:    500
 
@@ -107,7 +110,8 @@ variance         2.094755e+07  2.792063e+07  3.275464e+07  3.925156e+07  5.77331
 
 ```python
 gs.analysis.compute_DIC(posteriors = posteriors, data = data, response_variable = 'y')
-
+```
+```
 Deviance at posterior means           548.70
 Posterior mean deviance               547.03
 Effective number of parameteres        -1.67

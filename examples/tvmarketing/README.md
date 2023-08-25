@@ -1,6 +1,6 @@
 ### Model Set Up
 
-Pretending to fit the tvmarketing dataset:
+Pretending to fit the [tvmarketing dataset](https://github.com/AndreaBlengino/GibbsSampler/blob/master/examples/tvmarketing/data.csv):
 
 ```python
 import numpy as np
@@ -86,14 +86,16 @@ Asses the model convergence diagnostics:
 
 ```python
 gs.diagnostics.effective_sample_size(posteriors = posteriors)
-
+```
+```
                        intercept   log TV  variance
 Effective Sample Size    1373.29  1321.11   1424.68
 ```
 
 ```python
 gs.diagnostics.autocorrelation_summary(posteriors = posteriors)
-
+```
+```
         intercept    log TV  variance
 Lag 0    1.000000  1.000000  1.000000
 Lag 1   -0.032124 -0.027163  0.001298
@@ -132,7 +134,8 @@ gs.analysis.residuals_plot(posteriors = posteriors, data = data, response_variab
 
 ```python
 gs.analysis.summary(posteriors = posteriors)
-
+```
+```
 Number of chains:           3
 Sample size per chian:    500
 
@@ -153,7 +156,8 @@ variance   0.036865  0.041706  0.044504  0.048087  0.054838
 
 ```python
 gs.analysis.compute_DIC(posteriors = posteriors, data = data, response_variable = 'y')
-
+```
+```
 Deviance at posterior means          -448.84
 Posterior mean deviance              -450.63
 Effective number of parameteres        -1.79
