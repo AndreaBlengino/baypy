@@ -1,15 +1,25 @@
 name: Tests
 on: [push, pull_request]
 jobs:
-  run:
+  build:
     runs-on: ubuntu-latest
+    strategy:
+      python-version: ["3.9", "3.10", "3.11"]
+
     steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install pytest coverage pytest-cov pytest-xdist
+          pip install -r requirements.txt
       - name: Fetch
         uses: actions/checkout@master
       - name: Test
         run: |
-          pip install pytest coverage pytest-cov pytest-xdist
-          pip install -r requirements.txt
           python -m pytest --verbose --disable-pytest-warnings --cov=GibbsSampler --cov-report=xml -nauto
       - name: Upload
         uses: codecov/codecov-action@v2

@@ -3,7 +3,7 @@ import pandas as pd
 
 
 class LinearModel(Model):
-    """GibbsSampler.model.model.LinearModel object.
+    r"""GibbsSampler.model.model.LinearModel object.
 
     Attributes
     ----------
