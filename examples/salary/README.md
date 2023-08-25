@@ -1,6 +1,6 @@
 ### Model Set Up
 
-Pretending to fit the salary dataset:
+Pretending to fit the [salary dataset](https://github.com/AndreaBlengino/GibbsSampler/blob/master/examples/salary/data.csv):
 
 ```python
 import numpy as np
@@ -60,6 +60,8 @@ Lag 30   0.005944         0.015346 -0.007005
 gs.diagnostics.autocorrelation_plot(posteriors = posteriors)
 ```
 
+<img src="examples/salary/autocorrelation_plot.png" width="830" height="720">
+
 ### Posteriors Analysis
 
 Asses posterior analysis:
@@ -68,9 +70,13 @@ Asses posterior analysis:
 gs.analysis.trace_plot(posteriors = posteriors)
 ```
 
+<img src="examples/salary/trace_plot.png" width="830" height="540">
+
 ```python
 gs.analysis.residuals_plot(posteriors = posteriors, data = data, response_variable = 'y')
 ```
+
+<img src="examples/salary/residual_plot.png" width="830" height="622">
 
 ```python
 gs.analysis.summary(posteriors = posteriors)
@@ -120,6 +126,8 @@ plt.tight_layout()
 plt.show()
 ```
 
+<img src="examples/salary/predict_distribution.png" width="830" height="622">
+
 Comparing data to fitted model posteriors:
 
 ```python
@@ -147,3 +155,5 @@ plt.tight_layout()
 
 plt.show()
 ```
+
+<img src="examples/salary/data_vs_model.png" width="830" height="622">
