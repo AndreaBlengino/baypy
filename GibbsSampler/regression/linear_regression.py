@@ -6,15 +6,101 @@ import numpy as np
 
 
 class LinearRegression(Regression):
+    r"""GibbsSampler.regression.linear_regression.LinearRegression object.
+
+    Constructor Parameters
+    ----------------------
+    model : GibbsSampler.model.model.Model
+        Model with data, regressors, response variable, initial values and priors to be solved through Monte Carlo
+        sampling.
+
+    Attributes
+    ----------
+    model : GibbsSampler.model.model.Model
+        Model with data, regressors, response variable, initial values and priors to be solved through Monte Carlo
+        sampling.
+    posteriors : dict
+        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
+        with a number of rows equals to the number of iterations and a number of columns equal to the number of Markov
+        chains.
+
+    Methods
+    -------
+    :meth:`GibbsSampler.regression.linear_regression.LinearRegression.sample()`
+        Samples a sequence of observations from the full posterior distribution of regressors' parameters
+        :math:`\beta_j` and ``variance`` :math:`\sigma^2`.
+
+    Constructor Raises
+    ------------------
+    TypeError
+        If ``model`` is not a ``GibbsSampler.model.model.Model``.
+    ValueError
+        - If ``model.data`` is ``None``,
+        - if ``model.response_variable`` is ``None``,
+        - if ``model.initial_values`` is ``None``,
+        - if ``model.priors`` is ``None,
+        - if a ``model.initial_values`` key is not a column of ``model.data``,
+        - if a ``model.initial_values`` key is not a key of ``model.priors``,
+        - if a ``model.priors`` key is not a column of ``model.data``,
+        - if a ``model.priors`` key is not a key of ``model.initial_values``.
+
+    See Also
+    --------
+    :meth:`GibbsSampler.model.linear_model.LinearModel`
+    """
 
 
     def __init__(self, model: Model) -> None:
-
         super().__init__(model = model)
 
 
     def sample(self, n_iterations: int, burn_in_iterations: int, n_chains: int) -> dict:
+        r"""Samples a sequence of observations from the full posterior distribution of regressors' parameters
+        :math:`\beta_j` and ``variance`` :math:`\sigma^2`.
+        First ``burn_in_iterations`` are discarded since they may not accurately represent the desired distribution.
+        For each variable, it generates ``n_chain`` Markov chains.
 
+        Parameters
+        ----------
+        n_iterations : int
+            Number of total sampling iteration for each chain. It must be a strictly positive integer.
+        burn_in_iterations : int
+            Number of burn-in iteration for each chain. It must be a positive integer or ``0``.
+        n_chains : int
+            Number of chains. It must be a strictly positive integer.
+
+        Raises
+        ------
+        TypeError
+            - If ``n_iterations`` is not a ``int``,
+            - if ``burn_in_iterations`` is not a ``int``,
+            - if ``n_chains`` is not a ``int``.
+        ValueError
+            - If ``n_iterations`` is equal to or less than ``0``,
+            - if ``burn_in_iterations`` is less than ``0``,
+            - if ``n_chains`` is equal to or less than ``0``.
+
+        Returns
+        -------
+        dict
+            Returns posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a
+            ``numpy.ndarray`` with ``n_iterations`` rows and ``n_chains`` columns.
+
+        Notes
+        -----
+        The linear regression model of the response variable :math:`y` with respect to regressors :math:`X` is:
+
+        .. math::
+            y \sim N(\mu, \sigma^2)
+        .. math::
+            \mu = \beta_0 + B X = \beta_0 + \sum_{j = 1}^m \beta_j x_j
+
+        and the likelyhood is:
+
+        .. math::
+            p \left( y \left\vert B,\sigma^2 \right. \right) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp{\frac{\left(y -
+            \mu \right)^2}{\sigma^2}} .
+        """
         super().sample(n_iterations = n_iterations, burn_in_iterations = burn_in_iterations, n_chains = n_chains)
         data = self.model.data.copy()
 
@@ -29,18 +115,18 @@ class LinearRegression(Regression):
         np.fill_diagonal(Sigma_0, sigma_0)
         Sigma_0_inv = np.linalg.inv(Sigma_0)
 
-        T_0 = self.model.priors['variance']['shape']
+        k_0 = self.model.priors['variance']['shape']
         theta_0 = self.model.priors['variance']['scale']
 
         n = len(data)
-        T_1 = T_0 + n
+        k_1 = k_0 + n
 
-        Y = data[self.model.response_variable]
+        y = data[self.model.response_variable]
         data['intercept'] = 1
         X = np.array(data[regressor_names])
 
-        XtX = np.dot(X.transpose(), X)
-        XtY = np.dot(X.transpose(), Y)[np.newaxis].transpose()
+        Xt_X = np.dot(X.transpose(), X)
+        Xt_y = np.dot(X.transpose(), y)[np.newaxis].transpose()
         Sigma_0_inv_Beta_0 = np.dot(Sigma_0_inv, Beta_0)
 
         self.posteriors = {variable: [[] for _ in range(n_chains)] for variable in self.model.variable_names}
@@ -49,14 +135,14 @@ class LinearRegression(Regression):
 
         for i in range(burn_in_iterations + n_iterations):
 
-            sigma2 = [sample_sigma2(Y = Y,
+            sigma2 = [sample_sigma2(y = y,
                                     X = X,
                                     beta = beta[i],
-                                    T_1 = T_1,
+                                    k_1 = k_1,
                                     theta_0 = theta_0) for i in range(n_chains)]
 
-            beta = [sample_beta(XtX = XtX,
-                                XtY = XtY,
+            beta = [sample_beta(Xt_X = Xt_X,
+                                Xt_y = Xt_y,
                                 sigma2 = sigma2[i],
                                 Sigma_0_inv = Sigma_0_inv,
                                 Sigma_0_inv_Beta_0 = Sigma_0_inv_Beta_0) for i in range(n_chains)]

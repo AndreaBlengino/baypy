@@ -6,7 +6,32 @@ from ..utils import flatten_matrix
 
 
 def trace_plot(posteriors: dict) -> None:
+    """Plots the traces and the probability density for each posterior.
+    The plot shows the traces for each Markov chain, for each regression variable and the relative posterior density.
+    The plot layout has number of rows equal to the number of regression variables and two columns: traces on the left
+    and densities on the right.
 
+    Parameters
+    ----------
+    posteriors : dict
+        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
+        with a number of rows equal to the number of iterations and a number of columns equal to the number of Markov
+        chains.
+
+    Raises
+    ------
+    TypeError
+        - If ``posteriors`` is not a ``dict``,
+        - if a posterior sample is not a ``numpy.ndarray``.
+    KeyError
+        If ``posteriors`` does not contain both ``intercept`` and ``variance`` keys.
+    ValueError
+        If a posterior sample is an empty ``numpy.ndarray``.
+
+    See Also
+    --------
+    :meth:`GibbsSampler.regression.linear_regression.LinearRegression`
+    """
     if not isinstance(posteriors, dict):
         raise TypeError(f"Parameter 'posteriors' must be a dictionary")
 
@@ -61,7 +86,41 @@ def _compute_kde(posterior: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
 
 
 def summary(posteriors: dict, alpha: float = 0.05, quantiles: list = None) -> None:
+    """Prints a statistical summary for each posterior.
 
+    Parameters
+    ----------
+    posteriors : dict
+        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
+        with a number of rows equal to the number of iterations and a number of columns equal to the number of Markov
+        chains.
+    alpha : float
+        Significance level. It is used to compute the Highest Posterior Density (HPD) interval. It must be between ``0``
+        and ``1``.
+    quantiles : list, optional
+        List of the quantiles to compute, for each posterior. It cannot be empty. It must contain only float between
+        ``0`` and ``1``. Default is ``[0.025, 0.25, 0.5, 0.75, 0.975]``.
+
+    Raises
+    ------
+    TypeError
+        - If ``posteriors`` is not a ``dict``,
+        - if a posterior sample is not a ``numpy.ndarray``,
+        - if ``alpha`` is not a ``float``,
+        - if ``quantiles`` is not a ``list``,
+        - if a ``quantiles`` value is not a ``float``.
+    KeyError
+        If ``posteriors`` does not contain both ``intercept`` and ``variance`` keys.
+    ValueError
+        - If a posterior sample is an empty ``numpy.ndarray``,
+        - if ``alpha`` is not between ``0`` and ``1``,
+        - if ``quantiles`` is an empty ``list``,
+        - if a ``quantiles`` value is not between ``0`` and ``1``.
+
+    See Also
+    --------
+    :meth:`GibbsSampler.regression.linear_regression.LinearRegression`
+    """
     if not isinstance(posteriors, dict):
         raise TypeError(f"Parameter 'posteriors' must be a dictionary")
 
@@ -144,7 +203,52 @@ def _compute_hpd_interval(x: np.ndarray, alpha: float) -> tuple[float, float]:
 
 
 def residuals_plot(posteriors: dict, data: pd.DataFrame, response_variable: str) -> None:
+    r"""Plots the residuals :math:`\epsilon` with respect to predicted values :math:`\hat{y}`.
 
+    Parameters
+    ----------
+    posteriors : dict
+        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
+        with a number of rows equal to the number of iterations and a number of columns equal to the number of Markov
+        chains.
+    data : pandas.DataFrame
+        Observed data of the model. It cannot be empty. It must contain regressor variables :math:`X` and the
+        response variable :math:`y`.
+    response_variable : string
+        Name of the response variable :math:`y`. In must be one of the columns of ``data``.
+
+    Raises
+    ------
+    TypeError
+        - If ``posteriors`` is not a ``dict``,
+        - if a posterior sample is not a ``numpy.ndarray``,
+        - if ``data`` is not an instance of ``pandas.DataFrame``,
+        - if ``response_variable`` is not a ``str``.
+    KeyError
+        If ``posteriors`` does not contain both ``intercept`` and ``variance`` keys.
+    ValueError
+        - If a posterior sample is an empty ``numpy.ndarray``,
+        - if a posterior key is not a column of ``data``,
+        - if ``data`` is an empty ``pandas.DataFrame``,
+        - if ``response_variable`` is not a column of ``data``.
+
+    See Also
+    --------
+    :meth:`GibbsSampler.regression.linear_regression.LinearRegression`
+
+    Notes
+    -----
+    Predicted values are computed at data points :math:`X` using the posteriors means for each regressor's parameter:
+
+    .. math::
+        \hat{y_i} = \beta_0 + \sum_{j = 1}^{m} \beta_j x_{i,j}
+
+    while residuals are the difference between the observed values and the predicted values of the
+    ``response_variable``:
+
+    .. math::
+        \epsilon_i = y_i - \hat{y_i}
+    """
     if not isinstance(posteriors, dict):
         raise TypeError(f"Parameter 'posteriors' must be a dictionary")
 
@@ -198,7 +302,42 @@ def residuals_plot(posteriors: dict, data: pd.DataFrame, response_variable: str)
 
 
 def predict_distribution(posteriors: dict, predictors: dict) -> np.ndarray:
+    """Predicts a posterior distribution for an unobserved values. It takes the posteriors samples of the model
+    parameters, and for each of those, draws a sample from the likelihood.
 
+    Parameters
+    ----------
+    posteriors : dict
+        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
+        with a number of rows equal to the number of iterations and a number of columns equal to the number of Markov
+        chains.
+    predictors : dict
+        Values of predictors :math:`X` at which compute the posterior distribution. Each predictor has to be set as a
+        key-value pair.
+
+    Returns
+    -------
+    numpy.ndarray
+        Array of the predicted posterior distribution. It contains a number of element equal to the number of
+        regression iterations times the number of model Markov chains.
+
+    Raises
+    ------
+    TypeError
+        - If ``posteriors`` is not a ``dict``,
+        - if a posterior sample is not a ``numpy.ndarray``,
+        - if ``predictors`` is not a ``dict``.
+    KeyError
+        - If ``posteriors`` does not contain both ``intercept`` and ``variance`` keys,
+        - if a ``predictors`` key is not a key of ``posteriors``.
+    ValueError
+        - If a posterior sample is an empty ``numpy.ndarray``,
+        - if ``predictors`` is an empty ``dict``.
+
+    See Also
+    --------
+    :meth:`GibbsSampler.regression.linear_regression.LinearRegression`
+    """
     if not isinstance(posteriors, dict):
         raise TypeError(f"Parameter 'posteriors' must be a dictionary")
 
@@ -239,7 +378,93 @@ def predict_distribution(posteriors: dict, predictors: dict) -> np.ndarray:
 
 
 def compute_DIC(posteriors: dict, data: pd.DataFrame, response_variable: str) -> None:
+    r"""Computes and prints the Deviance Information Criterion (DIC) for the fitted linear model.
 
+    Parameters
+    ----------
+    posteriors : dict
+        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
+        with a number of rows equal to the number of iterations and a number of columns equal to the number of Markov
+        chains.
+    data : pandas.DataFrame
+        Observed data of the model. It cannot be empty. It must contain regressor variables :math:`X` and the
+        response variable :math:`y`.
+    response_variable : string
+        Name of the response variable :math:`y`. In must be one of the columns of ``data``.
+
+    Raises
+    ------
+    TypeError
+        - If ``posteriors`` is not a ``dict``,
+        - if a posterior sample is not a ``numpy.ndarray``,
+        - if ``data`` is not an instance of ``pandas.DataFrame``,
+        - if ``response_variable`` is not a ``str``.
+    KeyError
+        If ``posteriors`` does not contain both ``intercept`` and ``variance`` keys.
+    ValueError
+        - If a posterior sample is an empty ``numpy.ndarray``,
+        - if a posterior key is not a column of ``data``,
+        - if ``data`` is an empty ``pandas.DataFrame``,
+        - if ``response_variable`` is not a column of ``data``.
+
+    See Also
+    --------
+    :meth:`GibbsSampler.regression.linear_regression.LinearRegression`
+
+    Notes
+    -----
+    The DIC measures posterior predictive error by penalizing the fit of a model (deviance) by its complexity,
+    determined by the effective number of parameters.
+    Comparing some alternative models, the smaller the DIC of a model, the *better* the model.
+    Pretending to fit a linear regression of the response variable :math:`y` with respect to regressors :math:`X`,
+    according to the following model:
+
+    .. math::
+        y \sim N(\mu, \sigma^2)
+    .. math::
+        \mu = \beta_0 + B X = \beta_0 + \sum_{j = 1}^m \beta_j x_j
+
+    then the *likelyhood* is:
+
+    .. math::
+        p \left( y \left\vert B,\sigma^2 \right. \right) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp{\frac{\left(y - \mu
+        \right)^2}{\sigma^2}} .
+
+    The *deviance* is defined as:
+
+    .. math::
+        D \left( y, B, \sigma^2 \right) = -2\log p \left( y \left\vert B,\sigma^2 \right. \right) .
+
+    The *deviance* at posterior mean of :math:`B` and :math:`\sigma^2`, denoted by :math:`\overline{B}` and
+    :math:`\overline{\sigma^2}` is:
+
+    .. math::
+        D_{{\overline{\beta}}, \overline{\sigma^2}} (y) = D \left( y, \overline{B}, \overline{\sigma^2} \right)
+
+    while the posterior mean deviance is:
+
+    .. math::
+        \overline{D} \left( y, B, \sigma^2 \right) = E \left( D(y, B, \sigma^2) \left. \right\vert y \right) .
+
+    and the *effective number of parameter* is defined as:
+
+    .. math::
+        pD = \overline{D} \left( y, B, \sigma^2 \right) - D_{{\overline{\beta}}, \overline{\sigma^2}} (y) .
+
+    The *Deviance Information Criterion* is:
+
+    .. math::
+        DIC = 2 \overline{D} \left( y, B, \sigma^2 \right) - D_{{\overline{\beta}}, \overline{\sigma^2}} (y) =
+        \overline{D} \left( y, B, \sigma^2 \right) + pD =
+        D_{{\overline{B}}, \overline{\sigma^2}} (y) + 2pD .
+
+    References
+    ----------
+    .. [1] O. Spiegelhalter DJ, Best NG, Carlin BP, van der Linde A. Bayesian measures of model complexity and fit.
+       J R Statist Soc B. 2002;64:583–616.
+    .. [2] Gelman A, Carlin JB, Stern HS, Rubin DS. Bayesian Data Analysis. 2. Chapman & Hall/CRC; Boca Raton,
+       Florida: 2004.
+    """
     if not isinstance(posteriors, dict):
         raise TypeError(f"Parameter 'posteriors' must be a dictionary")
 

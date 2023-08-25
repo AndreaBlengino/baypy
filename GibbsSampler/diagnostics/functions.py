@@ -5,7 +5,37 @@ from ..utils import flatten_matrix
 
 
 def autocorrelation_plot(posteriors: dict, max_lags: int = 30) -> None:
+    """Plots the auto-correlation for each Markov chain for each regression variable.
+    The plot shows the auto-correlation trend from lag ``0`` (when auto-correlation is always ``1``) up to ``max_lags``.
+    The plot layout has number of rows equal to the number of regression variables and a number of columns equal to the
+    number of chains.
 
+    Parameters
+    ----------
+    posteriors : dict
+        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
+        with a number of rows equal to the number of iterations and a number of columns equal to the number of Markov
+        chains.
+    max_lags : int, optional
+        Maximum number of lags to which compute the auto-correlation. The default is ``30``.
+
+    Raises
+    ------
+    TypeError
+        - If ``posteriors`` is not a ``dict``,
+        - if a posterior sample is not a ``numpy.ndarray``,
+        - if ``max_lags`` is not a ``int``.
+    KeyError
+        If ``posteriors`` does not contain both ``intercept`` and ``variance`` keys.
+    ValueError
+        - If a posterior sample is an empty ``numpy.ndarray``,
+        - if ``max_lags`` is less or equal to ``0``.
+
+    See Also
+    --------
+    :meth:`GibbsSampler.diagnostics.functions.autocorrelation_summary`
+    :meth:`GibbsSampler.diagnostics.functions.effective_sample_size`
+    """
     if not isinstance(posteriors, dict):
         raise TypeError(f"Parameter 'posteriors' must be a dictionary")
 
@@ -75,7 +105,43 @@ def autocorrelation_plot(posteriors: dict, max_lags: int = 30) -> None:
 
 
 def autocorrelation_summary(posteriors: dict, lags: list = None) -> None:
+    """Prints the auto-correlation summary for each regression variable.
+    The summary reports the auto-correlation values at the lags listed in ``lags``.
 
+    Parameters
+    ----------
+    posteriors : dict
+        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
+        with a number of rows equal to the number of iterations and a number of columns equal to the number of Markov
+        chains.
+    lags : list, optional
+        List of the lags to which compute the auto-correlation. It cannot be a empty ``list``. It must contain only
+        positive integers. The default is ``[0, 1, 5, 10, 30]``.
+
+    Raises
+    ------
+    TypeError
+        - If ``posteriors`` is not a ``dict``,
+        - if a posterior sample is not a ``numpy.ndarray``,
+        - if ``lags`` is not a ``list``,
+        - if ``lags`` does not contain only ``int``.
+    KeyError
+        If ``posteriors`` does not contain both ``intercept`` and ``variance`` keys.
+    ValueError
+        - If a posterior sample is an empty ``numpy.ndarray``,
+        - if ``lags`` is an empty ``list``,
+        - if a value in ``lags`` is a negative ``int``.
+
+    See Also
+    --------
+    :meth:`GibbsSampler.diagnostics.functions.autocorrelation_plot`
+    :meth:`GibbsSampler.diagnostics.functions.effective_sample_size`
+
+    Notes
+    -----
+    The reported auto-correlation for each variable is a mean of auto-correlations for the chains of that variable, for
+    each chain.
+    """
     if not isinstance(posteriors, dict):
         raise TypeError(f"Parameter 'posteriors' must be a dictionary")
 
@@ -119,7 +185,36 @@ def autocorrelation_summary(posteriors: dict, lags: list = None) -> None:
 
 
 def effective_sample_size(posteriors: dict) -> None:
+    """Computes and prints the effective number of sample for each posterior.
 
+    Parameters
+    ----------
+    posteriors : dict
+        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
+        with a number of rows equals to the number of iterations and a number of columns equal to the number of Markov
+        chains.
+
+    Raises
+    ------
+    TypeError
+        - If ``posteriors`` is not a ``dict``,
+        - if a posterior sample is not a ``numpy.ndarray``.
+    KeyError
+        If ``posteriors`` does not contain both ``intercept`` and ``variance`` keys.
+    ValueError
+        If a posterior sample is an empty ``numpy.ndarray``.
+
+    See Also
+    --------
+    :meth:`GibbsSampler.diagnostics.functions.autocorrelation_plot`
+    :meth:`GibbsSampler.diagnostics.functions.autocorrelation_summary`
+
+    Notes
+    -----
+    The effective number of sample could be theoretically equal to the number of iterations in case of no
+    auto-correlation of the Markov chain. The greater the auto-correlation of the Markov chain, the smaller the
+    effective sample size of the posterior.
+    """
     if not isinstance(posteriors, dict):
         raise TypeError(f"Parameter 'posteriors' must be a dictionary")
 
