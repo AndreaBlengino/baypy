@@ -1,6 +1,6 @@
 ### Model Set Up
 
-Pretending to fit the heart dataset:
+Pretending to fit the [heart dataset](ehttps://github.com/AndreaBlengino/GibbsSampler/blob/master/examples/heart/data.csv):
 
 ```python
 import numpy as np

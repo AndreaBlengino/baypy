@@ -34,7 +34,7 @@ def trace_plot(posteriors: dict) -> None:
         ax_i_trace.plot(posteriors[variable], linewidth = 0.5)
         ax_i_density.plot(*_compute_kde(posteriors[variable].flatten()))
 
-        if variable != 'variance':
+        if variable not in ['intercept', 'variance']:
             ax_i_trace.set_title(f'Trace of {variable} parameter')
             ax_i_density.set_title(f'Density of {variable} parameter')
         else:
