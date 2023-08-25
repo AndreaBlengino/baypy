@@ -60,7 +60,9 @@ Lag 30   0.005944         0.015346 -0.007005
 gs.diagnostics.autocorrelation_plot(posteriors = posteriors)
 ```
 
-<img src="autocorrelation_plot.png" width="830" height="720">
+<p align="center">
+    <img src="autocorrelation_plot.png">
+</p>
 
 ### Posteriors Analysis
 
@@ -70,13 +72,17 @@ Asses posterior analysis:
 gs.analysis.trace_plot(posteriors = posteriors)
 ```
 
-<img src="trace_plot.png" width="830" height="540">
+<p align="center">
+    <img src="trace_plot.png">
+</p>
 
 ```python
 gs.analysis.residuals_plot(posteriors = posteriors, data = data, response_variable = 'y')
 ```
 
-<img src="residuals_plot.png" width="830" height="622">
+<p align="center">
+    <img src="residuals_plot.png">
+</p>
 
 ```python
 gs.analysis.summary(posteriors = posteriors)
@@ -111,6 +117,8 @@ Deviace Information Criterion         545.36
 Predict the `Salary` distribution for a predictor `YearsExperience = 5`:
 
 ```python
+import matplotlib.pyplot as plt
+
 distribution = gs.analysis.predict_distribution(posteriors = posteriors, predictors = {'YearsExperience': 5})
 
 fig_2, ax_2 = plt.subplots()
@@ -126,7 +134,9 @@ plt.tight_layout()
 plt.show()
 ```
 
-<img src="predict_distribution.png" width="830" height="622">
+<p align="center">
+    <img src="predict_distribution.png">
+</p>
 
 Comparing data to fitted model posteriors:
 
@@ -156,4 +166,6 @@ plt.tight_layout()
 plt.show()
 ```
 
-<img src="data_vs_model.png" width="830" height="622">
+<p align="center">
+    <img src="data_vs_model.png">
+</p>
