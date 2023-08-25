@@ -42,7 +42,7 @@ q_max = 0.975
 predictors = {'x_1': 20, 'x_2': 5, 'x_3': -45}
 predictors['x_1 * x_2'] = predictors['x_1']*predictors['x_2']
 
-model_no_data = gs.LinearModel()
+model_no_data = gs.model.LinearModel()
 model_no_data.priors = {'x': {'mean': 0,
                               'variance': 1},
                         'intercept': {'mean': 0,
@@ -50,7 +50,7 @@ model_no_data.priors = {'x': {'mean': 0,
                         'variance': {'shape': 1,
                                      'scale': 1}}
 
-model_no_response_variable = gs.LinearModel()
+model_no_response_variable = gs.model.LinearModel()
 model_no_response_variable.data = pd.DataFrame(columns = ['x', 'y', 'z'], index = [0])
 model_no_response_variable.priors = {'x': {'mean': 0,
                                            'variance': 1},
@@ -61,11 +61,11 @@ model_no_response_variable.priors = {'x': {'mean': 0,
                                      'variance': {'shape': 1,
                                                   'scale': 1}}
 
-model_no_priors = gs.LinearModel()
+model_no_priors = gs.model.LinearModel()
 model_no_priors.data = pd.DataFrame(columns = ['x', 'z'], index = [0])
 model_no_priors.response_variable = 'z'
 
-model_response_variable_not_in_data = gs.LinearModel()
+model_response_variable_not_in_data = gs.model.LinearModel()
 model_response_variable_not_in_data.data = pd.DataFrame(columns = ['x', 'y', 'z'], index = [0])
 model_response_variable_not_in_data.response_variable = 'w'
 model_response_variable_not_in_data.priors = {'x': {'mean': 0,
@@ -77,7 +77,7 @@ model_response_variable_not_in_data.priors = {'x': {'mean': 0,
                                               'variance': {'shape': 1,
                                                            'scale': 1}}
 
-model_prior_not_in_data = gs.LinearModel()
+model_prior_not_in_data = gs.model.LinearModel()
 model_prior_not_in_data.data = pd.DataFrame(columns = ['x', 'y', 'z'], index = [0])
 model_prior_not_in_data.response_variable = 'z'
 model_prior_not_in_data.priors = {'x': {'mean': 0,
@@ -139,7 +139,7 @@ def general_testing_data(request):
 
 @fixture(scope = 'session')
 def empty_model():
-    model = gs.LinearModel()
+    model = gs.model.LinearModel()
     return model
 
 
@@ -183,11 +183,11 @@ def model_priors_value_error(request):
 
 @fixture(scope = 'session')
 def sampler(general_testing_data):
-    model = gs.LinearModel()
+    model = gs.model.LinearModel()
     model.data = general_testing_data['data']
     model.response_variable = general_testing_data['response_variable']
     model.priors = general_testing_data['priors']
-    sampler = gs.LinearRegression(model = model)
+    sampler = gs.regression.LinearRegression(model = model)
     return sampler
 
 

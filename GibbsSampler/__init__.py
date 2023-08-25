@@ -1,4 +1,4 @@
 import GibbsSampler.diagnostics as diagnostics
 import GibbsSampler.analysis as analysis
-from .model import LinearModel
-from .regression import LinearRegression
+import GibbsSampler.model as model
+import GibbsSampler.regression as regression

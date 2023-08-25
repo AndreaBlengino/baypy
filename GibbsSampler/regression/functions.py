@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from scipy.stats import invgamma, multivariate_normal
-from .utils import flatten_matrix
+from GibbsSampler.utils import flatten_matrix
 
 
 def sample_sigma2(Y: pd.Series, X: np.ndarray, beta: np.ndarray, T_1: float, theta_0: float) -> float:

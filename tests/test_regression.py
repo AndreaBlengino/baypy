@@ -9,12 +9,12 @@ class TestLinearRegressionInit:
 
     def test_raises_type_error(self, linear_regression_init_type_error):
         with raises(TypeError):
-            gs.LinearRegression(model = linear_regression_init_type_error)
+            gs.regression.LinearRegression(model = linear_regression_init_type_error)
 
 
     def test_raises_value_error(self, linear_regression_init_value_error):
         with raises(ValueError):
-            gs.LinearRegression(model = linear_regression_init_value_error)
+            gs.regression.LinearRegression(model = linear_regression_init_value_error)
 
 
 @mark.regression
