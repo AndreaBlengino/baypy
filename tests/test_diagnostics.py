@@ -1,6 +1,7 @@
 import GibbsSampler as gs
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 from pytest import mark, raises
 
 
@@ -36,13 +37,19 @@ class TestDiagnosticsAutocorrelationSummary:
 
 
     def test_method(self, posteriors):
-        gs.diagnostics.autocorrelation_summary(posteriors)
+        acorr_summary = gs.diagnostics.autocorrelation_summary(posteriors)
+
+        assert isinstance(acorr_summary, pd.DataFrame)
+        assert not acorr_summary.empty
+        assert all([index.startswith('Lag ') for index in acorr_summary.index])
+        assert list(acorr_summary.columns) == list(posteriors.keys())
 
 
     def test_raises_type_error(self, diagnostics_autocorrelation_summary_type_error):
         with raises(TypeError):
             gs.diagnostics.autocorrelation_summary(posteriors = diagnostics_autocorrelation_summary_type_error['posteriors'],
-                                                   lags = diagnostics_autocorrelation_summary_type_error['lags'])
+                                                   lags = diagnostics_autocorrelation_summary_type_error['lags'],
+                                                   print_summary = diagnostics_autocorrelation_summary_type_error['print_summary'])
 
 
     def test_raises_key_error(self, diagnostics_autocorrelation_summary_key_error):
@@ -62,12 +69,18 @@ class TestDiagnosticsEffectiveSampleSize:
 
 
     def test_method(self, posteriors):
-        gs.diagnostics.effective_sample_size(posteriors)
+        ess_summary = gs.diagnostics.effective_sample_size(posteriors)
+
+        assert isinstance(ess_summary, pd.DataFrame)
+        assert not ess_summary.empty
+        assert ess_summary.index[0] == 'Effective Sample Size'
+        assert list(ess_summary.columns) == list(posteriors.keys())
 
 
     def test_raises_type_error(self, diagnostics_effective_sample_size_type_error):
         with raises(TypeError):
-            gs.diagnostics.effective_sample_size(diagnostics_effective_sample_size_type_error)
+            gs.diagnostics.effective_sample_size(posteriors = diagnostics_effective_sample_size_type_error['posteriors'],
+                                                 print_summary = diagnostics_effective_sample_size_type_error['print_summary'])
 
 
     def test_raises_key_error(self, diagnostics_effective_sample_size_key_error):

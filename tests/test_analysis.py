@@ -1,6 +1,7 @@
 import GibbsSampler as gs
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 from pytest import mark, raises
 
 
@@ -33,7 +34,7 @@ class TestAnalysisSummary:
 
 
     def test_method(self, posteriors, general_testing_data):
-        gs.analysis.summary(posteriors)
+        summary = gs.analysis.summary(posteriors)
 
         data_tmp = general_testing_data['data'].copy()
         data_tmp['intercept'] = 1
@@ -47,12 +48,24 @@ class TestAnalysisSummary:
 
             assert lower_bound <= linear_model_results[i] <= upper_bound
 
+        assert summary['n_chains'] == general_testing_data['n_chains']
+        assert summary['n_iterations'] == general_testing_data['n_iterations']
+        assert isinstance(summary['summary'], pd.DataFrame)
+        assert not summary['summary'].empty
+        assert list(summary['summary'].index) == list(posteriors.keys())
+        assert all(summary['summary'].columns == ['Mean', 'SD', 'HPD min', 'HPD max'])
+        assert isinstance(summary['quantiles'], pd.DataFrame)
+        assert not summary['quantiles'].empty
+        assert list(summary['quantiles'].index) == list(posteriors.keys())
+        assert all(summary['quantiles'].columns == ['2.5%', '25%', '50%', '75%', '97.5%'])
+
 
     def test_raises_type_error(self, analysis_summary_type_error):
         with raises(TypeError):
             gs.analysis.summary(posteriors = analysis_summary_type_error['posteriors'],
                                 alpha = analysis_summary_type_error['alpha'],
-                                quantiles = analysis_summary_type_error['quantiles'])
+                                quantiles = analysis_summary_type_error['quantiles'],
+                                print_summary = analysis_summary_type_error['print_summary'])
 
 
     def test_raises_key_error(self, analysis_summary_key_error):
@@ -142,16 +155,22 @@ class TestAnalysisComputeDIC:
 
 
     def test_method(self, posteriors, general_testing_data):
-        gs.analysis.compute_DIC(posteriors = posteriors,
-                                data = general_testing_data['data'],
-                                response_variable = general_testing_data['response_variable'])
+        summary = gs.analysis.compute_DIC(posteriors = posteriors,
+                                          data = general_testing_data['data'],
+                                          response_variable = general_testing_data['response_variable'])
+
+        assert isinstance(summary, dict)
+        assert list(summary.keys()) == ['deviance at posterior means', 'posterior mean deviance',
+                                        'effective number of parameters', 'DIC']
+        assert all([isinstance(value, float) for value in summary.values()])
 
 
     def test_raises_type_error(self, analysis_compute_dic_type_error):
         with raises(TypeError):
             gs.analysis.compute_DIC(posteriors = analysis_compute_dic_type_error['posteriors'],
                                     data = analysis_compute_dic_type_error['data'],
-                                    response_variable = analysis_compute_dic_type_error['response_variable'])
+                                    response_variable = analysis_compute_dic_type_error['response_variable'],
+                                    print_summary = analysis_compute_dic_type_error['print_summary'])
 
 
     def test_raises_key_error(self, analysis_compute_dic_key_error):
