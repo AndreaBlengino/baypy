@@ -104,7 +104,7 @@ def autocorrelation_plot(posteriors: dict, max_lags: int = 30) -> None:
     plt.show()
 
 
-def autocorrelation_summary(posteriors: dict, lags: list = None) -> None:
+def autocorrelation_summary(posteriors: dict, lags: list = None, print_summary: bool = True) -> pd.DataFrame:
     """Prints the auto-correlation summary for each regression variable.
     The summary reports the auto-correlation values at the lags listed in ``lags``.
 
@@ -117,6 +117,14 @@ def autocorrelation_summary(posteriors: dict, lags: list = None) -> None:
     lags : list, optional
         List of the lags to which compute the auto-correlation. It cannot be a empty ``list``. It must contain only
         positive integers. The default is ``[0, 1, 5, 10, 30]``.
+    print_summary : bool, optional
+        If ``True`` prints the autocorrelation summary report. Default is ``True``.
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame with a number of row equal to the number of element in ``lags`` and a number of columns equal to the
+        number of model variables. Lags are reported in dataframe index.
 
     Raises
     ------
@@ -124,7 +132,8 @@ def autocorrelation_summary(posteriors: dict, lags: list = None) -> None:
         - If ``posteriors`` is not a ``dict``,
         - if a posterior sample is not a ``numpy.ndarray``,
         - if ``lags`` is not a ``list``,
-        - if ``lags`` does not contain only ``int``.
+        - if ``lags`` does not contain only ``int``,
+        - if ``print_summary`` is not a ``bool``.
     KeyError
         If ``posteriors`` does not contain both ``intercept`` and ``variance`` keys.
     ValueError
@@ -147,6 +156,9 @@ def autocorrelation_summary(posteriors: dict, lags: list = None) -> None:
 
     if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
         raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
+
+    if not isinstance(print_summary, bool):
+        raise TypeError("Parameter 'print_summary' must be a boolean")
 
     for posterior in ['intercept', 'variance']:
         if posterior not in posteriors.keys():
@@ -181,10 +193,13 @@ def autocorrelation_summary(posteriors: dict, lags: list = None) -> None:
         variable_acorr = np.array(variable_acorr)
         acorr_summary[variable] = variable_acorr.mean(axis = 0)
 
-    print(acorr_summary.to_string())
+    if print_summary:
+        print(acorr_summary.to_string())
+
+    return acorr_summary
 
 
-def effective_sample_size(posteriors: dict) -> None:
+def effective_sample_size(posteriors: dict, print_summary: bool = True) -> pd.DataFrame:
     """Computes and prints the effective number of sample for each posterior.
 
     Parameters
@@ -193,12 +208,21 @@ def effective_sample_size(posteriors: dict) -> None:
         Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
         with a number of rows equals to the number of iterations and a number of columns equal to the number of Markov
         chains.
+    print_summary : bool, optional
+        If ``True`` prints the effective sample size summary report. Default is ``True``.
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame with a single row and a number of columns equal to the number of model variables. The unique index of
+        the dataframe is ``Effective Sample Size``.
 
     Raises
     ------
     TypeError
         - If ``posteriors`` is not a ``dict``,
-        - if a posterior sample is not a ``numpy.ndarray``.
+        - if a posterior sample is not a ``numpy.ndarray``,
+        - if ``print_summary`` is not a ``bool``.
     KeyError
         If ``posteriors`` does not contain both ``intercept`` and ``variance`` keys.
     ValueError
@@ -220,6 +244,9 @@ def effective_sample_size(posteriors: dict) -> None:
 
     if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
         raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
+
+    if not isinstance(print_summary, bool):
+        raise TypeError("Parameter 'print_summary' must be a boolean")
 
     for posterior in ['intercept', 'variance']:
         if posterior not in posteriors.keys():
@@ -247,8 +274,11 @@ def effective_sample_size(posteriors: dict) -> None:
 
         ess_summary[variable] = np.sum(variable_ess)
 
-    with pd.option_context('display.precision', 2):
-        print(ess_summary.to_string())
+    if print_summary:
+        with pd.option_context('display.precision', 2):
+            print(ess_summary.to_string())
+
+    return ess_summary
 
 
 def _compute_autocorrelation(vector: np.ndarray, max_lags: int) -> np.ndarray:

@@ -85,7 +85,7 @@ def _compute_kde(posterior: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     return posterior_support, posterior_kde
 
 
-def summary(posteriors: dict, alpha: float = 0.05, quantiles: list = None) -> None:
+def summary(posteriors: dict, alpha: float = 0.05, quantiles: list = None, print_summary: bool = True) -> dict:
     """Prints a statistical summary for each posterior.
 
     Parameters
@@ -100,6 +100,17 @@ def summary(posteriors: dict, alpha: float = 0.05, quantiles: list = None) -> No
     quantiles : list, optional
         List of the quantiles to compute, for each posterior. It cannot be empty. It must contain only float between
         ``0`` and ``1``. Default is ``[0.025, 0.25, 0.5, 0.75, 0.975]``.
+    print_summary : bool, optional
+        If ``True`` prints the statistical posterior summary report. Default is ``True``.
+
+    Returns
+    -------
+    dict
+        Dictionary with statistical summary of posteriors. It contains:
+            - key ``n_chain``, the number of Markov chains,
+            - key ``n_iterations``, the number of regression iterations,
+            - key ``summary``, the statistical summary of the posteriors, as a pandas.DataFrame,
+            - key ``quantiles``, quantiles summary of the posteriors, as a pandas.DataFrame.
 
     Raises
     ------
@@ -108,7 +119,8 @@ def summary(posteriors: dict, alpha: float = 0.05, quantiles: list = None) -> No
         - if a posterior sample is not a ``numpy.ndarray``,
         - if ``alpha`` is not a ``float``,
         - if ``quantiles`` is not a ``list``,
-        - if a ``quantiles`` value is not a ``float``.
+        - if a ``quantiles`` value is not a ``float``,
+        - if ``print_summary`` is not a ``bool``.
     KeyError
         If ``posteriors`` does not contain both ``intercept`` and ``variance`` keys.
     ValueError
@@ -126,6 +138,9 @@ def summary(posteriors: dict, alpha: float = 0.05, quantiles: list = None) -> No
 
     if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
         raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
+
+    if not isinstance(print_summary, bool):
+        raise TypeError("Parameter 'print_summary' must be a boolean")
 
     for posterior in ['intercept', 'variance']:
         if posterior not in posteriors.keys():
@@ -175,16 +190,19 @@ def summary(posteriors: dict, alpha: float = 0.05, quantiles: list = None) -> No
 
     credibility_mass = f'{100*(1 - alpha)}%'.replace('.0%', '%')
 
-    print(f'Number of chains:      {n_chains:>6}')
-    print(f'Sample size per chian: {n_iterations:>6}')
-    print()
-    print(f'Empirical mean, standard deviation, {credibility_mass} HPD interval for each variable:')
-    print()
-    print(summary.to_string())
-    print()
-    print(f'Quantiles for each variable:')
-    print()
-    print(quantiles_summary.to_string())
+    if print_summary:
+        print(f'Number of chains:      {n_chains:>6}')
+        print(f'Sample size per chian: {n_iterations:>6}')
+        print()
+        print(f'Empirical mean, standard deviation, {credibility_mass} HPD interval for each variable:')
+        print()
+        print(summary.to_string())
+        print()
+        print(f'Quantiles for each variable:')
+        print()
+        print(quantiles_summary.to_string())
+
+    return {'n_chains': n_chains, 'n_iterations': n_iterations, 'summary': summary, 'quantiles': quantiles_summary}
 
 
 def _compute_hpd_interval(x: np.ndarray, alpha: float) -> tuple[float, float]:
@@ -377,7 +395,7 @@ def predict_distribution(posteriors: dict, predictors: dict) -> np.ndarray:
                     size = len(prediction))
 
 
-def compute_DIC(posteriors: dict, data: pd.DataFrame, response_variable: str) -> None:
+def compute_DIC(posteriors: dict, data: pd.DataFrame, response_variable: str, print_summary: bool = True) -> dict:
     r"""Computes and prints the Deviance Information Criterion (DIC) for the fitted linear model.
 
     Parameters
@@ -391,6 +409,17 @@ def compute_DIC(posteriors: dict, data: pd.DataFrame, response_variable: str) ->
         response variable :math:`y`.
     response_variable : string
         Name of the response variable :math:`y`. In must be one of the columns of ``data``.
+    print_summary : bool, optional
+        If ``True`` prints the deviance summary report. Default is ``True``.
+
+    Returns
+    -------
+    dict
+        Dictionary with deviance summary. It contains:
+            - key ``deviance at posterior means``,
+            - key ``posterior mean deviance``,
+            - key ``effective number of parameters``,
+            - key ``DIC``.
 
     Raises
     ------
@@ -398,7 +427,8 @@ def compute_DIC(posteriors: dict, data: pd.DataFrame, response_variable: str) ->
         - If ``posteriors`` is not a ``dict``,
         - if a posterior sample is not a ``numpy.ndarray``,
         - if ``data`` is not an instance of ``pandas.DataFrame``,
-        - if ``response_variable`` is not a ``str``.
+        - if ``response_variable`` is not a ``str``,
+        - if ``print_summary`` is not a ``bool``.
     KeyError
         If ``posteriors`` does not contain both ``intercept`` and ``variance`` keys.
     ValueError
@@ -471,6 +501,9 @@ def compute_DIC(posteriors: dict, data: pd.DataFrame, response_variable: str) ->
     if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
         raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
 
+    if not isinstance(print_summary, bool):
+        raise TypeError("Parameter 'print_summary' must be a boolean")
+
     for posterior in ['intercept', 'variance']:
         if posterior not in posteriors.keys():
             raise KeyError(f"Parameter 'posteriors' must contain a '{posterior}' key")
@@ -503,10 +536,16 @@ def compute_DIC(posteriors: dict, data: pd.DataFrame, response_variable: str) ->
     effective_number_of_parameters = posterior_mean_deviance - deviance_at_posterior_means
     DIC = effective_number_of_parameters + posterior_mean_deviance
 
-    print(f"Deviance at posterior means     {deviance_at_posterior_means:>12.2f}")
-    print(f"Posterior mean deviance         {posterior_mean_deviance:>12.2f}")
-    print(f"Effective number of parameteres {effective_number_of_parameters:>12.2f}")
-    print(f"Deviace Information Criterion   {DIC:>12.2f}")
+    if print_summary:
+        print(f"Deviance at posterior means     {deviance_at_posterior_means:>12.2f}")
+        print(f"Posterior mean deviance         {posterior_mean_deviance:>12.2f}")
+        print(f"Effective number of parameteres {effective_number_of_parameters:>12.2f}")
+        print(f"Deviace Information Criterion   {DIC:>12.2f}")
+
+    return {'deviance at posterior means': deviance_at_posterior_means,
+            'posterior mean deviance': posterior_mean_deviance,
+            'effective number of parameters': effective_number_of_parameters,
+            'DIC': DIC}
 
 
 def _compute_deviace_at_posterior_means(posteriors: dict, data: pd.DataFrame, response_variable: str) -> float:
