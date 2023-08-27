@@ -54,4 +54,5 @@ class Regression(ABC):
 
     @abstractmethod
     def posteriors_to_frame(self) -> pd.DataFrame:
-        pass
+        if self.posteriors is None:
+            raise ValueError("Posteriors not available, run 'LinearRegression.sample' to generate posteriors")

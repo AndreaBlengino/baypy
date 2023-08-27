@@ -160,4 +160,5 @@ class LinearRegression(Regression):
 
 
     def posteriors_to_frame(self) -> pd.DataFrame:
+        super().posteriors_to_frame()
         return matrix_to_frame(posteriors = self.posteriors)

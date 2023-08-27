@@ -29,7 +29,7 @@ def flatten_matrix(matrix: np.ndarray) -> np.ndarray:
     return np.asarray(matrix).reshape(-1)
 
 
-def matrix_to_frame(posteriors):
+def matrix_to_frame(posteriors: dict) -> pd.DataFrame:
     frame = pd.DataFrame()
     for posterior, posterior_samples in posteriors.items():
         frame[posterior] = flatten_matrix(posterior_samples)
