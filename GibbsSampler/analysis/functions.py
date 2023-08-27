@@ -67,6 +67,7 @@ def trace_plot(posteriors: dict) -> None:
             ax_i_density.set_title(f'Density of {variable}')
         ax_i_trace.tick_params(bottom = False, top = False, left = False, right = False)
         ax_i_density.tick_params(bottom = False, top = False, left = False, right = False)
+        ax_i_density.set_ylim(0, )
         trace_axes.append(ax_i_trace)
 
     for ax_i in trace_axes[1:]:
