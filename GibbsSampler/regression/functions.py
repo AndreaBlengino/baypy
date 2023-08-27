@@ -52,9 +52,7 @@ def sample_sigma2(y: pd.Series, X: np.ndarray, beta: np.ndarray, k_1: float, the
     y_X_beta = y - flatten_matrix(np.dot(X, beta))
     theta_1 = theta_0 + np.dot(y_X_beta.transpose(), y_X_beta)
 
-    return invgamma.rvs(a = k_1/2,
-                        scale = theta_1/2,
-                        size = 1)[0]
+    return invgamma.rvs(a = k_1/2, scale = theta_1/2)
 
 
 def sample_beta(Xt_X: np.ndarray, Xt_y: np.ndarray, sigma2: float, Sigma_0_inv: np.ndarray,
@@ -134,6 +132,4 @@ def sample_beta(Xt_X: np.ndarray, Xt_y: np.ndarray, sigma2: float, Sigma_0_inv: 
     V = np.linalg.inv(Sigma_0_inv + Xt_X/sigma2)
     M = np.dot(V, Sigma_0_inv_Beta_0 + Xt_y/sigma2)
 
-    return multivariate_normal.rvs(mean = flatten_matrix(M),
-                                   cov = V,
-                                   size = 1)
+    return multivariate_normal.rvs(mean = flatten_matrix(M), cov = V, size = 1)

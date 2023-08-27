@@ -4,6 +4,7 @@ from GibbsSampler.model import Model
 from .regression import Regression
 import numpy as np
 import pandas as pd
+from scipy.stats import norm, invgamma
 from ..utils import matrices_to_frame
 
 
@@ -140,24 +141,27 @@ class LinearRegression(Regression):
 
         self.posteriors = {variable: [[] for _ in range(n_chains)] for variable in self.model.variable_names}
 
-        beta = [[0 for _ in regressor_names] for _ in range(n_chains)]
-
         if seed is not None:
             np.random.seed(seed)
 
-        for i in range(burn_in_iterations + n_iterations):
+        beta = [[norm.rvs(loc = self.model.priors[regressor]['mean'],
+                          scale = np.sqrt(self.model.priors[regressor]['variance']))
+                 for regressor in regressor_names] for _ in range(n_chains)]
+        sigma2 = [invgamma.rvs(a = k_0, scale = theta_0) for _ in range(n_chains)]
 
-            sigma2 = [sample_sigma2(y = y,
-                                    X = X,
-                                    beta = beta[i],
-                                    k_1 = k_1,
-                                    theta_0 = theta_0) for i in range(n_chains)]
+        for i in range(burn_in_iterations + n_iterations):
 
             beta = [sample_beta(Xt_X = Xt_X,
                                 Xt_y = Xt_y,
                                 sigma2 = sigma2[i],
                                 Sigma_0_inv = Sigma_0_inv,
                                 Sigma_0_inv_Beta_0 = Sigma_0_inv_Beta_0) for i in range(n_chains)]
+
+            sigma2 = [sample_sigma2(y = y,
+                                    X = X,
+                                    beta = beta[i],
+                                    k_1 = k_1,
+                                    theta_0 = theta_0) for i in range(n_chains)]
 
             if i >= burn_in_iterations:
                 for j in range(n_chains):
