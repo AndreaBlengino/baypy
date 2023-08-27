@@ -25,7 +25,8 @@ class TestLinearRegressionSample:
     def test_method(self, sampler, general_testing_data):
         sampler.sample(n_iterations = general_testing_data['n_iterations'],
                        burn_in_iterations = general_testing_data['burn_in_iterations'],
-                       n_chains = general_testing_data['n_chains'])
+                       n_chains = general_testing_data['n_chains'],
+                       seed = general_testing_data['seed'])
 
         assert sampler.posteriors.keys() == general_testing_data['priors'].keys()
         assert all(np.array([posterior_samples.shape for posterior_samples in sampler.posteriors.values()])[:, 0] == general_testing_data['n_iterations'])
