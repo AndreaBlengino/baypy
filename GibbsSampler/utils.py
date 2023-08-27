@@ -61,8 +61,4 @@ def matrices_to_frame(matrices_dict: dict) -> pd.DataFrame:
     >>> 4  5  11
     >>> 5  6  12
     """
-    frame = pd.DataFrame()
-    for matrix_name, matrix in matrices_dict.items():
-        frame[matrix_name] = flatten_matrix(matrix)
-
-    return frame
+    return pd.DataFrame({col: flatten_matrix(matrix) for col, matrix in matrices_dict.items()})
