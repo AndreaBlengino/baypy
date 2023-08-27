@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from scipy.stats import gaussian_kde, norm
-from ..utils import flatten_matrix, matrix_to_frame
+from ..utils import flatten_matrix, matrices_to_frame
 
 
 def trace_plot(posteriors: dict) -> None:
@@ -381,7 +381,7 @@ def predict_distribution(posteriors: dict, predictors: dict) -> np.ndarray:
         if regressor not in posteriors.keys():
             raise KeyError(f"Regressor '{regressor}' not found in 'posteriors' keys")
 
-    prediction = matrix_to_frame(posteriors = posteriors)
+    prediction = matrices_to_frame(matrices_dict = posteriors)
 
     prediction['mean'] = prediction['intercept']
     for regressor in posteriors.keys():

@@ -4,7 +4,7 @@ from GibbsSampler.model import Model
 from .regression import Regression
 import numpy as np
 import pandas as pd
-from ..utils import matrix_to_frame
+from ..utils import matrices_to_frame
 
 
 class LinearRegression(Regression):
@@ -31,6 +31,8 @@ class LinearRegression(Regression):
     :meth:`GibbsSampler.regression.linear_regression.LinearRegression.sample()`
         Samples a sequence of observations from the full posterior distribution of regressors' parameters
         :math:`\beta_j` and ``variance`` :math:`\sigma^2`.
+    :meth:`GibbsSampler.regression.linear_regression.LinearRegression.posteriors_to_frame()`
+        Organizes the ``posteriors`` in a ``pandas.DataFrame``.
 
     Constructor Raises
     ------------------
@@ -40,7 +42,7 @@ class LinearRegression(Regression):
         - If ``model.data`` is ``None``,
         - if ``model.response_variable`` is ``None``,
         - if ``model.initial_values`` is ``None``,
-        - if ``model.priors`` is ``None,
+        - if ``model.priors`` is ``None``,
         - if a ``model.initial_values`` key is not a column of ``model.data``,
         - if a ``model.initial_values`` key is not a key of ``model.priors``,
         - if a ``model.priors`` key is not a column of ``model.data``,
@@ -160,5 +162,19 @@ class LinearRegression(Regression):
 
 
     def posteriors_to_frame(self) -> pd.DataFrame:
+        """Organizes the ``posteriors`` in a ``pandas.DataFrame``. Each posterior is a frame column. The length of the
+        frame is the number of sampling iterations times the number of sampling chains.
+
+        Returns
+        -------
+        pandas.DataFrame
+            Returns posterior samples. Posteriors are organized in a ``pandas.DataFrame``, one for each columns. The
+            length of the frame is the number of sampling iterations times the number of sampling chains.
+
+        Raises
+        ------
+        ValueError
+            If ``posteriors`` are not available because the method ``LinearRegression.sample`` is not been called yet.
+        """
         super().posteriors_to_frame()
-        return matrix_to_frame(posteriors = self.posteriors)
+        return matrices_to_frame(matrices_dict = self.posteriors)
