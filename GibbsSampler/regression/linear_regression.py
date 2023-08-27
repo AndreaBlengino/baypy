@@ -149,7 +149,7 @@ class LinearRegression(Regression):
                  for regressor in regressor_names] for _ in range(n_chains)]
         sigma2 = [invgamma.rvs(a = k_0, scale = theta_0) for _ in range(n_chains)]
 
-        for i in range(burn_in_iterations + n_iterations):
+        for i in range(burn_in_iterations + n_iterations + 1):
             for k in range(n_chains):
                 [self.posteriors[regressor][k].append(beta[k][j]) for j, regressor in enumerate(regressor_names, 0)]
                 self.posteriors['variance'][k].append(sigma2[k])
@@ -166,7 +166,7 @@ class LinearRegression(Regression):
                                     k_1 = k_1,
                                     theta_0 = theta_0) for k in range(n_chains)]
 
-        self.posteriors = {posterior: np.array(posterior_samples).transpose()[burn_in_iterations:, :]
+        self.posteriors = {posterior: np.array(posterior_samples).transpose()[burn_in_iterations + 1:, :]
                            for posterior, posterior_samples in self.posteriors.items()}
 
 

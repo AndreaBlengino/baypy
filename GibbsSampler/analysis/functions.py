@@ -72,7 +72,7 @@ def trace_plot(posteriors: dict) -> None:
 
     for ax_j in trace_axes[1:]:
         ax_j.sharex(trace_axes[0])
-    trace_axes[0].set_xlim(0, n_iterations)
+    trace_axes[0].set_xlim(0, n_iterations - 1)
 
     plt.tight_layout()
 
