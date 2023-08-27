@@ -205,34 +205,42 @@ def linear_regression_init_value_error(request):
     return request.param
 
 
-@fixture(params = [{'n_iterations': '100', 'burn_in_iterations': 50, 'n_chains': 3},
-                   {'n_iterations': 100.0, 'burn_in_iterations': 50, 'n_chains': 3},
-                   {'n_iterations': {'100': 100}, 'burn_in_iterations': 50, 'n_chains': 3},
-                   {'n_iterations': (100, 200), 'burn_in_iterations': 50, 'n_chains': 3},
-                   {'n_iterations': [100, 200], 'burn_in_iterations': 50, 'n_chains': 3},
-                   {'n_iterations': {100, 200}, 'burn_in_iterations': 50, 'n_chains': 3},
-                   {'n_iterations': None, 'burn_in_iterations': 50, 'n_chains': 3},
-                   {'n_iterations': 100, 'burn_in_iterations': '50', 'n_chains': 3},
-                   {'n_iterations': 100, 'burn_in_iterations': 50.0, 'n_chains': 3},
-                   {'n_iterations': 100, 'burn_in_iterations': {'50': 50}, 'n_chains': 3},
-                   {'n_iterations': 100, 'burn_in_iterations': (50, 100), 'n_chains': 3},
-                   {'n_iterations': 100, 'burn_in_iterations': [50, 100], 'n_chains': 3},
-                   {'n_iterations': 100, 'burn_in_iterations': {50, 100}, 'n_chains': 3},
-                   {'n_iterations': 100, 'burn_in_iterations': None, 'n_chains': 3},
-                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': '3'},
-                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3.0},
-                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': {'3': 3}},
-                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': (3, 6)},
-                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': [4, 6]},
-                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': {3, 6}},
-                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': None}])
+@fixture(params = [{'n_iterations': '100', 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137},
+                   {'n_iterations': 100.0, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137},
+                   {'n_iterations': {'100': 100}, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137},
+                   {'n_iterations': (100, 200), 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137},
+                   {'n_iterations': [100, 200], 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137},
+                   {'n_iterations': {100, 200}, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137},
+                   {'n_iterations': None, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137},
+                   {'n_iterations': 100, 'burn_in_iterations': '50', 'n_chains': 3, 'seed': 137},
+                   {'n_iterations': 100, 'burn_in_iterations': 50.0, 'n_chains': 3, 'seed': 137},
+                   {'n_iterations': 100, 'burn_in_iterations': {'50': 50}, 'n_chains': 3, 'seed': 137},
+                   {'n_iterations': 100, 'burn_in_iterations': (50, 100), 'n_chains': 3, 'seed': 137},
+                   {'n_iterations': 100, 'burn_in_iterations': [50, 100], 'n_chains': 3, 'seed': 137},
+                   {'n_iterations': 100, 'burn_in_iterations': {50, 100}, 'n_chains': 3, 'seed': 137},
+                   {'n_iterations': 100, 'burn_in_iterations': None, 'n_chains': 3, 'seed': 137},
+                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': '3', 'seed': 137},
+                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3.0, 'seed': 137},
+                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': {'3': 3}, 'seed': 137},
+                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': (3, 6), 'seed': 137},
+                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': [4, 6], 'seed': 137},
+                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': {3, 6}, 'seed': 137},
+                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': None, 'seed': 137},
+                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': '137'},
+                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137.0},
+                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': {'137': 137}},
+                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': (137, 137)},
+                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': [137, 137]},
+                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': {137, 137}}])
 def linear_regression_sample_type_error(request):
     return request.param
 
 
-@fixture(params = [{'n_iterations': -1, 'burn_in_iterations': 50, 'n_chains': 3},
-                   {'n_iterations': 1000, 'burn_in_iterations': -1, 'n_chains': 3},
-                   {'n_iterations': 1000, 'burn_in_iterations': 50, 'n_chains': -1}])
+@fixture(params = [{'n_iterations': -1, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137},
+                   {'n_iterations': 1000, 'burn_in_iterations': -1, 'n_chains': 3, 'seed': 137},
+                   {'n_iterations': 1000, 'burn_in_iterations': 50, 'n_chains': -1, 'seed': 137},
+                   {'n_iterations': 1000, 'burn_in_iterations': 50, 'n_chains': -1, 'seed': -1},
+                   {'n_iterations': 1000, 'burn_in_iterations': 50, 'n_chains': -1, 'seed': 2**32}])
 def linear_regression_sample_value_error(request):
     return request.param
 

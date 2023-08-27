@@ -109,7 +109,8 @@ class LinearRegression(Regression):
             p \left( y \left\vert B,\sigma^2 \right. \right) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp{\frac{\left(y -
             \mu \right)^2}{\sigma^2}} .
         """
-        super().sample(n_iterations = n_iterations, burn_in_iterations = burn_in_iterations, n_chains = n_chains)
+        super().sample(n_iterations = n_iterations, burn_in_iterations = burn_in_iterations,
+                       n_chains = n_chains, seed = seed)
         data = self.model.data.copy()
 
         regressor_names = self.model.variable_names.copy()

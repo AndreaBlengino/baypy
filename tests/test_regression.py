@@ -36,14 +36,16 @@ class TestLinearRegressionSample:
         with raises(TypeError):
             sampler.sample(n_iterations = linear_regression_sample_type_error['n_iterations'],
                            burn_in_iterations = linear_regression_sample_type_error['burn_in_iterations'],
-                           n_chains = linear_regression_sample_type_error['n_chains'])
+                           n_chains = linear_regression_sample_type_error['n_chains'],
+                           seed = linear_regression_sample_type_error['seed'])
 
 
     def test_raises_value_error(self, sampler, linear_regression_sample_value_error):
         with raises(ValueError):
             sampler.sample(n_iterations = linear_regression_sample_value_error['n_iterations'],
                            burn_in_iterations = linear_regression_sample_value_error['burn_in_iterations'],
-                           n_chains = linear_regression_sample_value_error['n_chains'])
+                           n_chains = linear_regression_sample_value_error['n_chains'],
+                           seed = linear_regression_sample_value_error['seed'])
 
 
 @mark.regression
