@@ -75,10 +75,15 @@ class Model(ABC):
                 if set(values.keys()) != {'mean', 'variance'}:
                     raise KeyError(f"The value of prior '{prior}' must be a dictionary "
                                    f"containing 'mean' and 'variance' keys only")
+                if values['variance'] <= 0:
+                    raise ValueError(f"The 'variance' of prior '{prior}' must be positive")
             else:
                 if set(values.keys()) != {'shape', 'scale'}:
                     raise KeyError(f"The value of prior '{prior}' must be a dictionary "
                                    f"containing 'shape' and 'scale' keys only")
+                for parameter in ['shape', 'scale']:
+                    if values[parameter] <= 0:
+                        raise ValueError(f"The '{parameter}' of prior '{prior}' must be positive")
 
         self.__priors = priors
         self.__variable_names = list(self.priors.keys())

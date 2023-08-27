@@ -180,7 +180,11 @@ def model_priors_key_error(request):
     return request.param
 
 
-@fixture(params = [{}, {'intercept': {}, 'variance': {}}])
+@fixture(params = [{},
+                   {'intercept': {}, 'variance': {}},
+                   {'intercept': {'mean': 0, 'variance': -1e6}, 'variance': {'shape': 1, 'scale': 1e-6}},
+                   {'intercept': {'mean': 0, 'variance': 1e6}, 'variance': {'shape': -1, 'scale': 1e-6}},
+                   {'intercept': {'mean': 0, 'variance': 1e6}, 'variance': {'shape': 1, 'scale': -1e-6}}])
 def model_priors_value_error(request):
     return request.param
 
