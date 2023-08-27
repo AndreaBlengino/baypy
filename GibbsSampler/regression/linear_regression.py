@@ -150,6 +150,9 @@ class LinearRegression(Regression):
         sigma2 = [invgamma.rvs(a = k_0, scale = theta_0) for _ in range(n_chains)]
 
         for i in range(burn_in_iterations + n_iterations):
+            for k in range(n_chains):
+                [self.posteriors[regressor][k].append(beta[k][j]) for j, regressor in enumerate(regressor_names, 0)]
+                self.posteriors['variance'][k].append(sigma2[k])
 
             beta = [sample_beta(Xt_X = Xt_X,
                                 Xt_y = Xt_y,
@@ -163,12 +166,9 @@ class LinearRegression(Regression):
                                     k_1 = k_1,
                                     theta_0 = theta_0) for k in range(n_chains)]
 
-            if i >= burn_in_iterations:
-                for k in range(n_chains):
-                    [self.posteriors[regressor][k].append(beta[k][j]) for j, regressor in enumerate(regressor_names, 0)]
-                    self.posteriors['variance'][k].append(sigma2[k])
+        self.posteriors = {posterior: np.array(posterior_samples).transpose()[burn_in_iterations:, :]
+                           for posterior, posterior_samples in self.posteriors.items()}
 
-        self.posteriors = {posterior: np.array(posterior_samples).transpose() for posterior, posterior_samples in self.posteriors.items()}
 
         return self.posteriors
 
