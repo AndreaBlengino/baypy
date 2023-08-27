@@ -4,8 +4,7 @@ import numpy as np
 import pandas as pd
 
 
-np.random.seed(137)
-data = pd.read_csv(r'data.csv')
+data = pd.read_csv(r'data/data.csv')
 
 
 model = gs.model.LinearModel()
@@ -17,7 +16,7 @@ model.priors = {'intercept': {'mean': 0, 'variance': 1e12},
                 'variance': {'shape': 1, 'scale': 1e-12}}
 
 regression = gs.regression.LinearRegression(model = model)
-posteriors = regression.sample(n_iterations = 500, burn_in_iterations = 50, n_chains = 3)
+posteriors = regression.sample(n_iterations = 500, burn_in_iterations = 50, n_chains = 3, seed = 137)
 
 
 gs.diagnostics.effective_sample_size(posteriors = posteriors)

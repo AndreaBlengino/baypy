@@ -3,10 +3,8 @@
 Pretending to fit the [heart dataset](ehttps://github.com/AndreaBlengino/GibbsSampler/blob/master/examples/heart/data.csv):
 
 ```python
-import numpy as np
 import pandas as pd
 
-np.random.seed(137)
 data = pd.read_csv(r'data.csv')
 ```
 
@@ -33,7 +31,8 @@ burn-in draws:
 
 ```python
 regression = gs.regression.LinearRegression(model = model)
-posteriors = regression.sample(n_iterations = 500, burn_in_iterations = 50, n_chains = 3)
+posteriors = regression.sample(n_iterations = 500, burn_in_iterations = 50, 
+                               n_chains = 3, seed = 137)
 ```
 
 ### Convergence Diagnostics
@@ -65,7 +64,7 @@ gs.diagnostics.autocorrelation_plot(posteriors = posteriors)
 ```
 
 <p align="center">
-    <img src="autocorrelation_plot.png">
+    <img src="images/autocorrelation_plot.png">
 </p>
 
 ### Posteriors Analysis
@@ -77,7 +76,7 @@ gs.analysis.trace_plot(posteriors = posteriors)
 ```
 
 <p align="center">
-    <img src="trace_plot.png">
+    <img src="images/trace_plot.png">
 </p>
 
 ```python
@@ -85,7 +84,7 @@ gs.analysis.residuals_plot(posteriors = posteriors, data = data, response_variab
 ```
 
 <p align="center">
-    <img src="residuals_plot.png">
+    <img src="images/residuals_plot.png">
 </p>
 
 ```python
