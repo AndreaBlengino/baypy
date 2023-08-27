@@ -1,7 +1,7 @@
 import GibbsSampler as gs
 import numpy as np
 import pandas as pd
-from pytest import fixture, mark, raises
+from pytest import mark, raises
 
 
 @mark.regression

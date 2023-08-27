@@ -558,3 +558,14 @@ def posteriors(sampler, general_testing_data):
                    burn_in_iterations = general_testing_data['burn_in_iterations'],
                    n_chains = general_testing_data['n_chains'])
     return sampler.posteriors
+
+
+@fixture(params = ['1', 1, 1.1, True, (0, 1), [0, 1], {1, 2}, {0: 1}, None])
+def utils_flatten_matrix_type_error(request):
+    return request.param
+
+
+@fixture(params = ['1', 1, 1.1, True, (0, 1), [0, 1], {0, 1}, None, {'a': 'a'}, {'a': 1}, {'a': 1.1}, {'a': True},
+                   {'a': (0, 1)}, {'a': [0, 1]}, {'a': {0, 1}}, {'a': {0: 1}}, {'a': None}])
+def utils_matrices_to_frame_type_error(request):
+    return request.param
