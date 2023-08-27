@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from GibbsSampler.model import Model
+import pandas as pd
 
 
 class Regression(ABC):
@@ -49,3 +50,8 @@ class Regression(ABC):
 
         if n_chains <= 0:
             raise ValueError("Parameter 'n_chains' must be greater than 0")
+
+
+    @abstractmethod
+    def posteriors_to_frame(self) -> pd.DataFrame:
+        pass

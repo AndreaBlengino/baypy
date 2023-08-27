@@ -3,6 +3,8 @@ from GibbsSampler.regression.functions import sample_beta
 from GibbsSampler.model import Model
 from .regression import Regression
 import numpy as np
+import pandas as pd
+from ..utils import matrix_to_frame
 
 
 class LinearRegression(Regression):
@@ -155,3 +157,7 @@ class LinearRegression(Regression):
         self.posteriors = {posterior: np.array(posterior_samples).transpose() for posterior, posterior_samples in self.posteriors.items()}
 
         return self.posteriors
+
+
+    def posteriors_to_frame(self) -> pd.DataFrame:
+        return matrix_to_frame(posteriors = self.posteriors)

@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 
 def flatten_matrix(matrix: np.ndarray) -> np.ndarray:
@@ -26,3 +27,11 @@ def flatten_matrix(matrix: np.ndarray) -> np.ndarray:
     >>> array([1, 2, 3, 4, 5, 6])
     """
     return np.asarray(matrix).reshape(-1)
+
+
+def matrix_to_frame(posteriors):
+    frame = pd.DataFrame()
+    for posterior, posterior_samples in posteriors.items():
+        frame[posterior] = flatten_matrix(posterior_samples)
+
+    return frame
