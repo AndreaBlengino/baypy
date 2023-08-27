@@ -52,26 +52,26 @@ def trace_plot(posteriors: dict) -> None:
 
     fig = plt.figure(figsize = (10, min(1.5*n_variables + 2, 10)))
     trace_axes = []
-    for i, variable in zip(range(1, 2*n_variables, 2), variable_names):
-        ax_i_trace = fig.add_subplot(n_variables, 2, i)
-        ax_i_density = fig.add_subplot(n_variables, 2, i + 1)
+    for j, variable in zip(range(1, 2*n_variables, 2), variable_names):
+        ax_j_trace = fig.add_subplot(n_variables, 2, j)
+        ax_j_density = fig.add_subplot(n_variables, 2, j + 1)
 
-        ax_i_trace.plot(posteriors[variable], linewidth = 0.5)
-        ax_i_density.plot(*_compute_kde(posteriors[variable].flatten()))
+        ax_j_trace.plot(posteriors[variable], linewidth = 0.5)
+        ax_j_density.plot(*_compute_kde(posteriors[variable].flatten()))
 
         if variable not in ['intercept', 'variance']:
-            ax_i_trace.set_title(f'Trace of {variable} parameter')
-            ax_i_density.set_title(f'Density of {variable} parameter')
+            ax_j_trace.set_title(f'Trace of {variable} parameter')
+            ax_j_density.set_title(f'Density of {variable} parameter')
         else:
-            ax_i_trace.set_title(f'Trace of {variable}')
-            ax_i_density.set_title(f'Density of {variable}')
-        ax_i_trace.tick_params(bottom = False, top = False, left = False, right = False)
-        ax_i_density.tick_params(bottom = False, top = False, left = False, right = False)
-        ax_i_density.set_ylim(0, )
-        trace_axes.append(ax_i_trace)
+            ax_j_trace.set_title(f'Trace of {variable}')
+            ax_j_density.set_title(f'Density of {variable}')
+        ax_j_trace.tick_params(bottom = False, top = False, left = False, right = False)
+        ax_j_density.tick_params(bottom = False, top = False, left = False, right = False)
+        ax_j_density.set_ylim(0, )
+        trace_axes.append(ax_j_trace)
 
-    for ax_i in trace_axes[1:]:
-        ax_i.sharex(trace_axes[0])
+    for ax_j in trace_axes[1:]:
+        ax_j.sharex(trace_axes[0])
     trace_axes[0].set_xlim(0, n_iterations)
 
     plt.tight_layout()

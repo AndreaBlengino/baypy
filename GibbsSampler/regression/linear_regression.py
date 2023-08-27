@@ -153,20 +153,20 @@ class LinearRegression(Regression):
 
             beta = [sample_beta(Xt_X = Xt_X,
                                 Xt_y = Xt_y,
-                                sigma2 = sigma2[i],
+                                sigma2 = sigma2[k],
                                 Sigma_0_inv = Sigma_0_inv,
-                                Sigma_0_inv_Beta_0 = Sigma_0_inv_Beta_0) for i in range(n_chains)]
+                                Sigma_0_inv_Beta_0 = Sigma_0_inv_Beta_0) for k in range(n_chains)]
 
             sigma2 = [sample_sigma2(y = y,
                                     X = X,
-                                    beta = beta[i],
+                                    beta = beta[k],
                                     k_1 = k_1,
-                                    theta_0 = theta_0) for i in range(n_chains)]
+                                    theta_0 = theta_0) for k in range(n_chains)]
 
             if i >= burn_in_iterations:
-                for j in range(n_chains):
-                    [self.posteriors[regressor][j].append(beta[j][k]) for k, regressor in enumerate(regressor_names, 0)]
-                    self.posteriors['variance'][j].append(sigma2[j])
+                for k in range(n_chains):
+                    [self.posteriors[regressor][k].append(beta[k][j]) for j, regressor in enumerate(regressor_names, 0)]
+                    self.posteriors['variance'][k].append(sigma2[k])
 
         self.posteriors = {posterior: np.array(posterior_samples).transpose() for posterior, posterior_samples in self.posteriors.items()}
 

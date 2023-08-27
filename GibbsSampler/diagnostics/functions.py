@@ -66,17 +66,17 @@ def autocorrelation_plot(posteriors: dict, max_lags: int = 30) -> None:
                            sharey = 'all')
 
     if n_chains > 1:
-        for i in range(n_chains):
-            ax[0, i].set_title(f'Chain {i + 1}')
+        for k in range(n_chains):
+            ax[0, k].set_title(f'Chain {k + 1}')
             for j, variable in enumerate(variable_names, 0):
-                acorr = _compute_autocorrelation(vector = flatten_matrix(posteriors[variable][:, i]),
+                acorr = _compute_autocorrelation(vector = flatten_matrix(posteriors[variable][:, k]),
                                                  max_lags = max_lags)
-                ax[j, i].stem(acorr, markerfmt = ' ', basefmt = ' ')
-                ax[j, i].tick_params(bottom = False, top = False, left = False, right = False)
+                ax[j, k].stem(acorr, markerfmt = ' ', basefmt = ' ')
+                ax[j, k].tick_params(bottom = False, top = False, left = False, right = False)
 
-        for i, variable in enumerate(variable_names, 0):
-            ax[i, 0].set_ylabel(variable)
-            ax[i, 0].set_yticks([-1, 0, 1])
+        for j, variable in enumerate(variable_names, 0):
+            ax[j, 0].set_ylabel(variable)
+            ax[j, 0].set_yticks([-1, 0, 1])
 
         ax[0, 0].set_xlim(-1, min(max_lags, n_iterations))
         ax[0, 0].set_ylim(-1, 1)
@@ -91,9 +91,9 @@ def autocorrelation_plot(posteriors: dict, max_lags: int = 30) -> None:
                                              max_lags = max_lags)
             ax[j].stem(acorr, markerfmt = ' ', basefmt = ' ')
 
-        for i, variable in enumerate(variable_names, 0):
-            ax[i].set_ylabel(variable)
-            ax[i].set_yticks([-1, 0, 1])
+        for j, variable in enumerate(variable_names, 0):
+            ax[j].set_ylabel(variable)
+            ax[j].set_yticks([-1, 0, 1])
 
         ax[0].set_xlim(-1, min(max_lags, n_iterations))
         ax[0].set_ylim(-1, 1)
@@ -186,8 +186,8 @@ def autocorrelation_summary(posteriors: dict, lags: list = None, print_summary: 
 
     for variable in acorr_summary.columns:
         variable_acorr = []
-        for i in range(n_chains):
-            variable_chain_acorr = _compute_autocorrelation(vector = flatten_matrix(posteriors[variable][:, i]),
+        for k in range(n_chains):
+            variable_chain_acorr = _compute_autocorrelation(vector = flatten_matrix(posteriors[variable][:, k]),
                                                             max_lags = max(lags) + 1)
             variable_acorr.append(variable_chain_acorr[lags])
         variable_acorr = np.array(variable_acorr)
@@ -262,14 +262,14 @@ def effective_sample_size(posteriors: dict, print_summary: bool = True) -> pd.Da
 
     for variable in ess_summary.columns:
         variable_ess = []
-        for i in range(n_chains):
-            vector = flatten_matrix(posteriors[variable][:, i])
+        for k in range(n_chains):
+            vector = flatten_matrix(posteriors[variable][:, k])
             n = len(vector)
             variable_chain_acorr = _compute_autocorrelation(vector = vector, max_lags = n)
             indexes = np.arange(2, len(variable_chain_acorr), 1)
             indexes = indexes[(variable_chain_acorr[1:-1] + variable_chain_acorr[2:] < 0) & (indexes%2 == 1)]
-            i = indexes[0] if indexes.size > 0 else len(variable_chain_acorr) + 1
-            ess = n/(1 + 2*np.abs(variable_chain_acorr[1:i - 1].sum()))
+            index = indexes[0] if indexes.size > 0 else len(variable_chain_acorr) + 1
+            ess = n/(1 + 2*np.abs(variable_chain_acorr[1:index - 1].sum()))
             variable_ess.append(ess)
 
         ess_summary[variable] = np.sum(variable_ess)
