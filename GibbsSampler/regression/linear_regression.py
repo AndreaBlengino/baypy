@@ -58,7 +58,7 @@ class LinearRegression(Regression):
         super().__init__(model = model)
 
 
-    def sample(self, n_iterations: int, burn_in_iterations: int, n_chains: int) -> dict:
+    def sample(self, n_iterations: int, burn_in_iterations: int, n_chains: int, seed: int = None) -> dict:
         r"""Samples a sequence of observations from the full posterior distribution of regressors' parameters
         :math:`\beta_j` and ``variance`` :math:`\sigma^2`.
         First ``burn_in_iterations`` are discarded since they may not accurately represent the desired distribution.
@@ -72,17 +72,21 @@ class LinearRegression(Regression):
             Number of burn-in iteration for each chain. It must be a positive integer or ``0``.
         n_chains : int
             Number of chains. It must be a strictly positive integer.
+        seed : int, optional
+            Random seed to use for reproducibility of the sampling.
 
         Raises
         ------
         TypeError
             - If ``n_iterations`` is not a ``int``,
             - if ``burn_in_iterations`` is not a ``int``,
-            - if ``n_chains`` is not a ``int``.
+            - if ``n_chains`` is not a ``int``,
+            - if ``seed`` is not a ``int``.
         ValueError
             - If ``n_iterations`` is equal to or less than ``0``,
             - if ``burn_in_iterations`` is less than ``0``,
-            - if ``n_chains`` is equal to or less than ``0``.
+            - if ``n_chains`` is equal to or less than ``0``,
+            - if ``seed`` is not between ``0`` and ``2**32 - 1``.
 
         Returns
         -------
@@ -136,6 +140,9 @@ class LinearRegression(Regression):
         self.posteriors = {variable: [[] for _ in range(n_chains)] for variable in self.model.variable_names}
 
         beta = [[0 for _ in regressor_names] for _ in range(n_chains)]
+
+        if seed is not None:
+            np.random.seed(seed)
 
         for i in range(burn_in_iterations + n_iterations):
 

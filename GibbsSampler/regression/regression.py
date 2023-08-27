@@ -32,7 +32,7 @@ class Regression(ABC):
 
 
     @abstractmethod
-    def sample(self, n_iterations: int, burn_in_iterations: int, n_chains: int) -> dict:
+    def sample(self, n_iterations: int, burn_in_iterations: int, n_chains: int, seed: int = None) -> dict:
         if not isinstance(n_iterations, int):
             raise TypeError("Parameter 'n_iteration' must be an integer")
 
@@ -42,6 +42,9 @@ class Regression(ABC):
         if not isinstance(n_chains, int):
             raise TypeError("Parameter 'n_chains' must be an integer")
 
+        if (not isinstance(seed, int)) and (seed is not None):
+            raise TypeError("Parameter 'seed' must be an integer")
+
         if n_iterations <= 0:
             raise ValueError("Parameter 'n_iteration' must be greater than 0")
 
@@ -50,6 +53,10 @@ class Regression(ABC):
 
         if n_chains <= 0:
             raise ValueError("Parameter 'n_chains' must be greater than 0")
+
+        if seed is not None:
+            if (seed < 0) or (seed > 2**32 - 1):
+                raise ValueError("Parameter 'seed' must be between 0 and 2**32 - 1")
 
 
     @abstractmethod
