@@ -1,12 +1,14 @@
 # Bayesian Monte Carlo Markov Chain Regression
 
-[![Tests](https://github.com/AndreaBlengino/baypy/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/AndreaBlengino/baypy/actions/workflows/tests.yml)
-[![codecov](https://codecov.io/gh/AndreaBlengino/baypy/graph/badge.svg?token=T7FMO9ACJW)](https://codecov.io/gh/AndreaBlengino/baypy)
+[![PyPi](https://img.shields.io/pypi/v/baypy)](https://pypi.org/project/baypy/)
+[![PyPi](https://img.shields.io/pypi/pyversions/baypy.svg)](https://pypi.org/project/baypy/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/AndreaBlengino/baypy/blob/master/LICENSE)
 
+[![Tests](https://github.com/AndreaBlengino/baypy/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/AndreaBlengino/baypy/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/AndreaBlengino/baypy/graph/badge.svg?token=T7FMO9ACJW)](https://codecov.io/gh/AndreaBlengino/baypy)
 
-**baypy** is a python library for solving bayesian linear 
-regression models through a Monte Carlo Markov chain sampling.
+**baypy** is a python package for solving bayesian regression models 
+through a Monte Carlo Markov chain sampling.
 
 ## Usage Examples
 
