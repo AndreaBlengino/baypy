@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from GibbsSampler.model import Model
+from baypy.model import Model
 import pandas as pd
 
 

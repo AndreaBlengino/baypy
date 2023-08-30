@@ -1,4 +1,4 @@
-import GibbsSampler as gs
+import baypy as bp
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -33,7 +33,7 @@ data['log TV'] = np.log(data['TV'])
 data['log Sales'] = np.log(data['Sales'])
 
 
-model = gs.model.LinearModel()
+model = bp.model.LinearModel()
 
 model.data = data
 model.response_variable = 'log Sales'
@@ -41,18 +41,18 @@ model.priors = {'intercept': {'mean': 0, 'variance': 1e6},
                 'log TV': {'mean': 0, 'variance': 1e6},
                 'variance': {'shape': 1, 'scale': 1e-6}}
 
-regression = gs.regression.LinearRegression(model = model)
+regression = bp.regression.LinearRegression(model = model)
 posteriors = regression.sample(n_iterations = 500, burn_in_iterations = 50, n_chains = 3, seed = 137)
 
 
-gs.diagnostics.effective_sample_size(posteriors = posteriors)
-gs.diagnostics.autocorrelation_summary(posteriors = posteriors)
-gs.diagnostics.autocorrelation_plot(posteriors = posteriors)
+bp.diagnostics.effective_sample_size(posteriors = posteriors)
+bp.diagnostics.autocorrelation_summary(posteriors = posteriors)
+bp.diagnostics.autocorrelation_plot(posteriors = posteriors)
 
-gs.analysis.trace_plot(posteriors = posteriors)
-gs.analysis.residuals_plot(posteriors = posteriors, data = data, response_variable = 'log Sales')
-gs.analysis.summary(posteriors = posteriors)
-gs.analysis.compute_DIC(posteriors = posteriors, data = data, response_variable = 'log Sales')
+bp.analysis.trace_plot(posteriors = posteriors)
+bp.analysis.residuals_plot(posteriors = posteriors, data = data, response_variable = 'log Sales')
+bp.analysis.summary(posteriors = posteriors)
+bp.analysis.compute_DIC(posteriors = posteriors, data = data, response_variable = 'log Sales')
 
 
 data_tmp = pd.DataFrame()

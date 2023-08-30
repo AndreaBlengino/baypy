@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from scipy.stats import invgamma, multivariate_normal
-from GibbsSampler.utils import flatten_matrix
+from baypy.utils import flatten_matrix
 
 
 def sample_sigma2(y: pd.Series, X: np.ndarray, beta: np.ndarray, k_1: float, theta_0: float) -> float:
@@ -29,7 +29,7 @@ def sample_sigma2(y: pd.Series, X: np.ndarray, beta: np.ndarray, k_1: float, the
 
     See Also
     --------
-    :meth:`GibbsSampler.regression.functions.sample_beta`
+    :meth:`baypy.regression.functions.sample_beta`
 
     Notes
     -----
@@ -86,7 +86,7 @@ def sample_beta(Xt_X: np.ndarray, Xt_y: np.ndarray, sigma2: float, Sigma_0_inv: 
 
     See Also
     --------
-    :meth:`GibbsSampler.regression.functions.sample_sigma2`
+    :meth:`baypy.regression.functions.sample_sigma2`
 
     Notes
     -----

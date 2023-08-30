@@ -1,4 +1,4 @@
-import GibbsSampler as gs
+import baypy as bp
 import numpy as np
 import pandas as pd
 from pytest import mark, raises
@@ -10,12 +10,12 @@ class TestLinearRegressionInit:
 
     def test_raises_type_error(self, linear_regression_init_type_error):
         with raises(TypeError):
-            gs.regression.LinearRegression(model = linear_regression_init_type_error)
+            bp.regression.LinearRegression(model = linear_regression_init_type_error)
 
 
     def test_raises_value_error(self, linear_regression_init_value_error):
         with raises(ValueError):
-            gs.regression.LinearRegression(model = linear_regression_init_value_error)
+            bp.regression.LinearRegression(model = linear_regression_init_value_error)
 
 
 @mark.regression
@@ -65,10 +65,10 @@ class TestLinearRegressionPosteriorsToFrame:
 
 
     def test_raises_value_error(self, general_testing_data):
-        model = gs.model.LinearModel()
+        model = bp.model.LinearModel()
         model.data = general_testing_data['data']
         model.response_variable = general_testing_data['response_variable']
         model.priors = general_testing_data['priors']
-        sampler = gs.regression.LinearRegression(model = model)
+        sampler = bp.regression.LinearRegression(model = model)
         with raises(ValueError):
             sampler.posteriors_to_frame()

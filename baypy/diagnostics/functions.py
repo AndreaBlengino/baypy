@@ -33,8 +33,8 @@ def autocorrelation_plot(posteriors: dict, max_lags: int = 30) -> None:
 
     See Also
     --------
-    :meth:`GibbsSampler.diagnostics.functions.autocorrelation_summary`
-    :meth:`GibbsSampler.diagnostics.functions.effective_sample_size`
+    :meth:`baypy.diagnostics.functions.autocorrelation_summary`
+    :meth:`baypy.diagnostics.functions.effective_sample_size`
     """
     if not isinstance(posteriors, dict):
         raise TypeError(f"Parameter 'posteriors' must be a dictionary")
@@ -143,8 +143,8 @@ def autocorrelation_summary(posteriors: dict, lags: list = None, print_summary: 
 
     See Also
     --------
-    :meth:`GibbsSampler.diagnostics.functions.autocorrelation_plot`
-    :meth:`GibbsSampler.diagnostics.functions.effective_sample_size`
+    :meth:`baypy.diagnostics.functions.autocorrelation_plot`
+    :meth:`baypy.diagnostics.functions.effective_sample_size`
 
     Notes
     -----
@@ -230,8 +230,8 @@ def effective_sample_size(posteriors: dict, print_summary: bool = True) -> pd.Da
 
     See Also
     --------
-    :meth:`GibbsSampler.diagnostics.functions.autocorrelation_plot`
-    :meth:`GibbsSampler.diagnostics.functions.autocorrelation_summary`
+    :meth:`baypy.diagnostics.functions.autocorrelation_plot`
+    :meth:`baypy.diagnostics.functions.autocorrelation_summary`
 
     Notes
     -----

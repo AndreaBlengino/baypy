@@ -1,4 +1,4 @@
-import GibbsSampler as gs
+import baypy as bp
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -7,7 +7,7 @@ import pandas as pd
 data = pd.read_csv(r'data/data.csv')
 
 
-model = gs.model.LinearModel()
+model = bp.model.LinearModel()
 
 model.data = data
 model.response_variable = 'Salary'
@@ -15,18 +15,18 @@ model.priors = {'intercept': {'mean': 0, 'variance': 1e12},
                 'YearsExperience': {'mean': 0, 'variance': 1e12},
                 'variance': {'shape': 1, 'scale': 1e-12}}
 
-regression = gs.regression.LinearRegression(model = model)
+regression = bp.regression.LinearRegression(model = model)
 posteriors = regression.sample(n_iterations = 500, burn_in_iterations = 50, n_chains = 3, seed = 137)
 
 
-gs.diagnostics.effective_sample_size(posteriors = posteriors)
-gs.diagnostics.autocorrelation_summary(posteriors = posteriors)
-gs.diagnostics.autocorrelation_plot(posteriors = posteriors)
+bp.diagnostics.effective_sample_size(posteriors = posteriors)
+bp.diagnostics.autocorrelation_summary(posteriors = posteriors)
+bp.diagnostics.autocorrelation_plot(posteriors = posteriors)
 
-gs.analysis.trace_plot(posteriors = posteriors)
-gs.analysis.residuals_plot(posteriors = posteriors, data = data, response_variable = 'Salary')
-gs.analysis.summary(posteriors = posteriors)
-gs.analysis.compute_DIC(posteriors = posteriors, data = data, response_variable = 'Salary')
+bp.analysis.trace_plot(posteriors = posteriors)
+bp.analysis.residuals_plot(posteriors = posteriors, data = data, response_variable = 'Salary')
+bp.analysis.summary(posteriors = posteriors)
+bp.analysis.compute_DIC(posteriors = posteriors, data = data, response_variable = 'Salary')
 
 
 data_tmp = pd.DataFrame()
@@ -54,7 +54,7 @@ plt.tight_layout()
 plt.show()
 
 
-distribution = gs.analysis.predict_distribution(posteriors = posteriors, predictors = {'YearsExperience': 5})
+distribution = bp.analysis.predict_distribution(posteriors = posteriors, predictors = {'YearsExperience': 5})
 
 fig_2, ax_2 = plt.subplots()
 

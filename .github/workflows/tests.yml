@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@master
       - name: Test
         run: |
-          python -m pytest --verbose --disable-pytest-warnings --cov=GibbsSampler --cov-report=xml -nauto
+          python -m pytest --verbose --disable-pytest-warnings --cov=baypy --cov-report=xml -nauto
       - name: Upload
         uses: codecov/codecov-action@v2
         with:

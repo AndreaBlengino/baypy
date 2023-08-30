@@ -3,18 +3,18 @@ import pandas as pd
 
 
 class LinearModel(Model):
-    r"""GibbsSampler.model.model.LinearModel object.
+    r"""baypy.model.model.LinearModel object.
 
     Attributes
     ----------
-    :meth:`GibbsSampler.model.linear_model.LinearModel.data`: pandas.DataFrame
+    :meth:`baypy.model.linear_model.LinearModel.data`: pandas.DataFrame
         Data for the linear regression model, is a ``pandas.DataFrame`` containing all regressor variables
         :math:`X` and the response variable :math:`y`.
-    :meth:`GibbsSampler.model.linear_model.LinearModel.response_variable`: string
+    :meth:`baypy.model.linear_model.LinearModel.response_variable`: string
         Response variable :math:`y` of the linear model.
-    :meth:`GibbsSampler.model.linear_model.LinearModel.priors` : dict
+    :meth:`baypy.model.linear_model.LinearModel.priors` : dict
         Priors for the regressors' and variance parameters.
-    :meth:`GibbsSampler.model.linear_model.LinearModel.variable_names` : list
+    :meth:`baypy.model.linear_model.LinearModel.variable_names` : list
         List of all model variables: the regressors :math:`X`, including the ``intercept`` and the ``variance``
         :math:`\sigma^2`.
     """
@@ -131,7 +131,7 @@ class LinearModel(Model):
             - parameter :math:`\beta_3` of variable :math:`x_3`, with ``mean`` :math:`\beta_3^0` and ``variance`` :math:`\Sigma_{\beta_3}^0`
             - variable :math:`\sigma^2`, with ``shape`` :math:`\kappa^0` and ``scale`` :math:`\theta^0`
 
-        >>> model = GibbsSampler.model.LinearModel()
+        >>> model = baypy.model.LinearModel()
         >>> model.set_priors({'intercept': {'mean': 0, 'variance': 1e6},
         ...                   'x_1': {'mean': 0, 'variance': 1e6},
         ...                   'x_2': {'mean': 0, 'variance': 1e6},
@@ -194,7 +194,7 @@ class LinearModel(Model):
             - parameter :math:`\beta_3` of variable :math:`x_3`, with ``mean`` :math:`\beta_3^0` and ``variance`` :math:`\Sigma_{\beta_3}^0`
             - variable :math:`\sigma^2`, with ``shape`` :math:`\kappa^0` and ``scale`` :math:`\theta^0`
 
-        >>> model = GibbsSampler.model.LinearModel()
+        >>> model = baypy.model.LinearModel()
         >>> model.set_priors({'intercept': {'mean': 0, 'variance': 1e6},
         ...                   'x_1': {'mean': 0, 'variance': 1e6},
         ...                   'x_2': {'mean': 0, 'variance': 1e6},

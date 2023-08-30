@@ -30,7 +30,7 @@ def trace_plot(posteriors: dict) -> None:
 
     See Also
     --------
-    :meth:`GibbsSampler.regression.linear_regression.LinearRegression`
+    :meth:`baypy.regression.linear_regression.LinearRegression`
     """
     if not isinstance(posteriors, dict):
         raise TypeError(f"Parameter 'posteriors' must be a dictionary")
@@ -132,7 +132,7 @@ def summary(posteriors: dict, alpha: float = 0.05, quantiles: list = None, print
 
     See Also
     --------
-    :meth:`GibbsSampler.regression.linear_regression.LinearRegression`
+    :meth:`baypy.regression.linear_regression.LinearRegression`
     """
     if not isinstance(posteriors, dict):
         raise TypeError(f"Parameter 'posteriors' must be a dictionary")
@@ -253,7 +253,7 @@ def residuals_plot(posteriors: dict, data: pd.DataFrame, response_variable: str)
 
     See Also
     --------
-    :meth:`GibbsSampler.regression.linear_regression.LinearRegression`
+    :meth:`baypy.regression.linear_regression.LinearRegression`
 
     Notes
     -----
@@ -355,7 +355,7 @@ def predict_distribution(posteriors: dict, predictors: dict) -> np.ndarray:
 
     See Also
     --------
-    :meth:`GibbsSampler.regression.linear_regression.LinearRegression`
+    :meth:`baypy.regression.linear_regression.LinearRegression`
     """
     if not isinstance(posteriors, dict):
         raise TypeError(f"Parameter 'posteriors' must be a dictionary")
@@ -438,7 +438,7 @@ def compute_DIC(posteriors: dict, data: pd.DataFrame, response_variable: str, pr
 
     See Also
     --------
-    :meth:`GibbsSampler.regression.linear_regression.LinearRegression`
+    :meth:`baypy.regression.linear_regression.LinearRegression`
 
     Notes
     -----

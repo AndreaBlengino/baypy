@@ -1,16 +1,16 @@
-# Monte Carlo Markov Chain Regression
+# Bayesian Monte Carlo Markov Chain Regression
 
-[![Tests](https://github.com/AndreaBlengino/GibbsSampler/actions/workflows/tests.yml/badge.svg)](https://github.com/AndreaBlengino/GibbsSampler/actions/workflows/tests.yml)
-[![codecov](https://codecov.io/gh/AndreaBlengino/GibbsSampler/graph/badge.svg?token=T7FMO9ACJW)](https://codecov.io/gh/AndreaBlengino/GibbsSampler)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/AndreaBlengino/GibbsSampler/blob/master/LICENSE)
+[![Tests](https://github.com/AndreaBlengino/baypy/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/AndreaBlengino/baypy/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/AndreaBlengino/baypy/graph/badge.svg?token=T7FMO9ACJW)](https://codecov.io/gh/AndreaBlengino/baypy)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/AndreaBlengino/baypy/blob/master/LICENSE)
 
 
-**GibbsSampler** is a python library for solving Bayesian linear 
+**baypy** is a python library for solving bayesian linear 
 regression models through a Monte Carlo Markov chain sampling.
 
 ## Usage Examples
 
-See [usage examples](https://github.com/AndreaBlengino/GibbsSampler/tree/master/examples).
+See [usage examples](https://github.com/AndreaBlengino/baypy/tree/master/examples).
 
 ## Dependencies
 
@@ -30,7 +30,7 @@ See [usage examples](https://github.com/AndreaBlengino/GibbsSampler/tree/master/
 
 ## Python versions
 
-GibbsSampler runs for python version 3.9+.
+baypy runs for python version 3.9+.
 
 ## Contributing
 
@@ -39,4 +39,4 @@ enhancements and ideas are welcome.
 
 ## License
 
-[GNU General Public License v3.0](https://github.com/AndreaBlengino/GibbsSampler/blob/master/LICENSE)
+[GNU General Public License v3.0](https://github.com/AndreaBlengino/baypy/blob/master/LICENSE)

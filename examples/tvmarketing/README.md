@@ -57,9 +57,9 @@ Setting-up a linear regression model, using non-informative priors for
 regressors and variance:
 
 ```python
-import GibbsSampler as gs
+import baypy as bp
 
-model = gs.model.LinearModel()
+model = bp.model.LinearModel()
 
 model.data = data
 model.response_variable = 'log Sales'
@@ -74,7 +74,7 @@ Run the regression sampling on 3 Markov chains and discarding the first
 burn-in draws:
 
 ```python
-regression = gs.regression.LinearRegression(model = model)
+regression = bp.regression.LinearRegression(model = model)
 posteriors = regression.sample(n_iterations = 500, burn_in_iterations = 50, 
                                n_chains = 3, seed = 137)
 ```
@@ -84,7 +84,7 @@ posteriors = regression.sample(n_iterations = 500, burn_in_iterations = 50,
 Asses the model convergence diagnostics:
 
 ```python
-gs.diagnostics.effective_sample_size(posteriors = posteriors)
+bp.diagnostics.effective_sample_size(posteriors = posteriors)
 ```
 ```
                        intercept   log TV  variance
@@ -92,7 +92,7 @@ Effective Sample Size    1373.29  1321.11   1424.68
 ```
 
 ```python
-gs.diagnostics.autocorrelation_summary(posteriors = posteriors)
+bp.diagnostics.autocorrelation_summary(posteriors = posteriors)
 ```
 ```
         intercept    log TV  variance
@@ -104,7 +104,7 @@ Lag 30  -0.028748 -0.030245  0.031090
 ```
 
 ```python
-gs.diagnostics.autocorrelation_plot(posteriors = posteriors)
+bp.diagnostics.autocorrelation_plot(posteriors = posteriors)
 ```
 
 <p align="center">
@@ -116,7 +116,7 @@ gs.diagnostics.autocorrelation_plot(posteriors = posteriors)
 Asses posterior analysis:
 
 ```python
-gs.analysis.trace_plot(posteriors = posteriors)
+bp.analysis.trace_plot(posteriors = posteriors)
 ```
 
 <p align="center">
@@ -124,7 +124,7 @@ gs.analysis.trace_plot(posteriors = posteriors)
 </p>
 
 ```python
-gs.analysis.residuals_plot(posteriors = posteriors, data = data, response_variable = 'y')
+bp.analysis.residuals_plot(posteriors = posteriors, data = data, response_variable = 'y')
 ```
 
 <p align="center">
@@ -132,7 +132,7 @@ gs.analysis.residuals_plot(posteriors = posteriors, data = data, response_variab
 </p>
 
 ```python
-gs.analysis.summary(posteriors = posteriors)
+bp.analysis.summary(posteriors = posteriors)
 ```
 ```
 Number of chains:           3
@@ -154,7 +154,7 @@ variance   0.036865  0.041706  0.044504  0.048087  0.054838
 ```
 
 ```python
-gs.analysis.compute_DIC(posteriors = posteriors, data = data, response_variable = 'y')
+bp.analysis.compute_DIC(posteriors = posteriors, data = data, response_variable = 'y')
 ```
 ```
 Deviance at posterior means          -448.84

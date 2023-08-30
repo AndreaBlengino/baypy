@@ -1,4 +1,4 @@
-from GibbsSampler.utils import flatten_matrix, matrices_to_frame
+from baypy.utils import flatten_matrix, matrices_to_frame
 import numpy as np
 import pandas as pd
 from pytest import mark, raises

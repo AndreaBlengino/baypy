@@ -1,6 +1,6 @@
-from GibbsSampler.regression.functions import sample_sigma2
-from GibbsSampler.regression.functions import sample_beta
-from GibbsSampler.model import Model
+from baypy.regression.functions import sample_sigma2
+from baypy.regression.functions import sample_beta
+from baypy.model import Model
 from .regression import Regression
 import numpy as np
 import pandas as pd
@@ -9,17 +9,17 @@ from ..utils import matrices_to_frame
 
 
 class LinearRegression(Regression):
-    r"""GibbsSampler.regression.linear_regression.LinearRegression object.
+    r"""baypy.regression.linear_regression.LinearRegression object.
 
     Constructor Parameters
     ----------------------
-    model : GibbsSampler.model.model.Model
+    model : baypy.model.model.Model
         Model with data, regressors, response variable, initial values and priors to be solved through Monte Carlo
         sampling.
 
     Attributes
     ----------
-    model : GibbsSampler.model.model.Model
+    model : baypy.model.model.Model
         Model with data, regressors, response variable, initial values and priors to be solved through Monte Carlo
         sampling.
     posteriors : dict
@@ -29,16 +29,16 @@ class LinearRegression(Regression):
 
     Methods
     -------
-    :meth:`GibbsSampler.regression.linear_regression.LinearRegression.sample()`
+    :meth:`baypy.regression.linear_regression.LinearRegression.sample()`
         Samples a sequence of observations from the full posterior distribution of regressors' parameters
         :math:`\beta_j` and ``variance`` :math:`\sigma^2`.
-    :meth:`GibbsSampler.regression.linear_regression.LinearRegression.posteriors_to_frame()`
+    :meth:`baypy.regression.linear_regression.LinearRegression.posteriors_to_frame()`
         Organizes the ``posteriors`` in a ``pandas.DataFrame``.
 
     Constructor Raises
     ------------------
     TypeError
-        If ``model`` is not a ``GibbsSampler.model.model.Model``.
+        If ``model`` is not a ``baypy.model.model.Model``.
     ValueError
         - If ``model.data`` is ``None``,
         - if ``model.response_variable`` is ``None``,
@@ -51,7 +51,7 @@ class LinearRegression(Regression):
 
     See Also
     --------
-    :meth:`GibbsSampler.model.linear_model.LinearModel`
+    :meth:`baypy.model.linear_model.LinearModel`
     """
 
 
