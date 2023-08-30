@@ -4,7 +4,7 @@ with open('README.md', 'r') as f:
     long_description = f.read()
 
 setup(name = 'baypy',
-      version = '1.0.0',
+      version = '1.0.2',
       description = "A python package for solving bayesian regression models "
                     "through a Monte Carlo Markov chain sampling",
       packages = find_packages(where = '.'),
