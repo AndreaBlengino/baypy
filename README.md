@@ -2,20 +2,13 @@
 
 [![Tests](https://github.com/AndreaBlengino/GibbsSampler/actions/workflows/tests.yml/badge.svg)](https://github.com/AndreaBlengino/GibbsSampler/actions/workflows/tests.yml)
 [![codecov](https://codecov.io/gh/AndreaBlengino/GibbsSampler/graph/badge.svg?token=T7FMO9ACJW)](https://codecov.io/gh/AndreaBlengino/GibbsSampler)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/AndreaBlengino/GibbsSampler/blob/master/LICENSE)
 
 
 **GibbsSampler** is a python library for solving Bayesian linear 
 regression models through a Monte Carlo Markov chain sampling.
 
-## Table of Contents
-
-- [Examples](#examples)
-- [Dependencies](#dependencies)
-- [Python versions](#python-versions)
-- [Contributing](#contributing)
-- [License](#license)
-
-## Examples
+## Usage Examples
 
 See [usage examples](https://github.com/AndreaBlengino/GibbsSampler/tree/master/examples).
 
