@@ -1,6 +1,9 @@
 ### Model Set Up
 
-Pretending to fit the [salary dataset](https://github.com/AndreaBlengino/GibbsSampler/blob/master/examples/salary/data.csv):
+Determine the effect of the years of experience on salary of jobholders 
+using a simple linear regression model.  
+[Link to the dataset](https://github.com/AndreaBlengino/GibbsSampler/blob/master/examples/salary/data.csv)  
+[Dataset original source](https://www.kaggle.com/datasets/rsadiq/salary)
 
 ```python
 import pandas as pd
@@ -8,8 +11,9 @@ import pandas as pd
 data = pd.read_csv(r'data.csv')
 ```
 
-Setting-up a linear regression model, using non-informative priors for
-regressors and variance:
+Set-up a linear regression model, considering *YearsExperience* as the
+regressor and *Salary* as the response variable.  
+Using non-informative priors for regressors and variance:
 
 ```python
 import baypy as bp
@@ -24,12 +28,12 @@ model.priors = {'intercept': {'mean': 0, 'variance': 1e12},
 
 ### Sampling
 
-Run the regression sampling on 3 Markov chains and discarding the first 
-burn-in draws:
+Run the regression sampling on 3 Markov chains, with 5000 iteration per 
+each chain and discarding the first 50 burn-in draws:
 
 ```python
 regression = bp.regression.LinearRegression(model = model)
-posteriors = regression.sample(n_iterations = 500, burn_in_iterations = 50, 
+posteriors = regression.sample(n_iterations = 5000, burn_in_iterations = 50, 
                               n_chains = 3, seed = 137)
 ```
 
@@ -42,7 +46,7 @@ bp.diagnostics.effective_sample_size(posteriors = posteriors)
 ```
 ```
                        intercept  YearsExperience  variance
-Effective Sample Size    1336.25          1328.85   1360.84
+Effective Sample Size   14757.25         14718.82  12692.31
 ```
 
 ```python
@@ -51,10 +55,10 @@ bp.diagnostics.autocorrelation_summary(posteriors = posteriors)
 ```
         intercept  YearsExperience  variance
 Lag 0    1.000000         1.000000  1.000000
-Lag 1    0.019390         0.039420  0.034288
-Lag 5    0.013257        -0.018416  0.016291
-Lag 10  -0.015301         0.009640 -0.031066
-Lag 30   0.005944         0.015346 -0.007005
+Lag 1   -0.003427         0.003354  0.062828
+Lag 5    0.014196         0.014811 -0.019225
+Lag 10   0.002163         0.006671  0.008239
+Lag 30  -0.000465        -0.002819  0.000682
 ```
 
 ```python
@@ -64,6 +68,9 @@ bp.diagnostics.autocorrelation_plot(posteriors = posteriors)
 <p align="center">
     <img src="images/autocorrelation_plot.png">
 </p>
+
+All diagnostics show a low correlation, indicating the chains 
+converged to the stationary distribution.
 
 ### Posteriors Analysis
 
@@ -77,6 +84,8 @@ bp.analysis.trace_plot(posteriors = posteriors)
     <img src="images/trace_plot.png">
 </p>
 
+Traces are good, incidating draws from the stationary distribution.
+
 ```python
 bp.analysis.residuals_plot(posteriors = posteriors, data = data, response_variable = 'y')
 ```
@@ -85,39 +94,36 @@ bp.analysis.residuals_plot(posteriors = posteriors, data = data, response_variab
     <img src="images/residuals_plot.png">
 </p>
 
+Also the residuals plot is good: no evidence for patterns, shapes or 
+outliers.
+
 ```python
 bp.analysis.summary(posteriors = posteriors)
 ```
 ```
 Number of chains:           3
-Sample size per chian:    500
+Sample size per chian:   5000
 
 Empirical mean, standard deviation, 95% HPD interval for each variable:
 
                          Mean            SD       HPD min       HPD max
-intercept        2.502233e+04  2.344689e+03  2.053892e+04  2.965342e+04
-YearsExperience  9.421604e+03  3.851400e+02  8.671903e+03  1.012988e+04
-variance         3.454205e+07  9.457282e+06  1.934886e+07  5.389312e+07
+intercept        2.483031e+04  2.365229e+03  2.015569e+04  2.947465e+04
+YearsExperience  9.453053e+03  3.863412e+02  8.702788e+03  1.022794e+04
+variance         3.477599e+07  9.970182e+06  1.838234e+07  5.414517e+07
 
 Quantiles for each variable:
 
                          2.5%           25%           50%           75%         97.5%
-intercept        2.026500e+04  2.354437e+04  2.494174e+04  2.660592e+04  2.945207e+04
-YearsExperience  8.683961e+03  9.160491e+03  9.429675e+03  9.664610e+03  1.014999e+04
-variance         2.094755e+07  2.792063e+07  3.275464e+07  3.925156e+07  5.773319e+07
+intercept        2.013048e+04  2.329292e+04  2.484871e+04  2.639967e+04  2.946356e+04
+YearsExperience  8.696984e+03  9.198969e+03  9.447750e+03  9.703882e+03  1.022423e+04
+variance         2.049029e+07  2.779544e+07  3.309215e+07  3.986484e+07  5.835968e+07
 ```
 
-```python
-bp.analysis.compute_DIC(posteriors = posteriors, data = data, response_variable = 'y')
-```
-```
-Deviance at posterior means           548.70
-Posterior mean deviance               547.03
-Effective number of parameteres        -1.67
-Deviace Information Criterion         545.36
-```
-
-Predict the `Salary` distribution for a predictor `YearsExperience = 5`:
+The summary reports a statistical evidence for a positive effect of 
+the year of experience: an increase of 1 year of experience would result
+in a increase of ~9.500 in salary.  
+Predict the salary distribution for a jobholder with 5 year of 
+experience, so the predictor is `YearsExperience = 5`:
 
 ```python
 import matplotlib.pyplot as plt
