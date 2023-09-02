@@ -127,7 +127,7 @@ variance    0.381039   0.409852   0.427476   0.445582   0.486702
 
 The summary reports a statistical evidence for:
 
-- negative effect of *biking*: an increase of 1 point in *biking* would 
-result in a decrease of 0.2 point in *heart disease*
-- positive effect of *smoking*: an increase of 1 point in *smoking* 
-would result in a increase of 0.2 point in *heart disease*
+- negative effect of *biking*: $1$ point increase in *biking* 
+would result in $0.2$ points decrease in *heart disease*
+- positive effect of *smoking*: $1$ point increase in *smoking* 
+would result $0.2$ points increase in *heart disease*

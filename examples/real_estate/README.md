@@ -177,24 +177,20 @@ variance                     0.030052    0.032863    0.034565    0.036164    0.0
 
 The summary reports a statistical evidence for:
 
-- positive effect of *transaction date*: an increase of 1 month would 
-result in a percent increase of $e^{\frac{0.165923}{12}} - 1 = 1.4%$ 
-points in *house price*
-- negative effect of *house age*: an increase of 1 year would result
-in a percent decrease of $e^{-0.006024} - 1 = -0.6%$ points in *house 
-price*
-- negative effect of *log MRT station distance*: a percent increase of
-10% in *MRT station distance* would result in a percent decrease of 
-$1.1^{-0.166081} - 1 = -1.57%$ in *house price*
-- positive effect of *stores number*: an increase of 1 store would 
-result in a percent increase of $e^{0.014637} - 1 = 1.47%$ points in 
+- positive effect of *transaction date*: $1$ month increase would 
+result in $e^{\frac{0.165923}{12}} - 1 = 1.4\%$ percent increase in 
 *house price*
-- positive effect of *latitute*: an increase of 1' would result in a 
-percent increase of $e^{\frac{9.593946}{60}} - 1 = 17.3%$ points in 
-*house price*
-- positive effect of *longitude*: an increase of 1' would result in a 
-percent increase of $e^{\frac{2.840717}{60}} - 1 = 4.85%$ points in 
-*house price*
+- negative effect of *house age*: $1$ year increase would result
+in $e^{-0.006024} - 1 = -0.6\%$ percent decrease in *house price*
+- negative effect of *log MRT station distance*: $10\%$ percent increase
+in *MRT station distance* would result in 
+$1.10^{-0.166081} - 1 = -1.57\%$ percent decrease in *house price*
+- positive effect of *stores number*: $1$ store increase would 
+result in $e^{0.014637} - 1 = 1.47\%$ percent increase in *house price*
+- positive effect of *latitute*: $1'$ increase would result in 
+$e^{\frac{9.593946}{60}} - 1 = 17.3\%$ percent increase *house price*
+- positive effect of *longitude*: $1'$ increase would result in 
+$e^{\frac{2.840717}{60}} - 1 = 4.85\%$ percent increase in *house price*
 
 The combined effect of *latitude* and *longitude* suggest that the 
 north-east of New Taipei City is the most expensive area, while the

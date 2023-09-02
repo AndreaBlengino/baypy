@@ -167,11 +167,11 @@ variance      0.011840  0.012967  0.013594  0.014286  0.015681
 
 The summary reports a statistical evidence for:
 
-- negative effect of *cylinders*: an increase of 1 cylinder would 
-result in a percent decrease of $e^{-0.016291} - 1 = -1.62%$ in *mpg*
-- negative effect of *log weight*: a percent increase of 10% in *weight* 
-would result in a percent descrease of $1.1^{-0.837066} - 1 = -7.67%$ in
+- negative effect of *cylinders*: $1$ cylinder increase would 
+result in $e^{-0.016291} - 1 = -1.62\%$ percent decrease in *mpg*
+- negative effect of *log weight*: $10\%$ percent increase in *weight* 
+would result in $1.10^{-0.837066} - 1 = -7.67\%$ percent decrease in 
 *mpg*
-- positive effect of *model year*: an increase of 1 year would result in
-an increase of 0.03 points in *mpg*. This effect may represent the 
+- positive effect of *model year*: $1$ year increase would result in 
+$0.03$ points increase in *mpg*. This effect may represent the 
 efficiency enhancements made along the years to reduce fuel consumption  

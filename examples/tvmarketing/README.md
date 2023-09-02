@@ -294,6 +294,9 @@ log TV     0.325689  0.344946  0.354906  0.364422  0.386279
 variance   0.036865  0.041719  0.044506  0.048087  0.054838
 ```
 
+The summary reports a statistical evidence for a positive effect of 
+*log TV*: $10\%$ percent increase in *TV* would result in
+$1.10^{0.354768} - 1 = 3.44\%$ percent increase in *Sales*.  
 Comparing data to fitted model posteriors:
 
 ```python

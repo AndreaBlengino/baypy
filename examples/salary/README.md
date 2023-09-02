@@ -120,8 +120,8 @@ variance         2.049029e+07  2.779544e+07  3.309215e+07  3.986484e+07  5.83596
 ```
 
 The summary reports a statistical evidence for a positive effect of 
-the year of experience: an increase of 1 year of experience would result
-in a increase of ~9.500 in salary.  
+years of experience: $1$ year increase in experience would result in
+$\sim 9.500$ increase in salary.  
 Predict the salary distribution for a jobholder with 5 year of 
 experience, so the predictor is `YearsExperience = 5`:
 
