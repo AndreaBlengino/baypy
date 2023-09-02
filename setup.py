@@ -1,10 +1,13 @@
 from setuptools import find_packages, setup
+import subprocess
+
+version = subprocess.run(['git', 'describe', '--tags'], stdout = subprocess.PIPE).stdout.decode('utf-8').strip()
 
 with open('README.md', 'r') as f:
     long_description = f.read()
 
 setup(name = 'baypy',
-      version = '1.0.2',
+      version = version,
       description = "A python package for solving bayesian regression models "
                     "through a Monte Carlo Markov chain sampling",
       packages = find_packages(where = '.'),
