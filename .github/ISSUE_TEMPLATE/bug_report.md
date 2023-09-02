@@ -43,3 +43,8 @@ Please search on the [issue tracker](../) before creating one.
 * Python version:
 * Package version:
 * Dependencies version:
+* baypy installation type:
+  - [ ] `pip install baypy`
+  - [ ] from source (.tar.gz)
+  - [ ] `git clone`
+  
