@@ -104,7 +104,7 @@ class LinearRegression(Regression):
         .. math::
             \mu = \beta_0 + B X = \beta_0 + \sum_{j = 1}^m \beta_j x_j
 
-        and the likelyhood is:
+        and the likelihood is:
 
         .. math::
             p \left( y \left\vert B,\sigma^2 \right. \right) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp{\frac{\left(y -
