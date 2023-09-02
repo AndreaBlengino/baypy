@@ -1,15 +1,21 @@
 ### Model Set Up
 
-Pretending to fit the [heart dataset](ehttps://github.com/AndreaBlengino/GibbsSampler/blob/master/examples/heart/data.csv):
+Determine the effect that the independent variables *biking* and 
+*smoking* have on the dependent variable *heart disease* using a 
+multiple linear regression model.  
+[Link to the dataset](https://github.com/AndreaBlengino/baypy/blob/master/examples/heart/data/data.csv)  
+Unfortunately, [the database original source](https://www.scribbr.com/statistics/multiple-linear-regression/)
+does not report the units on each variable.
 
 ```python
 import pandas as pd
 
-data = pd.read_csv(r'data.csv')
+data = pd.read_csv(r'data/data.csv')
 ```
 
-Setting-up a linear regression model, using non-informative priors for
-regressors and variance:
+Set-up a multiple linear regression model, considering *biking* and
+*smoking* as regressors and *heart disease* as the response variable. 
+Use non-informative priors for regressors and variance:
 
 ```python
 import baypy as bp
@@ -26,8 +32,8 @@ model.priors = {'intercept': {'mean': 0, 'variance': 1e6},
 
 ### Sampling
 
-Run the regression sampling on 3 Markov chains and discarding the first 
-burn-in draws:
+Run the regression sampling on 3 Markov chains, with 500 iterations per 
+each chain and discarding the first 50 burn-in draws:
 
 ```python
 regression = bp.regression.LinearRegression(model = model)
@@ -46,7 +52,6 @@ bp.diagnostics.effective_sample_size(posteriors = posteriors)
                        intercept  biking  smoking  variance
 Effective Sample Size    1456.14  1357.8  1242.45   1182.23
 ```
-
 ```python
 bp.diagnostics.autocorrelation_summary(posteriors = posteriors)
 ```
@@ -67,6 +72,9 @@ bp.diagnostics.autocorrelation_plot(posteriors = posteriors)
     <img src="images/autocorrelation_plot.png">
 </p>
 
+All diagnostics show a low correlation, indicating the chains 
+converged to the stationary distribution.
+
 ### Posteriors Analysis
 
 Asses posterior analysis:
@@ -79,6 +87,9 @@ bp.analysis.trace_plot(posteriors = posteriors)
     <img src="images/trace_plot.png">
 </p>
 
+Traces are quite good, incidating draws from the stationary 
+distribution.
+
 ```python
 bp.analysis.residuals_plot(posteriors = posteriors, data = data, response_variable = 'y')
 ```
@@ -86,6 +97,9 @@ bp.analysis.residuals_plot(posteriors = posteriors, data = data, response_variab
 <p align="center">
     <img src="images/residuals_plot.png">
 </p>
+
+Also the residuals plot is good: no evidence for patterns, shapes or 
+outliers.
 
 ```python
 bp.analysis.summary(posteriors = posteriors)
@@ -111,12 +125,9 @@ smoking     0.171375   0.175875   0.178331   0.180618   0.185389
 variance    0.381039   0.409852   0.427476   0.445582   0.486702
 ```
 
-```python
-bp.analysis.compute_DIC(posteriors = posteriors, data = data, response_variable = 'y')
-```
-```
-Deviance at posterior means            -0.36
-Posterior mean deviance                -2.31
-Effective number of parameteres        -1.95
-Deviace Information Criterion          -4.27
-```
+The summary reports a statistical evidence for:
+
+- negative effect of *biking*: an increase of 1 point in *biking* would 
+result in a decrease of 0.2 point in *heart disease*
+- positive effect of *smoking*: an increase of 1 point in *smoking* 
+would result in a increase of 0.2 point in *heart disease*

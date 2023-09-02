@@ -459,7 +459,7 @@ def compute_DIC(posteriors: dict, data: pd.DataFrame, response_variable: str, pr
         p \left( y \left\vert B,\sigma^2 \right. \right) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp{\frac{\left(y - \mu
         \right)^2}{\sigma^2}} .
 
-    The *deviance* is defined as:
+    The *deviance* [1]_ [2]_ is defined as:
 
     .. math::
         D \left( y, B, \sigma^2 \right) = -2\log p \left( y \left\vert B,\sigma^2 \right. \right) .
@@ -480,7 +480,7 @@ def compute_DIC(posteriors: dict, data: pd.DataFrame, response_variable: str, pr
     .. math::
         pD = \overline{D} \left( y, B, \sigma^2 \right) - D_{{\overline{\beta}}, \overline{\sigma^2}} (y) .
 
-    The *Deviance Information Criterion* is:
+    The *Deviance Information Criterion* [1]_ is:
 
     .. math::
         DIC = 2 \overline{D} \left( y, B, \sigma^2 \right) - D_{{\overline{\beta}}, \overline{\sigma^2}} (y) =
