@@ -28,9 +28,9 @@ characters.  If the commit is related to a ticket, indicate that with
 Describing the motivation for a change, the nature of a bug for bug 
 fixes or some details on what an enhancement does are also good to 
 include in a commit message. Messages should be understandable without 
-looking at the code changes. A commit message like `MNT: fixed another 
-one` is an example of what not to do; the reader has to go look for 
-context elsewhere.  
+looking at the code changes. A commit message like 
+`MNT: fixed another one` is an example of what not to do; the reader has
+to go look for context elsewhere.  
 Standard acronyms to start the commit message with are:
 
 ```
