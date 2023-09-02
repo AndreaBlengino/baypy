@@ -2,14 +2,14 @@
 
 Build a linear regression model for predicting *Sales* using *TV* as a
 predictor.  
-[Link to the dataset](https://github.com/AndreaBlengino/GibbsSampler/blob/master/examples/tvmarketing/data.csv)  
+[Link to the dataset](https://github.com/AndreaBlengino/baypy/blob/master/examples/tvmarketing/data/data.csv)  
 Unfortunately, [the database original source](https://www.kaggle.com/datasets/devzohaib/tvmarketingcsv?select=tvmarketing.csv)
 does not report the units on each variable.
 
 ```python
 import pandas as pd
 
-data = pd.read_csv(r'data.csv')
+data = pd.read_csv(r'data/data.csv')
 ```
 
 ```python
@@ -51,7 +51,7 @@ model_1.priors = {'intercept': {'mean': 0, 'variance': 1e6},
 
 ### Sampling
 
-Run the regression sampling on 3 Markov chains, with 500 iteration per 
+Run the regression sampling on 3 Markov chains, with 500 iterations per 
 each chain and discarding the first 50 burn-in draws:
 
 ```python

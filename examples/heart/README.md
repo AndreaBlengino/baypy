@@ -3,14 +3,14 @@
 Determine the effect that the independent variables *biking* and 
 *smoking* have on the dependent variable *heart disease* using a 
 multiple linear regression model.  
-[Link to the dataset](https://github.com/AndreaBlengino/GibbsSampler/blob/master/examples/heart/data.csv)  
+[Link to the dataset](https://github.com/AndreaBlengino/baypy/blob/master/examples/heart/data/data.csv)  
 Unfortunately, [the database original source](https://www.scribbr.com/statistics/multiple-linear-regression/)
 does not report the units on each variable.
 
 ```python
 import pandas as pd
 
-data = pd.read_csv(r'data.csv')
+data = pd.read_csv(r'data/data.csv')
 ```
 
 Set-up a multiple linear regression model, considering *biking* and
@@ -32,7 +32,7 @@ model.priors = {'intercept': {'mean': 0, 'variance': 1e6},
 
 ### Sampling
 
-Run the regression sampling on 3 Markov chains, with 500 iteration per 
+Run the regression sampling on 3 Markov chains, with 500 iterations per 
 each chain and discarding the first 50 burn-in draws:
 
 ```python

@@ -2,13 +2,13 @@
 
 Determine the effect of the years of experience on salary of jobholders 
 using a simple linear regression model.  
-[Link to the dataset](https://github.com/AndreaBlengino/GibbsSampler/blob/master/examples/salary/data.csv)  
+[Link to the dataset](https://github.com/AndreaBlengino/baypy/blob/master/examples/salary/data/data.csv)  
 [Dataset original source](https://www.kaggle.com/datasets/rsadiq/salary)
 
 ```python
 import pandas as pd
 
-data = pd.read_csv(r'data.csv')
+data = pd.read_csv(r'data/data.csv')
 ```
 
 Set-up a linear regression model, considering *YearsExperience* as the
@@ -28,7 +28,7 @@ model.priors = {'intercept': {'mean': 0, 'variance': 1e12},
 
 ### Sampling
 
-Run the regression sampling on 3 Markov chains, with 5000 iteration per 
+Run the regression sampling on 3 Markov chains, with 5000 iterations per 
 each chain and discarding the first 50 burn-in draws:
 
 ```python
