@@ -28,31 +28,6 @@ bp.analysis.residuals_plot(posteriors = posteriors, data = data, response_variab
 bp.analysis.summary(posteriors = posteriors)
 
 
-data_tmp = pd.DataFrame()
-for posterior, posterior_sample in posteriors.items():
-    data_tmp[posterior] = np.asarray(posterior_sample).reshape(-1)
-data_tmp['error'] = np.random.normal(loc = 0, scale = np.sqrt(data_tmp['variance']), size = len(data_tmp))
-
-x = np.linspace(data['YearsExperience'].min(), data['YearsExperience'].max(), 50)
-
-
-fig_1, ax_1 = plt.subplots()
-
-for row in zip(*data_tmp.to_dict('list').values()):
-    y = row[0] + row[1]*x + row[3]
-    ax_1.plot(x, y, color = 'blue', linewidth = 1, alpha = 0.1)
-ax_1.plot(data['YearsExperience'].values, data['Salary'].values, marker = 'o', linestyle = '',
-        markerfacecolor = 'none', markeredgecolor = 'red', markeredgewidth = 1.2)
-
-ax_1.set_xlabel('YearsExperience')
-ax_1.set_ylabel('Salary')
-ax_1.tick_params(bottom = False, top = False, left = False, right = False)
-
-plt.tight_layout()
-
-plt.show()
-
-
 distribution = bp.analysis.predict_distribution(posteriors = posteriors, predictors = {'YearsExperience': 5})
 
 fig_2, ax_2 = plt.subplots()
@@ -62,6 +37,31 @@ ax_2.hist(distribution, bins = int(np.sqrt(len(distribution))), color = 'blue', 
 ax_2.set_xlabel('Salary')
 ax_2.set_ylabel('Probability Density')
 ax_2.tick_params(bottom = False, top = False, left = False, right = False)
+
+plt.tight_layout()
+
+plt.show()
+
+
+posteriors_data = pd.DataFrame()
+for posterior, posterior_sample in posteriors.items():
+    posteriors_data[posterior] = np.asarray(posterior_sample).reshape(-1)
+posteriors_data['error'] = np.random.normal(loc = 0, scale = np.sqrt(posteriors_data['variance']), size = len(posteriors_data))
+
+years_experience = np.linspace(data['YearsExperience'].min(), data['YearsExperience'].max(), 50)
+
+
+fig_1, ax_1 = plt.subplots()
+
+for row in zip(*posteriors_data.to_dict('list').values()):
+    salary = row[0] + row[1]*years_experience + row[3]
+    ax_1.plot(years_experience, salary, color = 'blue', linewidth = 1, alpha = 0.1)
+ax_1.plot(data['YearsExperience'].values, data['Salary'].values, marker = 'o', linestyle = '',
+          markerfacecolor = 'none', markeredgecolor = 'red', markeredgewidth = 1.2)
+
+ax_1.set_xlabel('YearsExperience')
+ax_1.set_ylabel('Salary')
+ax_1.tick_params(bottom = False, top = False, left = False, right = False)
 
 plt.tight_layout()
 

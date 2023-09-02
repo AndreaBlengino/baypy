@@ -32,26 +32,26 @@ posteriors_1 = regression_1.sample(n_iterations = 500, burn_in_iterations = 50, 
 
 
 bp.diagnostics.effective_sample_size(posteriors = posteriors_1)
-bp.diagnostics.autocorrelaion_summary(posteriors = posteriors_1)
+bp.diagnostics.autocorrelation_summary(posteriors = posteriors_1)
 bp.diagnostics.autocorrelation_plot(posteriors = posteriors_1)
 
 bp.analysis.trace_plot(posteriors = posteriors_1)
 bp.analysis.residuals_plot(posteriors = posteriors_1, data = data, response_variable = 'Sales')
 
 
-data_tmp = pd.DataFrame()
+posteriors_data = pd.DataFrame()
 for posterior, posterior_sample in posteriors_1.items():
-    data_tmp[posterior] = np.asarray(posterior_sample).reshape(-1)
-data_tmp['error 1'] = np.random.normal(loc = 0, scale = np.sqrt(data_tmp['variance']), size = len(data_tmp))
+    posteriors_data[posterior] = np.asarray(posterior_sample).reshape(-1)
+posteriors_data['error 1'] = np.random.normal(loc = 0, scale = np.sqrt(posteriors_data['variance']), size = len(posteriors_data))
 
-x = np.linspace(data['TV'].min(), data['TV'].max(), 50)
+tv_1 = np.linspace(data['TV'].min(), data['TV'].max(), 50)
 
 
 fig_2, ax_2 = plt.subplots()
 
-for row in zip(*data_tmp.to_dict('list').values()):
-    y = row[0] + row[1]*x + row[3]
-    ax_2.plot(x, y, color = 'blue', linewidth = 1, alpha = 0.1)
+for row in zip(*posteriors_data.to_dict('list').values()):
+    sales_1 = row[0] + row[1]*tv_1 + row[3]
+    ax_2.plot(tv_1, sales_1, color = 'blue', linewidth = 1, alpha = 0.1)
 ax_2.plot(data['TV'].values, data['Sales'].values, marker = 'o', linestyle = '',
           markerfacecolor = 'none', markeredgecolor = 'red', markeredgewidth = 1.2)
 
@@ -98,21 +98,21 @@ bp.analysis.residuals_plot(posteriors = posteriors_2, data = data, response_vari
 bp.analysis.summary(posteriors = posteriors_2)
 
 
-data_tmp = pd.DataFrame()
+posteriors_data = pd.DataFrame()
 for posterior, posterior_sample in posteriors_2.items():
-    data_tmp[posterior] = np.asarray(posterior_sample).reshape(-1)
-data_tmp['error 2'] = np.random.normal(loc = 0, scale = np.sqrt(data_tmp['variance']), size = len(data_tmp))
+    posteriors_data[posterior] = np.asarray(posterior_sample).reshape(-1)
+posteriors_data['error 2'] = np.random.normal(loc = 0, scale = np.sqrt(posteriors_data['variance']), size = len(posteriors_data))
 
-x = np.linspace(data['log TV'].min(), data['log TV'].max(), 50)
+log_tv_2 = np.linspace(data['log TV'].min(), data['log TV'].max(), 50)
 
 
 fig_4, ax_4 = plt.subplots()
 
-for row in zip(*data_tmp.to_dict('list').values()):
-    y = row[0] + row[1]*x + row[3]
-    ax_4.plot(x, y, color = 'blue', linewidth = 1, alpha = 0.1)
+for row in zip(*posteriors_data.to_dict('list').values()):
+    log_sales_2 = row[0] + row[1]*log_tv_2 + row[3]
+    ax_4.plot(log_tv_2, log_sales_2, color = 'blue', linewidth = 1, alpha = 0.1)
 ax_4.plot(data['log TV'].values, data['log Sales'].values, marker = 'o', linestyle = '',
-        markerfacecolor = 'none', markeredgecolor = 'red', markeredgewidth = 1.2)
+          markerfacecolor = 'none', markeredgecolor = 'red', markeredgewidth = 1.2)
 
 ax_4.set_xlabel('log TV')
 ax_4.set_ylabel('log Sales')
@@ -125,11 +125,11 @@ plt.show()
 
 fig_5, ax_5 = plt.subplots()
 
-for row in zip(*data_tmp.to_dict('list').values()):
-    y = row[0] + row[1]*x + row[3]
-    ax_5.plot(np.exp(x), np.exp(y), color = 'blue', linewidth = 1, alpha = 0.1)
+for row in zip(*posteriors_data.to_dict('list').values()):
+    log_sales_2 = row[0] + row[1]*log_tv_2 + row[3]
+    ax_5.plot(np.exp(log_tv_2), np.exp(log_sales_2), color = 'blue', linewidth = 1, alpha = 0.1)
 ax_5.plot(data['TV'].values, data['Sales'].values, marker = 'o', linestyle = '',
-        markerfacecolor = 'none', markeredgecolor = 'red', markeredgewidth = 1.2)
+          markerfacecolor = 'none', markeredgecolor = 'red', markeredgewidth = 1.2)
 
 ax_5.set_xlabel('TV')
 ax_5.set_ylabel('Sales')
