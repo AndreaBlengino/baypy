@@ -127,6 +127,7 @@ experience, so the predictor is `YearsExperience = 5`:
 
 ```python
 import matplotlib.pyplot as plt
+import numpy as np
 
 distribution = bp.analysis.predict_distribution(posteriors = posteriors, predictors = {'YearsExperience': 5})
 

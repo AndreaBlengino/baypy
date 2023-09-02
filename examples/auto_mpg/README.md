@@ -37,10 +37,12 @@ are strongly correlated among each other, meaning that they cannot be
 used as *independent* regressors. For this reason, *horsepower* and 
 *displacement* are discarded, keeping *weight* as regressor.   
 Moreover, *mpg* and *weight* are not normally distributed: data are 
-skewed toward low values. For this reason, these columns are transformed
-to log-scale:
+skewed toward high values. For this reason, these columns are 
+transformed to log-scale:
 
 ```python
+import numpy as np
+
 data['log mpg'] = np.log(data['mpg'])
 data['log weight'] = np.log(data['weight'])
 ```
