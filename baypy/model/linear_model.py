@@ -21,7 +21,11 @@ class LinearModel(Model):
 
 
     def __init__(self):
-        super().__init__()
+
+        self.__data = None
+        self.__response_variable = None
+        self.__priors = None
+        self.__variable_names = None
 
 
     @property
@@ -42,12 +46,14 @@ class LinearModel(Model):
         ValueError
             If ``data`` is an empty ``pandas.DataFrame``.
         """
-        return super().data
+        assert super().data is None
+        return self.__data
 
 
     @data.setter
     def data(self, data: pd.DataFrame) -> None:
         super(LinearModel, type(self)).data.fset(self, data)
+        self.__data = data
 
 
     @property
@@ -64,12 +70,14 @@ class LinearModel(Model):
         TypeError
             If ``response_variable`` is not a ``str``.
         """
-        return super().response_variable
+        assert super().response_variable is None
+        return self.__response_variable
 
 
     @response_variable.setter
     def response_variable(self, response_variable: str) -> None:
         super(LinearModel, type(self)).response_variable.fset(self, response_variable)
+        self.__response_variable = response_variable
 
 
     @property
@@ -141,7 +149,8 @@ class LinearModel(Model):
         ...                   'x_3': {'mean': 0, 'variance': 1e6},
         ...                   'variance': {'shape': 1, 'scale': 1e-6}})
         """
-        return super().priors
+        assert super().priors is None
+        return self.__priors
 
 
     @priors.setter
@@ -228,6 +237,10 @@ class LinearModel(Model):
                     if values[parameter] <= 0:
                         raise ValueError(f"The '{parameter}' of prior '{prior}' must be positive")
 
+        self.__priors = priors
+        self.__variable_names = list(priors.keys())
+        self.__variable_names.insert(0, self.__variable_names.pop(self.__variable_names.index('intercept')))
+
 
     @property
     def variable_names(self) -> list:
@@ -239,4 +252,5 @@ class LinearModel(Model):
             List of all model variables: the regressors :math:`X`, including the ``intercept`` and the ``variance``
             :math:`\sigma^2`.
         """
-        return super().variable_names
+        assert super().variable_names is None
+        return self.__variable_names
