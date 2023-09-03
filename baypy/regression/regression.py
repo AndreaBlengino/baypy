@@ -27,9 +27,6 @@ class Regression(ABC):
             if (prior not in  ['intercept', 'variance']) and (prior not in model.data.columns):
                 raise ValueError(f"Column '{prior}' not found in 'Model.data'")
 
-        self.model = model
-        self.posteriors = None
-
 
     @abstractmethod
     def sample(self, n_iterations: int, burn_in_iterations: int, n_chains: int, seed: int = None) -> dict:
@@ -61,5 +58,4 @@ class Regression(ABC):
 
     @abstractmethod
     def posteriors_to_frame(self) -> pd.DataFrame:
-        if self.posteriors is None:
-            raise ValueError("Posteriors not available, run 'LinearRegression.sample' to generate posteriors")
+        ...

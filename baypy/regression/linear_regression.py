@@ -57,6 +57,8 @@ class LinearRegression(Regression):
 
     def __init__(self, model: Model) -> None:
         super().__init__(model = model)
+        self.model = model
+        self.posteriors = None
 
 
     def sample(self, n_iterations: int, burn_in_iterations: int, n_chains: int, seed: int = None) -> dict:
@@ -188,5 +190,7 @@ class LinearRegression(Regression):
         ValueError
             If ``posteriors`` are not available because the method ``LinearRegression.sample`` is not been called yet.
         """
-        super().posteriors_to_frame()
+        assert super().posteriors_to_frame() is None
+        if self.posteriors is None:
+            raise ValueError("Posteriors not available, run 'LinearRegression.sample' to generate posteriors")
         return matrices_to_frame(matrices_dict = self.posteriors)
