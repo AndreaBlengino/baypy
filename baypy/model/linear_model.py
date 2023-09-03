@@ -206,6 +206,28 @@ class LinearModel(Model):
         """
         super(LinearModel, type(self)).priors.fset(self, priors)
 
+        if 'variance' not in priors.keys():
+            raise KeyError(f"Parameter 'priors' must contain a 'variance' key")
+
+        for prior, values in priors.items():
+            if not isinstance(values, dict):
+                raise TypeError(f"The value of prior '{prior}' must be a dictionary")
+            if len(values) == 0:
+                raise ValueError(f"The value of prior '{prior}' cannot be an empty dictionary")
+            if prior != 'variance':
+                if set(values.keys()) != {'mean', 'variance'}:
+                    raise KeyError(f"The value of prior '{prior}' must be a dictionary "
+                                   f"containing 'mean' and 'variance' keys only")
+                if values['variance'] <= 0:
+                    raise ValueError(f"The 'variance' of prior '{prior}' must be positive")
+            else:
+                if set(values.keys()) != {'shape', 'scale'}:
+                    raise KeyError(f"The value of prior '{prior}' must be a dictionary "
+                                   f"containing 'shape' and 'scale' keys only")
+                for parameter in ['shape', 'scale']:
+                    if values[parameter] <= 0:
+                        raise ValueError(f"The '{parameter}' of prior '{prior}' must be positive")
+
 
     @property
     def variable_names(self) -> list:
