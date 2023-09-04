@@ -26,7 +26,7 @@ def autocorrelation_plot(posteriors: dict, max_lags: int = 30) -> None:
         - if a posterior sample is not a ``numpy.ndarray``,
         - if ``max_lags`` is not a ``int``.
     KeyError
-        If ``posteriors`` does not contain both ``intercept`` and ``variance`` keys.
+        If ``posteriors`` does not contain ``intercept`` key.
     ValueError
         - If a posterior sample is an empty ``numpy.ndarray``,
         - if ``max_lags`` is less or equal to ``0``.
@@ -42,9 +42,8 @@ def autocorrelation_plot(posteriors: dict, max_lags: int = 30) -> None:
     if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
         raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
 
-    for posterior in ['intercept', 'variance']:
-        if posterior not in posteriors.keys():
-            raise KeyError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+    if 'intercept' not in posteriors.keys():
+        raise KeyError(f"Parameter 'posteriors' must contain a 'intercept' key")
 
     for posterior, posterior_samples in posteriors.items():
         if posterior_samples.size == 0:
@@ -135,7 +134,7 @@ def autocorrelation_summary(posteriors: dict, lags: list = None, print_summary: 
         - if ``lags`` does not contain only ``int``,
         - if ``print_summary`` is not a ``bool``.
     KeyError
-        If ``posteriors`` does not contain both ``intercept`` and ``variance`` keys.
+        If ``posteriors`` does not contain ``intercept`` key.
     ValueError
         - If a posterior sample is an empty ``numpy.ndarray``,
         - if ``lags`` is an empty ``list``,
@@ -160,9 +159,8 @@ def autocorrelation_summary(posteriors: dict, lags: list = None, print_summary: 
     if not isinstance(print_summary, bool):
         raise TypeError("Parameter 'print_summary' must be a boolean")
 
-    for posterior in ['intercept', 'variance']:
-        if posterior not in posteriors.keys():
-            raise KeyError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+    if 'intercept' not in posteriors.keys():
+        raise KeyError(f"Parameter 'posteriors' must contain a 'intercept' key")
 
     for posterior, posterior_samples in posteriors.items():
         if posterior_samples.size == 0:
@@ -224,7 +222,7 @@ def effective_sample_size(posteriors: dict, print_summary: bool = True) -> pd.Da
         - if a posterior sample is not a ``numpy.ndarray``,
         - if ``print_summary`` is not a ``bool``.
     KeyError
-        If ``posteriors`` does not contain both ``intercept`` and ``variance`` keys.
+        If ``posteriors`` does not contain ``intercept`` key.
     ValueError
         If a posterior sample is an empty ``numpy.ndarray``.
 
@@ -248,9 +246,8 @@ def effective_sample_size(posteriors: dict, print_summary: bool = True) -> pd.Da
     if not isinstance(print_summary, bool):
         raise TypeError("Parameter 'print_summary' must be a boolean")
 
-    for posterior in ['intercept', 'variance']:
-        if posterior not in posteriors.keys():
-            raise KeyError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+    if 'intercept' not in posteriors.keys():
+        raise KeyError(f"Parameter 'posteriors' must contain a 'intercept' key")
 
     for posterior, posterior_samples in posteriors.items():
         if posterior_samples.size == 0:
