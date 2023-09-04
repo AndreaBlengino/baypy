@@ -164,24 +164,25 @@ def summary(posteriors: dict, alpha: float = 0.05, quantiles: list = None, print
 
     n_iterations, n_chains = posteriors['intercept'].shape
 
-    summary = pd.DataFrame(index = list(posteriors.keys()))
+    general_summary = pd.DataFrame(index = list(posteriors.keys()))
     quantiles_summary = pd.DataFrame(index = list(posteriors.keys()))
-    summary['Mean'] = np.nan
-    summary['SD'] = np.nan
-    summary['HPD min'] = np.nan
-    summary['HPD max'] = np.nan
+    general_summary['Mean'] = np.nan
+    general_summary['SD'] = np.nan
+    general_summary['HPD min'] = np.nan
+    general_summary['HPD max'] = np.nan
     for q in quantiles:
         quantiles_summary[f'{100*q}%'.replace('.0%', '%')] = np.nan
 
-    for variable in summary.index:
-        summary.loc[variable, 'Mean'] = posteriors[variable].mean()
-        summary.loc[variable, 'SD'] = posteriors[variable].std()
+    for variable in general_summary.index:
+        general_summary.loc[variable, 'Mean'] = posteriors[variable].mean()
+        general_summary.loc[variable, 'SD'] = posteriors[variable].std()
         hpdi_min, hpdi_max = _compute_hpd_interval(x = np.sort(flatten_matrix(posteriors[variable])),
                                                    alpha = alpha)
-        summary.loc[variable, 'HPD min'] = hpdi_min
-        summary.loc[variable, 'HPD max'] = hpdi_max
+        general_summary.loc[variable, 'HPD min'] = hpdi_min
+        general_summary.loc[variable, 'HPD max'] = hpdi_max
         for q in quantiles:
-            quantiles_summary.loc[variable, f'{100*q}%'.replace('.0%', '%')] = np.quantile(flatten_matrix(posteriors[variable]), q)
+            quantiles_summary.loc[variable, f'{100*q}%'.replace('.0%', '%')] = \
+                np.quantile(flatten_matrix(posteriors[variable]), q)
 
     credibility_mass = f'{100*(1 - alpha)}%'.replace('.0%', '%')
 
@@ -191,13 +192,14 @@ def summary(posteriors: dict, alpha: float = 0.05, quantiles: list = None, print
         print()
         print(f'Empirical mean, standard deviation, {credibility_mass} HPD interval for each variable:')
         print()
-        print(summary.to_string())
+        print(general_summary.to_string())
         print()
         print(f'Quantiles for each variable:')
         print()
         print(quantiles_summary.to_string())
 
-    return {'n_chains': n_chains, 'n_iterations': n_iterations, 'summary': summary, 'quantiles': quantiles_summary}
+    return {'n_chains': n_chains, 'n_iterations': n_iterations,
+            'summary': general_summary, 'quantiles': quantiles_summary}
 
 
 def _compute_hpd_interval(x: np.ndarray, alpha: float) -> tuple[float, float]:
