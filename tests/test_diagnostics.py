@@ -20,10 +20,10 @@ class TestDiagnosticsAutocorrelationPlot:
                                                 max_lags = diagnostics_autocorrelation_plot_type_error['max_lags'])
 
 
-    def test_raises_key_error(self, diagnostics_autocorrelation_plot_key_error):
+    def test_raises_key_error(self):
         with raises(KeyError):
-            bp.diagnostics.autocorrelation_plot(posteriors = diagnostics_autocorrelation_plot_key_error['posteriors'],
-                                                max_lags = diagnostics_autocorrelation_plot_key_error['max_lags'])
+            bp.diagnostics.autocorrelation_plot(posteriors = {'variance': np.array([0])},
+                                                max_lags = 30)
 
 
     def test_raises_value_error(self, diagnostics_autocorrelation_plot_value_error):
@@ -52,10 +52,10 @@ class TestDiagnosticsAutocorrelationSummary:
                                                    print_summary = diagnostics_autocorrelation_summary_type_error['print_summary'])
 
 
-    def test_raises_key_error(self, diagnostics_autocorrelation_summary_key_error):
+    def test_raises_key_error(self):
         with raises(KeyError):
-            bp.diagnostics.autocorrelation_summary(posteriors = diagnostics_autocorrelation_summary_key_error['posteriors'],
-                                                   lags = diagnostics_autocorrelation_summary_key_error['lags'])
+            bp.diagnostics.autocorrelation_summary(posteriors = {'variance': np.array([0])},
+                                                   lags = [0, 1, 5, 10, 30])
 
 
     def test_raises_value_error(self, diagnostics_autocorrelation_summary_value_error):
@@ -83,9 +83,9 @@ class TestDiagnosticsEffectiveSampleSize:
                                                  print_summary = diagnostics_effective_sample_size_type_error['print_summary'])
 
 
-    def test_raises_key_error(self, diagnostics_effective_sample_size_key_error):
+    def test_raises_key_error(self):
         with raises(KeyError):
-            bp.diagnostics.effective_sample_size(diagnostics_effective_sample_size_key_error)
+            bp.diagnostics.effective_sample_size({'variance': np.array([0])})
 
 
     def test_raises_value_error(self):

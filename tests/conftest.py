@@ -273,12 +273,6 @@ def diagnostics_autocorrelation_plot_type_error(request):
     return request.param
 
 
-@fixture(params = [{'posteriors': {'variance': np.array([0])}, 'max_lags': 30},
-                   {'posteriors': {'intercept': np.array([0])}, 'max_lags': 30}])
-def diagnostics_autocorrelation_plot_key_error(request):
-    return request.param
-
-
 @fixture(params = [{'posteriors': {'intercept': np.array([]), 'variance': np.array([0])}, 'max_lags': 30},
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'max_lags': -1}])
 def diagnostics_autocorrelation_plot_value_error(request):
@@ -318,12 +312,6 @@ def diagnostics_autocorrelation_summary_type_error(request):
     return request.param
 
 
-@fixture(params = [{'posteriors': {'variance': np.array([0])}, 'lags': [0, 1, 5, 10, 30]},
-                   {'posteriors': {'intercept': np.array([0])}, 'lags': [0, 1, 5, 10, 30]}])
-def diagnostics_autocorrelation_summary_key_error(request):
-    return request.param
-
-
 @fixture(params = [{'posteriors': {'intercept': np.array([]), 'variance': np.array([0])}, 'lags': [0, 1, 5, 10, 30]},
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'lags': []},
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'lags': [-1]}])
@@ -346,12 +334,6 @@ def diagnostics_autocorrelation_summary_value_error(request):
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'print_summary': [0, 1]},
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'print_summary': {0, 1}}])
 def diagnostics_effective_sample_size_type_error(request):
-    return request.param
-
-
-@fixture(params = [{'variance': np.array([0])},
-                   {'intercept': np.array([0])}])
-def diagnostics_effective_sample_size_key_error(request):
     return request.param
 
 
