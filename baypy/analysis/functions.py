@@ -24,7 +24,7 @@ def trace_plot(posteriors: dict) -> None:
         - If ``posteriors`` is not a ``dict``,
         - if a posterior sample is not a ``numpy.ndarray``.
     KeyError
-        If ``posteriors`` does not contain both ``intercept`` and ``variance`` keys.
+        If ``posteriors`` does not contain ``intercept`` key.
     ValueError
         If a posterior sample is an empty ``numpy.ndarray``.
 
@@ -38,9 +38,8 @@ def trace_plot(posteriors: dict) -> None:
     if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
         raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
 
-    for posterior in ['intercept', 'variance']:
-        if posterior not in posteriors.keys():
-            raise KeyError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+    if 'intercept' not in posteriors.keys():
+        raise KeyError(f"Parameter 'posteriors' must contain a 'intercept' key")
 
     for posterior, posterior_samples in posteriors.items():
         if posterior_samples.size == 0:
@@ -59,12 +58,8 @@ def trace_plot(posteriors: dict) -> None:
         ax_j_trace.plot(posteriors[variable], linewidth = 0.5)
         ax_j_density.plot(*_compute_kde(posteriors[variable].flatten()))
 
-        if variable not in ['intercept', 'variance']:
-            ax_j_trace.set_title(f'Trace of {variable} parameter')
-            ax_j_density.set_title(f'Density of {variable} parameter')
-        else:
-            ax_j_trace.set_title(f'Trace of {variable}')
-            ax_j_density.set_title(f'Density of {variable}')
+        ax_j_trace.set_title(f'Trace of {variable} parameter')
+        ax_j_density.set_title(f'Density of {variable} parameter')
         ax_j_trace.tick_params(bottom = False, top = False, left = False, right = False)
         ax_j_density.tick_params(bottom = False, top = False, left = False, right = False)
         ax_j_density.set_ylim(0, )
@@ -123,7 +118,7 @@ def summary(posteriors: dict, alpha: float = 0.05, quantiles: list = None, print
         - if a ``quantiles`` value is not a ``float``,
         - if ``print_summary`` is not a ``bool``.
     KeyError
-        If ``posteriors`` does not contain both ``intercept`` and ``variance`` keys.
+        If ``posteriors`` does not contain ``intercept`` key.
     ValueError
         - If a posterior sample is an empty ``numpy.ndarray``,
         - if ``alpha`` is not between ``0`` and ``1``,
@@ -143,9 +138,8 @@ def summary(posteriors: dict, alpha: float = 0.05, quantiles: list = None, print
     if not isinstance(print_summary, bool):
         raise TypeError("Parameter 'print_summary' must be a boolean")
 
-    for posterior in ['intercept', 'variance']:
-        if posterior not in posteriors.keys():
-            raise KeyError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+    if 'intercept' not in posteriors.keys():
+        raise KeyError(f"Parameter 'posteriors' must contain a 'intercept' key")
 
     for posterior, posterior_samples in posteriors.items():
         if posterior_samples.size == 0:
@@ -244,7 +238,7 @@ def residuals_plot(posteriors: dict, data: pd.DataFrame, response_variable: str)
         - if ``data`` is not an instance of ``pandas.DataFrame``,
         - if ``response_variable`` is not a ``str``.
     KeyError
-        If ``posteriors`` does not contain both ``intercept`` and ``variance`` keys.
+        If ``posteriors`` does not contain ``intercept``  key.
     ValueError
         - If a posterior sample is an empty ``numpy.ndarray``,
         - if a posterior key is not a column of ``data``,
@@ -274,9 +268,8 @@ def residuals_plot(posteriors: dict, data: pd.DataFrame, response_variable: str)
     if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
         raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
 
-    for posterior in ['intercept', 'variance']:
-        if posterior not in posteriors.keys():
-            raise KeyError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+    if 'intercept' not in posteriors.keys():
+        raise KeyError(f"Parameter 'posteriors' must contain a 'intercept' key")
 
     for posterior, posterior_samples in posteriors.items():
         if posterior_samples.size == 0:
@@ -347,7 +340,7 @@ def predict_distribution(posteriors: dict, predictors: dict) -> np.ndarray:
         - if a posterior sample is not a ``numpy.ndarray``,
         - if ``predictors`` is not a ``dict``.
     KeyError
-        - If ``posteriors`` does not contain both ``intercept`` and ``variance`` keys,
+        - If ``posteriors`` does not contain ``intercept`` key,
         - if a ``predictors`` key is not a key of ``posteriors``.
     ValueError
         - If a posterior sample is an empty ``numpy.ndarray``,
@@ -363,9 +356,8 @@ def predict_distribution(posteriors: dict, predictors: dict) -> np.ndarray:
     if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
         raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
 
-    for posterior in ['intercept', 'variance']:
-        if posterior not in posteriors.keys():
-            raise KeyError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+    if 'intercept' not in posteriors.keys():
+        raise KeyError(f"Parameter 'posteriors' must contain a 'intercept' key")
 
     for posterior, posterior_samples in posteriors.items():
         if posterior_samples.size == 0:
@@ -429,7 +421,7 @@ def compute_DIC(posteriors: dict, data: pd.DataFrame, response_variable: str, pr
         - if ``response_variable`` is not a ``str``,
         - if ``print_summary`` is not a ``bool``.
     KeyError
-        If ``posteriors`` does not contain both ``intercept`` and ``variance`` keys.
+        If ``posteriors`` does not contain ``intercept`` key.
     ValueError
         - If a posterior sample is an empty ``numpy.ndarray``,
         - if a posterior key is not a column of ``data``,
@@ -503,9 +495,8 @@ def compute_DIC(posteriors: dict, data: pd.DataFrame, response_variable: str, pr
     if not isinstance(print_summary, bool):
         raise TypeError("Parameter 'print_summary' must be a boolean")
 
-    for posterior in ['intercept', 'variance']:
-        if posterior not in posteriors.keys():
-            raise KeyError(f"Parameter 'posteriors' must contain a '{posterior}' key")
+    if 'intercept' not in posteriors.keys():
+        raise KeyError(f"Parameter 'posteriors' must contain a 'intercept' key")
 
     for posterior, posterior_samples in posteriors.items():
         if posterior_samples.size == 0:
