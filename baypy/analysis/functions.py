@@ -551,7 +551,7 @@ def _compute_deviace_at_posterior_means(posteriors: dict, data: pd.DataFrame, re
     for posterior, posterior_mean in posterior_means.items():
         data['mean'] += data[posterior]*posterior_mean
 
-    data['likelihood'] = 1/np.sqrt(2*np.pi*variance)*np.exp((data[response_variable] - data['mean'])**2/2/variance)
+    data['likelihood'] = 1/np.sqrt(2*np.pi*variance)*np.exp(-(data[response_variable] - data['mean'])**2/2/variance)
 
     return -2*np.sum(np.log(data['likelihood']))
 
@@ -570,7 +570,7 @@ def _compute_posterior_mean_deviance(posteriors: dict, data: pd.DataFrame, respo
             else:
                 data['variance'] = posterior_samples[i, :].mean()
 
-        data['likelihood'] = 1/np.sqrt(2*np.pi*data['variance'])*np.exp((data[response_variable] - data['mean'])**2/2/data['variance'])
+        data['likelihood'] = 1/np.sqrt(2*np.pi*data['variance'])*np.exp(-(data[response_variable] - data['mean'])**2/2/data['variance'])
 
         deviance.append(-2*np.sum(np.log(data['likelihood'])))
 
