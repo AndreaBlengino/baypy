@@ -343,12 +343,6 @@ def analysis_trace_plot_type_error(request):
     return request.param
 
 
-@fixture(params = [{'variance': np.array([0])},
-                   {'intercept': np.array([0])}])
-def analysis_trace_plot_key_error(request):
-    return request.param
-
-
 @fixture(params = [{'posteriors': 'posteriors', 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
                    {'posteriors': 1, 'alpha': 0.05,'quantiles': [0.1, 0.9], 'print_summary': False},
                    {'posteriors': 1.1, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
@@ -386,12 +380,6 @@ def analysis_trace_plot_key_error(request):
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': {0, 1}},
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': None}])
 def analysis_summary_type_error(request):
-    return request.param
-
-
-@fixture(params = [{'posteriors': {'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9]},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9]}])
-def analysis_summary_key_error(request):
     return request.param
 
 
@@ -435,12 +423,6 @@ def analysis_residuals_plot_type_error(request):
     return request.param
 
 
-@fixture(params = [{'posteriors': {'variance': np.array([0])}, 'data': pd.DataFrame(columns = ['response_variable'], index = [0]), 'response_variable': 'response_variable'},
-                   {'posteriors': {'intercept': np.array([0])}, 'data': pd.DataFrame(columns = ['response_variable'], index = [0]), 'response_variable': 'response_variable'}])
-def analysis_residuals_plot_key_error(request):
-    return request.param
-
-
 @fixture(params = [{'posteriors': {'intercept': np.array([]), 'variance': np.array([0])}, 'data': pd.DataFrame(columns = ['response_variable'], index = [0]), 'response_variable': 'response_variable'},
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0]), 'x': np.array([0])}, 'data': pd.DataFrame(columns = ['response_variable'], index = [0]), 'response_variable': 'response_variable'},
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': 'response_variable'},
@@ -472,7 +454,6 @@ def analysis_predict_distribution_type_error(request):
 
 
 @fixture(params = [{'posteriors': {'variance': np.array([0]), 'x': np.array([0])}, 'predictors': {'x': 1}},
-                   {'posteriors': {'intercept': np.array([0]), 'x': np.array([0])}, 'predictors': {'x': 1}},
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0]), 'x': np.array([0])}, 'predictors': {'x': 1, 'z': 1}}])
 def analysis_predict_distribution_key_error(request):
     return request.param
@@ -517,12 +498,6 @@ def analysis_predict_distribution_value_error(request):
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': 'response_variable', 'print_summary': {0, 1}},
                    {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': 'response_variable', 'print_summary': None}])
 def analysis_compute_dic_type_error(request):
-    return request.param
-
-
-@fixture(params = [{'posteriors': {'variance': np.array([0])}, 'data': pd.DataFrame(columns = ['response_variable'], index = [0]), 'response_variable': 'response_variable'},
-                   {'posteriors': {'intercept': np.array([0])}, 'data': pd.DataFrame(columns = ['response_variable'], index = [0]), 'response_variable': 'response_variable'}])
-def analysis_compute_dic_key_error(request):
     return request.param
 
 

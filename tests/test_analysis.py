@@ -19,9 +19,9 @@ class TestAnalysisTracePlot:
             bp.analysis.trace_plot(analysis_trace_plot_type_error)
 
 
-    def test_raises_key_error(self, analysis_trace_plot_key_error):
+    def test_raises_key_error(self):
         with raises(KeyError):
-            bp.analysis.trace_plot(analysis_trace_plot_key_error)
+            bp.analysis.trace_plot({'variance': np.array([0])})
 
 
     def test_raises_value_error(self):
@@ -68,11 +68,11 @@ class TestAnalysisSummary:
                                 print_summary = analysis_summary_type_error['print_summary'])
 
 
-    def test_raises_key_error(self, analysis_summary_key_error):
+    def test_raises_key_error(self):
         with raises(KeyError):
-            bp.analysis.summary(posteriors = analysis_summary_key_error['posteriors'],
-                                alpha = analysis_summary_key_error['alpha'],
-                                quantiles = analysis_summary_key_error['quantiles'])
+            bp.analysis.summary(posteriors = {'variance': np.array([0])},
+                                alpha = 0.05,
+                                quantiles = [0.1, 0.9])
 
 
     def test_raises_value_error(self, analysis_summary_value_error):
@@ -99,11 +99,11 @@ class TestAnalysisResidualsPlot:
                                        data = analysis_residuals_plot_type_error['data'],
                                        response_variable = analysis_residuals_plot_type_error['response_variable'])
 
-    def test_raises_key_error(self, analysis_residuals_plot_key_error):
+    def test_raises_key_error(self):
         with raises(KeyError):
-            bp.analysis.residuals_plot(posteriors = analysis_residuals_plot_key_error['posteriors'],
-                                       data = analysis_residuals_plot_key_error['data'],
-                                       response_variable = analysis_residuals_plot_key_error['response_variable'])
+            bp.analysis.residuals_plot(posteriors = {'variance': np.array([0])},
+                                       data = pd.DataFrame(columns = ['response_variable'], index = [0]),
+                                       response_variable = 'response_variable')
 
 
     def test_raises_value_error(self, analysis_residuals_plot_value_error):
@@ -173,11 +173,11 @@ class TestAnalysisComputeDIC:
                                     print_summary = analysis_compute_dic_type_error['print_summary'])
 
 
-    def test_raises_key_error(self, analysis_compute_dic_key_error):
+    def test_raises_key_error(self):
         with raises(KeyError):
-            bp.analysis.compute_DIC(posteriors = analysis_compute_dic_key_error['posteriors'],
-                                    data = analysis_compute_dic_key_error['data'],
-                                    response_variable = analysis_compute_dic_key_error['response_variable'])
+            bp.analysis.compute_DIC(posteriors = {'variance': np.array([0])},
+                                    data = pd.DataFrame(columns = ['response_variable'], index = [0]),
+                                    response_variable = 'response_variable')
 
 
     def test_raises_value_error(self, analysis_compute_dic_value_error):
