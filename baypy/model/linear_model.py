@@ -1,5 +1,7 @@
 from .model import Model
 import pandas as pd
+import numpy as np
+from scipy.stats import norm
 from ..utils import matrices_to_frame
 
 
@@ -232,3 +234,17 @@ class LinearModel(Model):
             raise ValueError("Posteriors not available, run 'baypy.regression.LinearRegression.sample' to generate "
                              "posteriors")
         return matrices_to_frame(matrices_dict = self.__posteriors)
+
+
+    def likelihood(self, data: pd.DataFrame) -> np.ndarray:
+
+        return norm.pdf(x = data[self.__response_variable],
+                        loc = data['mean'],
+                        scale = np.sqrt(data['variance']))
+
+
+    def log_likelihood(self, data: pd.DataFrame) -> np.ndarray:
+
+        return norm.logpdf(x = data[self.__response_variable],
+                           loc = data['mean'],
+                           scale = np.sqrt(data['variance']))

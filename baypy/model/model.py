@@ -67,3 +67,11 @@ class Model(ABC):
 
     @abstractmethod
     def posteriors_to_frame(self) -> None: ...
+
+
+    @abstractmethod
+    def likelihood(self, data: pd.DataFrame) -> None: ...
+
+
+    @abstractmethod
+    def log_likelihood(self, data: pd.DataFrame) -> None: ...

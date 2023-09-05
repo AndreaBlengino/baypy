@@ -542,10 +542,11 @@ def _compute_deviace_at_posterior_means(model: Model, data: pd.DataFrame) -> flo
     data['mean'] = 0
     for posterior, posterior_mean in posterior_means.items():
         data['mean'] += data[posterior]*posterior_mean
+    data['variance'] = variance
 
-    data['likelihood'] = 1/np.sqrt(2*np.pi*variance)*np.exp(-(data[model.response_variable] - data['mean'])**2/2/variance)
+    likelihood = model.likelihood(data = data)
 
-    return -2*np.sum(np.log(data['likelihood']))
+    return -2*np.sum(np.log(likelihood))
 
 
 def _compute_posterior_mean_deviance(model: Model, data: pd.DataFrame) -> float:
@@ -562,8 +563,8 @@ def _compute_posterior_mean_deviance(model: Model, data: pd.DataFrame) -> float:
             else:
                 data['variance'] = posterior_samples[i, :].mean()
 
-        data['likelihood'] = 1/np.sqrt(2*np.pi*data['variance'])*np.exp(-(data[model.response_variable] - data['mean'])**2/2/data['variance'])
+        likelihood = model.likelihood(data = data)
 
-        deviance.append(-2*np.sum(np.log(data['likelihood'])))
+        deviance.append(-2*np.sum(np.log(likelihood)))
 
     return np.mean(deviance)
