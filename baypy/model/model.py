@@ -7,8 +7,7 @@ class Model(ABC):
 
     @property
     @abstractmethod
-    def data(self) -> pd.DataFrame:
-        ...
+    def data(self) -> None: ...
 
 
     @data.setter
@@ -23,8 +22,7 @@ class Model(ABC):
 
     @property
     @abstractmethod
-    def response_variable(self) -> str:
-        ...
+    def response_variable(self) -> None: ...
 
 
     @response_variable.setter
@@ -36,8 +34,7 @@ class Model(ABC):
 
     @property
     @abstractmethod
-    def priors(self) -> dict:
-        ...
+    def priors(self) -> None: ...
 
 
     @priors.setter
@@ -55,5 +52,18 @@ class Model(ABC):
 
     @property
     @abstractmethod
-    def variable_names(self) -> list:
-        ...
+    def variable_names(self) -> None: ...
+
+
+    @property
+    @abstractmethod
+    def posteriors(self) -> None: ...
+
+
+    @posteriors.setter
+    @abstractmethod
+    def posteriors(self, posteriors: dict) -> None: ...
+
+
+    @abstractmethod
+    def posteriors_to_frame(self) -> None: ...

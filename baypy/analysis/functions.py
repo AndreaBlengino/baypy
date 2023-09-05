@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from ..model import Model
 import numpy as np
 import pandas as pd
 from scipy.stats import gaussian_kde, norm
@@ -217,35 +218,30 @@ def _compute_hpd_interval(x: np.ndarray, alpha: float) -> tuple[float, float]:
     return hpdi_min, hpdi_max
 
 
-def residuals_plot(posteriors: dict, data: pd.DataFrame, response_variable: str) -> None:
+def residuals_plot(model: Model) -> None:
     r"""Plots the residuals :math:`\epsilon` with respect to predicted values :math:`\hat{y}`.
 
     Parameters
     ----------
-    posteriors : dict
-        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
-        with a number of rows equal to the number of iterations and a number of columns equal to the number of Markov
-        chains.
-    data : pandas.DataFrame
-        Observed data of the model. It cannot be empty. It must contain regressor variables :math:`X` and the
-        response variable :math:`y`.
-    response_variable : string
-        Name of the response variable :math:`y`. In must be one of the columns of ``data``.
+    model : baypy.model.model.Model
+        Model with data, regressors, response variable, initial values and priors to be solved through Monte Carlo
+        sampling.
 
     Raises
     ------
     TypeError
-        - If ``posteriors`` is not a ``dict``,
+        - If ``model`` is not a ``baypy.model.model.Model``,
+        - ff ``model.posteriors`` is not a ``dict``,
         - if a posterior sample is not a ``numpy.ndarray``,
-        - if ``data`` is not an instance of ``pandas.DataFrame``,
-        - if ``response_variable`` is not a ``str``.
+        - if ``model.data`` is not an instance of ``pandas.DataFrame``,
+        - if ``model.response_variable`` is not a ``str``.
     KeyError
-        If ``posteriors`` does not contain ``intercept``  key.
+        If ``model.posteriors`` does not contain ``intercept``  key.
     ValueError
         - If a posterior sample is an empty ``numpy.ndarray``,
-        - if a posterior key is not a column of ``data``,
-        - if ``data`` is an empty ``pandas.DataFrame``,
-        - if ``response_variable`` is not a column of ``data``.
+        - if a posterior key is not a column of ``model.data``,
+        - if ``model.data`` is an empty ``pandas.DataFrame``,
+        - if ``model.response_variable`` is not a column of ``model.data``.
 
     See Also
     --------
@@ -264,46 +260,48 @@ def residuals_plot(posteriors: dict, data: pd.DataFrame, response_variable: str)
     .. math::
         \epsilon_i = y_i - \hat{y_i}
     """
-    if not isinstance(posteriors, dict):
-        raise TypeError(f"Parameter 'posteriors' must be a dictionary")
+    if not isinstance(model, Model):
+        raise TypeError(f"Parameter 'model' must be an instance of '{Model.__module__}.{Model.__name__}'")
 
-    if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
+    if not isinstance(model.posteriors, dict):
+        raise TypeError(f"Parameter 'model.posteriors' must be a dictionary")
+
+    if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in model.posteriors.values()]):
         raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
 
-    if 'intercept' not in posteriors.keys():
-        raise KeyError(f"Parameter 'posteriors' must contain a 'intercept' key")
+    if 'intercept' not in model.posteriors.keys():
+        raise KeyError(f"Parameter 'model.posteriors' must contain a 'intercept' key")
 
-    for posterior, posterior_samples in posteriors.items():
+    for posterior, posterior_samples in model.posteriors.items():
         if posterior_samples.size == 0:
             raise ValueError(f"Posterior '{posterior}' data is empty")
-        if (posterior not in ['intercept', 'variance']) and (posterior not in data.columns):
-            raise ValueError(f"Column '{posterior}' not found in 'data'")
+        if (posterior not in ['intercept', 'variance']) and (posterior not in model.data.columns):
+            raise ValueError(f"Column '{posterior}' not found in 'model.data'")
 
-    if not isinstance(data, pd.DataFrame):
-        raise TypeError("Parameter 'data' must be an instance of 'pandas.DataFrame'")
+    if not isinstance(model.data, pd.DataFrame):
+        raise TypeError("Parameter 'model.data' must be an instance of 'pandas.DataFrame'")
 
-    if not isinstance(response_variable, str):
-        raise TypeError("Parameter 'response_variable' must be a string")
+    if not isinstance(model.response_variable, str):
+        raise TypeError("Parameter 'model.response_variable' must be a string")
 
-    if data.empty:
-        raise ValueError("Parameter 'data' cannot be an empty 'pandas.DataFrame'")
+    if model.data.empty:
+        raise ValueError("Parameter 'model.data' cannot be an empty 'pandas.DataFrame'")
 
-    if response_variable not in data.columns:
-        raise ValueError(f"Column '{response_variable}' not found in 'data'")
+    if model.response_variable not in model.data.columns:
+        raise ValueError(f"Column '{response_variable}' not found in 'model.data'")
 
-    data_tmp = data.copy()
-    data_tmp['intercept'] = 1
-    data_tmp['predicted'] = 0
+    data = model.data.copy()
+    data['intercept'] = 1
+    data['predicted'] = 0
 
-    for posterior, posterior_samples in posteriors.items():
+    for posterior, posterior_samples in model.posteriors.items():
         if posterior != 'variance':
-            data_tmp['predicted'] += data_tmp[posterior]*flatten_matrix(posterior_samples).mean()
-    data_tmp['residuals'] = data_tmp[response_variable] - data_tmp['predicted']
+            data['predicted'] += data[posterior]*flatten_matrix(posterior_samples).mean()
+    data['residuals'] = data[model.response_variable] - data['predicted']
 
     fig, ax = plt.subplots()
 
-    ax.plot(data_tmp['predicted'], data_tmp['residuals'],
-            marker = 'o', linestyle = '', alpha = 0.5)
+    ax.plot(data['predicted'], data['residuals'], marker = 'o', linestyle = '', alpha = 0.5)
 
     ax.set_xlabel('Predicted')
     ax.set_ylabel('Residuals')
@@ -388,20 +386,14 @@ def predict_distribution(posteriors: dict, predictors: dict) -> np.ndarray:
                     size = len(prediction))
 
 
-def compute_DIC(posteriors: dict, data: pd.DataFrame, response_variable: str, print_summary: bool = True) -> dict:
+def compute_DIC(model: Model, print_summary: bool = True) -> dict:
     r"""Computes and prints the Deviance Information Criterion (DIC) for the fitted linear model.
 
     Parameters
     ----------
-    posteriors : dict
-        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
-        with a number of rows equal to the number of iterations and a number of columns equal to the number of Markov
-        chains.
-    data : pandas.DataFrame
-        Observed data of the model. It cannot be empty. It must contain regressor variables :math:`X` and the
-        response variable :math:`y`.
-    response_variable : string
-        Name of the response variable :math:`y`. In must be one of the columns of ``data``.
+    model : baypy.model.model.Model
+        Model with data, regressors, response variable, initial values and priors to be solved through Monte Carlo
+        sampling.
     print_summary : bool, optional
         If ``True`` prints the deviance summary report. Default is ``True``.
 
@@ -417,18 +409,19 @@ def compute_DIC(posteriors: dict, data: pd.DataFrame, response_variable: str, pr
     Raises
     ------
     TypeError
-        - If ``posteriors`` is not a ``dict``,
+        - If ``model`` is not a ``baypy.model.model.Model``,
+        - if ``model.posteriors`` is not a ``dict``,
         - if a posterior sample is not a ``numpy.ndarray``,
-        - if ``data`` is not an instance of ``pandas.DataFrame``,
-        - if ``response_variable`` is not a ``str``,
+        - if ``model.data`` is not an instance of ``pandas.DataFrame``,
+        - if ``model.response_variable`` is not a ``str``,
         - if ``print_summary`` is not a ``bool``.
     KeyError
-        If ``posteriors`` does not contain ``intercept`` key.
+        If ``model.posteriors`` does not contain ``intercept`` key.
     ValueError
         - If a posterior sample is an empty ``numpy.ndarray``,
-        - if a posterior key is not a column of ``data``,
-        - if ``data`` is an empty ``pandas.DataFrame``,
-        - if ``response_variable`` is not a column of ``data``.
+        - if a posterior key is not a column of ``model.data``,
+        - if ``model.data`` is an empty ``pandas.DataFrame``,
+        - if ``model.response_variable`` is not a column of ``model.data``.
 
     See Also
     --------
@@ -488,43 +481,42 @@ def compute_DIC(posteriors: dict, data: pd.DataFrame, response_variable: str, pr
     .. [2] Gelman A, Carlin JB, Stern HS, Rubin DS. Bayesian Data Analysis. 2. Chapman & Hall/CRC; Boca Raton,
        Florida: 2004.
     """
-    if not isinstance(posteriors, dict):
-        raise TypeError(f"Parameter 'posteriors' must be a dictionary")
+    if not isinstance(model, Model):
+        raise TypeError(f"Parameter 'model' must be an instance of '{Model.__module__}.{Model.__name__}'")
 
-    if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
+    if not isinstance(model.posteriors, dict):
+        raise TypeError(f"Parameter 'model.posteriors' must be a dictionary")
+
+    if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in model.posteriors.values()]):
         raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
 
     if not isinstance(print_summary, bool):
         raise TypeError("Parameter 'print_summary' must be a boolean")
 
-    if 'intercept' not in posteriors.keys():
-        raise KeyError(f"Parameter 'posteriors' must contain a 'intercept' key")
+    if 'intercept' not in model.posteriors.keys():
+        raise KeyError(f"Parameter 'model.posteriors' must contain a 'intercept' key")
 
-    for posterior, posterior_samples in posteriors.items():
+    for posterior, posterior_samples in model.posteriors.items():
         if posterior_samples.size == 0:
             raise ValueError(f"Posterior '{posterior}' data is empty")
-        if (posterior not in ['intercept', 'variance']) and (posterior not in data.columns):
-            raise ValueError(f"Column '{posterior}' not found in 'data'")
+        if (posterior not in ['intercept', 'variance']) and (posterior not in model.data.columns):
+            raise ValueError(f"Column '{posterior}' not found in 'model.data'")
 
-    if not isinstance(data, pd.DataFrame):
-        raise TypeError("Parameter 'data' must be an instance of 'pandas.DataFrame'")
+    if not isinstance(model.data, pd.DataFrame):
+        raise TypeError("Parameter 'model.data' must be an instance of 'pandas.DataFrame'")
 
-    if not isinstance(response_variable, str):
-        raise TypeError("Parameter 'response_variable' must be a string")
+    if not isinstance(model.response_variable, str):
+        raise TypeError("Parameter 'model.response_variable' must be a string")
 
-    if data.empty:
-        raise ValueError("Parameter 'data' cannot be an empty 'pandas.DataFrame'")
+    if model.data.empty:
+        raise ValueError("Parameter 'model.data' cannot be an empty 'pandas.DataFrame'")
 
-    if response_variable not in data.columns:
-        raise ValueError(f"Column '{response_variable}' not found in 'data'")
+    if model.response_variable not in model.data.columns:
+        raise ValueError(f"Column '{response_variable}' not found in 'model.data'")
 
-    data_tmp = data.copy()
-    deviance_at_posterior_means = _compute_deviace_at_posterior_means(posteriors = posteriors,
-                                                                      data = data_tmp,
-                                                                      response_variable = response_variable)
-    posterior_mean_deviance = _compute_posterior_mean_deviance(posteriors = posteriors,
-                                                               data = data_tmp,
-                                                               response_variable = response_variable)
+    data = model.data.copy()
+    deviance_at_posterior_means = _compute_deviace_at_posterior_means(model = model, data = data)
+    posterior_mean_deviance = _compute_posterior_mean_deviance(model = model, data = data)
     effective_number_of_parameters = posterior_mean_deviance - deviance_at_posterior_means
     DIC = effective_number_of_parameters + posterior_mean_deviance
 
@@ -540,37 +532,37 @@ def compute_DIC(posteriors: dict, data: pd.DataFrame, response_variable: str, pr
             'DIC': DIC}
 
 
-def _compute_deviace_at_posterior_means(posteriors: dict, data: pd.DataFrame, response_variable: str) -> float:
+def _compute_deviace_at_posterior_means(model: Model, data: pd.DataFrame) -> float:
 
     posterior_means = {posterior: flatten_matrix(posterior_samples).mean()
-                       for posterior, posterior_samples in posteriors.items() if posterior != 'variance'}
-    variance = flatten_matrix(posteriors['variance']).mean()
+                       for posterior, posterior_samples in model.posteriors.items() if posterior != 'variance'}
+    variance = flatten_matrix(model.posteriors['variance']).mean()
 
     data['intercept'] = 1
     data['mean'] = 0
     for posterior, posterior_mean in posterior_means.items():
         data['mean'] += data[posterior]*posterior_mean
 
-    data['likelihood'] = 1/np.sqrt(2*np.pi*variance)*np.exp(-(data[response_variable] - data['mean'])**2/2/variance)
+    data['likelihood'] = 1/np.sqrt(2*np.pi*variance)*np.exp(-(data[model.response_variable] - data['mean'])**2/2/variance)
 
     return -2*np.sum(np.log(data['likelihood']))
 
 
-def _compute_posterior_mean_deviance(posteriors: dict, data: pd.DataFrame, response_variable: str) -> float:
+def _compute_posterior_mean_deviance(model: Model, data: pd.DataFrame) -> float:
 
     data['intercept'] = 1
     deviance = []
 
-    for i in range(posteriors['intercept'].shape[0]):
+    for i in range(model.posteriors['intercept'].shape[0]):
         data['mean'] = 0
         data['variance'] = 0
-        for posterior, posterior_samples in posteriors.items():
+        for posterior, posterior_samples in model.posteriors.items():
             if posterior != 'variance':
                 data['mean'] += data[posterior]*posterior_samples[i, :].mean()
             else:
                 data['variance'] = posterior_samples[i, :].mean()
 
-        data['likelihood'] = 1/np.sqrt(2*np.pi*data['variance'])*np.exp(-(data[response_variable] - data['mean'])**2/2/data['variance'])
+        data['likelihood'] = 1/np.sqrt(2*np.pi*data['variance'])*np.exp(-(data[model.response_variable] - data['mean'])**2/2/data['variance'])
 
         deviance.append(-2*np.sum(np.log(data['likelihood'])))
 

@@ -1,5 +1,6 @@
 from .model import Model
 import pandas as pd
+from ..utils import matrices_to_frame
 
 
 class LinearModel(Model):
@@ -26,6 +27,7 @@ class LinearModel(Model):
         self.__response_variable = None
         self.__priors = None
         self.__variable_names = None
+        self.__posteriors = None
 
 
     @property
@@ -195,3 +197,38 @@ class LinearModel(Model):
         """
         assert super().variable_names is None
         return self.__variable_names
+
+
+    @property
+    def posteriors(self) -> dict:
+        assert super().posteriors is None
+        return self.__posteriors
+
+
+    @posteriors.setter
+    def posteriors(self, posteriors: dict) -> None:
+        super(LinearModel, type(self)).posteriors.fset(self, posteriors)
+        self.__posteriors = posteriors
+
+
+    def posteriors_to_frame(self) -> pd.DataFrame:
+        """Organizes the ``posteriors`` in a ``pandas.DataFrame``. Each posterior is a frame column. The length of the
+        frame is the number of sampling iterations times the number of sampling chains.
+
+        Returns
+        -------
+        pandas.DataFrame
+            Returns posterior samples. Posteriors are organized in a ``pandas.DataFrame``, one for each columns. The
+            length of the frame is the number of sampling iterations times the number of sampling chains.
+
+        Raises
+        ------
+        ValueError
+            If ``posteriors`` are not available because the method ``baypy.regression.LinearRegression.sample`` is not
+            been called yet.
+        """
+        assert super().posteriors_to_frame() is None
+        if self.__posteriors is None:
+            raise ValueError("Posteriors not available, run 'baypy.regression.LinearRegression.sample' to generate "
+                             "posteriors")
+        return matrices_to_frame(matrices_dict = self.__posteriors)

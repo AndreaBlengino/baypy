@@ -29,7 +29,7 @@ class Regression(ABC):
 
 
     @abstractmethod
-    def sample(self, n_iterations: int, burn_in_iterations: int, n_chains: int, seed: int = None) -> dict:
+    def sample(self, n_iterations: int, burn_in_iterations: int, n_chains: int, seed: int = None) -> None:
         if not isinstance(n_iterations, int):
             raise TypeError("Parameter 'n_iteration' must be an integer")
 
@@ -54,8 +54,3 @@ class Regression(ABC):
         if seed is not None:
             if (seed < 0) or (seed > 2**32 - 1):
                 raise ValueError("Parameter 'seed' must be between 0 and 2**32 - 1")
-
-
-    @abstractmethod
-    def posteriors_to_frame(self) -> pd.DataFrame:
-        ...

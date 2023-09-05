@@ -5,14 +5,13 @@ from .regression import Regression
 import numpy as np
 import pandas as pd
 from scipy.stats import norm, invgamma
-from ..utils import matrices_to_frame
 
 
 class LinearRegression(Regression):
     r"""baypy.regression.linear_regression.LinearRegression object.
 
-    Constructor Parameters
-    ----------------------
+    Parameters
+    ----------
     model : baypy.model.model.Model
         Model with data, regressors, response variable, initial values and priors to be solved through Monte Carlo
         sampling.
@@ -22,10 +21,6 @@ class LinearRegression(Regression):
     model : baypy.model.model.Model
         Model with data, regressors, response variable, initial values and priors to be solved through Monte Carlo
         sampling.
-    posteriors : dict
-        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
-        with a number of rows equals to the number of iterations and a number of columns equal to the number of Markov
-        chains.
 
     Methods
     -------
@@ -35,8 +30,8 @@ class LinearRegression(Regression):
     :meth:`baypy.regression.linear_regression.LinearRegression.posteriors_to_frame()`
         Organizes the ``posteriors`` in a ``pandas.DataFrame``.
 
-    Constructor Raises
-    ------------------
+    Raises
+    ------
     TypeError
         If ``model`` is not a ``baypy.model.model.Model``.
     ValueError
@@ -58,10 +53,9 @@ class LinearRegression(Regression):
     def __init__(self, model: Model) -> None:
         super().__init__(model = model)
         self.model = model
-        self.posteriors = None
 
 
-    def sample(self, n_iterations: int, burn_in_iterations: int, n_chains: int, seed: int = None) -> dict:
+    def sample(self, n_iterations: int, burn_in_iterations: int, n_chains: int, seed: int = None) -> None:
         r"""Samples a sequence of observations from the full posterior distribution of regressors' parameters
         :math:`\beta_j` and ``variance`` :math:`\sigma^2`.
         First ``burn_in_iterations`` are discarded since they may not accurately represent the desired distribution.
@@ -90,12 +84,6 @@ class LinearRegression(Regression):
             - if ``burn_in_iterations`` is less than ``0``,
             - if ``n_chains`` is equal to or less than ``0``,
             - if ``seed`` is not between ``0`` and ``2**32 - 1``.
-
-        Returns
-        -------
-        dict
-            Returns posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a
-            ``numpy.ndarray`` with ``n_iterations`` rows and ``n_chains`` columns.
 
         Notes
         -----
@@ -141,7 +129,7 @@ class LinearRegression(Regression):
         Xt_y = np.dot(X.transpose(), y)[np.newaxis].transpose()
         Sigma_0_inv_Beta_0 = np.dot(Sigma_0_inv, Beta_0)
 
-        self.posteriors = {variable: [[] for _ in range(n_chains)] for variable in self.model.variable_names}
+        self.model.posteriors = {variable: [[] for _ in range(n_chains)] for variable in self.model.variable_names}
 
         if seed is not None:
             np.random.seed(seed)
@@ -153,8 +141,9 @@ class LinearRegression(Regression):
 
         for i in range(burn_in_iterations + n_iterations + 1):
             for k in range(n_chains):
-                [self.posteriors[regressor][k].append(beta[k][j]) for j, regressor in enumerate(regressor_names, 0)]
-                self.posteriors['variance'][k].append(sigma2[k])
+                [self.model.posteriors[regressor][k].append(beta[k][j])
+                 for j, regressor in enumerate(regressor_names, 0)]
+                self.model.posteriors['variance'][k].append(sigma2[k])
 
             beta = [sample_beta(Xt_X = Xt_X,
                                 Xt_y = Xt_y,
@@ -168,29 +157,5 @@ class LinearRegression(Regression):
                                     k_1 = k_1,
                                     theta_0 = theta_0) for k in range(n_chains)]
 
-        self.posteriors = {posterior: np.array(posterior_samples).transpose()[burn_in_iterations + 1:, :]
-                           for posterior, posterior_samples in self.posteriors.items()}
-
-
-        return self.posteriors
-
-
-    def posteriors_to_frame(self) -> pd.DataFrame:
-        """Organizes the ``posteriors`` in a ``pandas.DataFrame``. Each posterior is a frame column. The length of the
-        frame is the number of sampling iterations times the number of sampling chains.
-
-        Returns
-        -------
-        pandas.DataFrame
-            Returns posterior samples. Posteriors are organized in a ``pandas.DataFrame``, one for each columns. The
-            length of the frame is the number of sampling iterations times the number of sampling chains.
-
-        Raises
-        ------
-        ValueError
-            If ``posteriors`` are not available because the method ``LinearRegression.sample`` is not been called yet.
-        """
-        assert super().posteriors_to_frame() is None
-        if self.posteriors is None:
-            raise ValueError("Posteriors not available, run 'LinearRegression.sample' to generate posteriors")
-        return matrices_to_frame(matrices_dict = self.posteriors)
+        self.model.posteriors = {posterior: np.array(posterior_samples).transpose()[burn_in_iterations + 1:, :]
+                                 for posterior, posterior_samples in self.model.posteriors.items()}
