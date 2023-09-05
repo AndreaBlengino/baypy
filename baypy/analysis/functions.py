@@ -290,14 +290,7 @@ def residuals_plot(model: Model) -> None:
     if model.response_variable not in model.data.columns:
         raise ValueError(f"Column '{model.response_variable}' not found in 'model.data'")
 
-    data = model.data.copy()
-    data['intercept'] = 1
-    data['predicted'] = 0
-
-    for posterior, posterior_samples in model.posteriors.items():
-        if posterior != 'variance':
-            data['predicted'] += data[posterior]*flatten_matrix(posterior_samples).mean()
-    data['residuals'] = data[model.response_variable] - data['predicted']
+    data = model.residuals()
 
     fig, ax = plt.subplots()
 

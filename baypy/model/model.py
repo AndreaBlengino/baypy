@@ -70,6 +70,10 @@ class Model(ABC):
 
 
     @abstractmethod
+    def residuals(self) -> None: ...
+
+
+    @abstractmethod
     def compute_model_parameters_at_posterior_means(self) -> None: ...
 
 

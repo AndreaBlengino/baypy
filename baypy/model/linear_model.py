@@ -236,6 +236,19 @@ class LinearModel(Model):
         return matrices_to_frame(matrices_dict = self.__posteriors)
 
 
+    def residuals(self) -> pd.DataFrame:
+
+        posterior_means = {posterior: flatten_matrix(posterior_samples).mean()
+                           for posterior, posterior_samples in self.__posteriors.items() if posterior != 'variance'}
+
+        data = self.__data.copy()
+        data['intercept'] = 1
+        data['predicted'] = dot_product(data = data, regressors = posterior_means)
+        data['residuals'] = data[self.__response_variable] - data['predicted']
+
+        return data
+
+
     def compute_model_parameters_at_posterior_means(self) -> pd.DataFrame:
 
         posterior_means = {posterior: flatten_matrix(posterior_samples).mean()
