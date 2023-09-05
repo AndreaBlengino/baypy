@@ -90,4 +90,4 @@ class TestDiagnosticsEffectiveSampleSize:
 
     def test_raises_value_error(self):
         with raises(ValueError):
-            bp.diagnostics.effective_sample_size(posteriors = {'intercept': np.array([]), 'variance': np.array([0])})
+            bp.diagnostics.effective_sample_size(posteriors = {'intercept': np.array([])})
