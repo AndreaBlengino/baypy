@@ -37,12 +37,9 @@ class LinearRegression(Regression):
     ValueError
         - If ``model.data`` is ``None``,
         - if ``model.response_variable`` is ``None``,
-        - if ``model.initial_values`` is ``None``,
+        - if ``model.response_variable`` is not a column of ``model.data``
         - if ``model.priors`` is ``None``,
-        - if a ``model.initial_values`` key is not a column of ``model.data``,
-        - if a ``model.initial_values`` key is not a key of ``model.priors``,
         - if a ``model.priors`` key is not a column of ``model.data``,
-        - if a ``model.priors`` key is not a key of ``model.initial_values``.
 
     See Also
     --------

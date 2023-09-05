@@ -25,7 +25,7 @@ class Regression(ABC):
 
         for prior in model.priors.keys():
             if (prior not in  ['intercept', 'variance']) and (prior not in model.data.columns):
-                raise ValueError(f"Column '{prior}' not found in 'Model.data'")
+                raise ValueError(f"Column '{prior}' not found in 'model.data'")
 
 
     @abstractmethod

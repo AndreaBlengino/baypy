@@ -190,16 +190,15 @@ def model_priors_value_error(request):
 
 
 @fixture(scope = 'session')
-def sampler(general_testing_data):
-    model = bp.model.LinearModel()
-    model.data = general_testing_data['data']
-    model.response_variable = general_testing_data['response_variable']
-    model.priors = general_testing_data['priors']
-    sampler = bp.regression.LinearRegression(model = model)
-    return sampler
+def model(general_testing_data):
+    complete_model = bp.model.LinearModel()
+    complete_model.data = general_testing_data['data']
+    complete_model.response_variable = general_testing_data['response_variable']
+    complete_model.priors = general_testing_data['priors']
+    return complete_model
 
 
-@fixture(params = ['model', 1, 1.1, {'model': 1}, True, (0, 1), [0, 1], {0, 1}, None])
+@fixture(params = ['model', 1, 1.1, True, (0, 1), [0, 1], {0, 1}, {'model': 1}, None])
 def linear_regression_init_type_error(request):
     return request.param
 
@@ -215,31 +214,31 @@ def linear_regression_init_value_error(request):
 
 @fixture(params = [{'n_iterations': '100', 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137},
                    {'n_iterations': 100.0, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137},
-                   {'n_iterations': {'100': 100}, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137},
                    {'n_iterations': (100, 200), 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137},
                    {'n_iterations': [100, 200], 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137},
                    {'n_iterations': {100, 200}, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137},
+                   {'n_iterations': {'100': 100}, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137},
                    {'n_iterations': None, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137},
                    {'n_iterations': 100, 'burn_in_iterations': '50', 'n_chains': 3, 'seed': 137},
                    {'n_iterations': 100, 'burn_in_iterations': 50.0, 'n_chains': 3, 'seed': 137},
-                   {'n_iterations': 100, 'burn_in_iterations': {'50': 50}, 'n_chains': 3, 'seed': 137},
                    {'n_iterations': 100, 'burn_in_iterations': (50, 100), 'n_chains': 3, 'seed': 137},
                    {'n_iterations': 100, 'burn_in_iterations': [50, 100], 'n_chains': 3, 'seed': 137},
                    {'n_iterations': 100, 'burn_in_iterations': {50, 100}, 'n_chains': 3, 'seed': 137},
+                   {'n_iterations': 100, 'burn_in_iterations': {'50': 50}, 'n_chains': 3, 'seed': 137},
                    {'n_iterations': 100, 'burn_in_iterations': None, 'n_chains': 3, 'seed': 137},
                    {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': '3', 'seed': 137},
                    {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3.0, 'seed': 137},
-                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': {'3': 3}, 'seed': 137},
                    {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': (3, 6), 'seed': 137},
                    {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': [4, 6], 'seed': 137},
                    {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': {3, 6}, 'seed': 137},
+                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': {'3': 3}, 'seed': 137},
                    {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': None, 'seed': 137},
                    {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': '137'},
                    {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137.0},
-                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': {'137': 137}},
                    {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': (137, 137)},
                    {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': [137, 137]},
-                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': {137, 137}}])
+                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': {137, 137}},
+                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': {'137': 137}}])
 def linear_regression_sample_type_error(request):
     return request.param
 
