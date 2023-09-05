@@ -2,7 +2,7 @@ from .model import Model
 import pandas as pd
 import numpy as np
 from scipy.stats import norm
-from ..utils import matrices_to_frame
+from ..utils import flatten_matrix, matrices_to_frame, dot_product
 
 
 class LinearModel(Model):
@@ -234,6 +234,32 @@ class LinearModel(Model):
             raise ValueError("Posteriors not available, run 'baypy.regression.LinearRegression.sample' to generate "
                              "posteriors")
         return matrices_to_frame(matrices_dict = self.__posteriors)
+
+
+    def compute_model_parameters_at_posterior_means(self) -> pd.DataFrame:
+
+        posterior_means = {posterior: flatten_matrix(posterior_samples).mean()
+                           for posterior, posterior_samples in self.__posteriors.items() if posterior != 'variance'}
+
+        data = self.__data.copy()
+        data['intercept'] = 1
+        data['mean'] = dot_product(data = data, regressors = posterior_means)
+        data['variance'] = flatten_matrix(self.__posteriors['variance']).mean()
+
+        return data
+
+
+    def compute_model_parameters_at_observation(self, i: int):
+
+        posterior_means = {posterior: posterior_samples[i, :].mean()
+                           for posterior, posterior_samples in self.__posteriors.items() if posterior != 'variance'}
+
+        data = self.__data.copy()
+        data['intercept'] = 1
+        data['mean'] = dot_product(data = data, regressors = posterior_means)
+        data['variance'] = self.__posteriors['variance'][i, :].mean()
+
+        return data
 
 
     def likelihood(self, data: pd.DataFrame) -> np.ndarray:

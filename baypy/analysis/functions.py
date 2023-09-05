@@ -288,7 +288,7 @@ def residuals_plot(model: Model) -> None:
         raise ValueError("Parameter 'model.data' cannot be an empty 'pandas.DataFrame'")
 
     if model.response_variable not in model.data.columns:
-        raise ValueError(f"Column '{response_variable}' not found in 'model.data'")
+        raise ValueError(f"Column '{model.response_variable}' not found in 'model.data'")
 
     data = model.data.copy()
     data['intercept'] = 1
@@ -387,7 +387,7 @@ def predict_distribution(posteriors: dict, predictors: dict) -> np.ndarray:
 
 
 def compute_DIC(model: Model, print_summary: bool = True) -> dict:
-    r"""Computes and prints the Deviance Information Criterion (DIC) for the fitted linear model.
+    r"""Computes and prints the Deviance Information Criterion (DIC) for the fitted model.
 
     Parameters
     ----------
@@ -512,11 +512,10 @@ def compute_DIC(model: Model, print_summary: bool = True) -> dict:
         raise ValueError("Parameter 'model.data' cannot be an empty 'pandas.DataFrame'")
 
     if model.response_variable not in model.data.columns:
-        raise ValueError(f"Column '{response_variable}' not found in 'model.data'")
+        raise ValueError(f"Column '{model.response_variable}' not found in 'model.data'")
 
-    data = model.data.copy()
-    deviance_at_posterior_means = _compute_deviace_at_posterior_means(model = model, data = data)
-    posterior_mean_deviance = _compute_posterior_mean_deviance(model = model, data = data)
+    deviance_at_posterior_means = _compute_deviance_at_posterior_means(model = model)
+    posterior_mean_deviance = _compute_posterior_mean_deviance(model = model)
     effective_number_of_parameters = posterior_mean_deviance - deviance_at_posterior_means
     DIC = effective_number_of_parameters + posterior_mean_deviance
 
@@ -532,39 +531,20 @@ def compute_DIC(model: Model, print_summary: bool = True) -> dict:
             'DIC': DIC}
 
 
-def _compute_deviace_at_posterior_means(model: Model, data: pd.DataFrame) -> float:
+def _compute_deviance_at_posterior_means(model: Model) -> float:
 
-    posterior_means = {posterior: flatten_matrix(posterior_samples).mean()
-                       for posterior, posterior_samples in model.posteriors.items() if posterior != 'variance'}
-    variance = flatten_matrix(model.posteriors['variance']).mean()
-
-    data['intercept'] = 1
-    data['mean'] = 0
-    for posterior, posterior_mean in posterior_means.items():
-        data['mean'] += data[posterior]*posterior_mean
-    data['variance'] = variance
-
+    data = model.compute_model_parameters_at_posterior_means()
     likelihood = model.likelihood(data = data)
 
     return -2*np.sum(np.log(likelihood))
 
 
-def _compute_posterior_mean_deviance(model: Model, data: pd.DataFrame) -> float:
+def _compute_posterior_mean_deviance(model: Model) -> float:
 
-    data['intercept'] = 1
     deviance = []
-
     for i in range(model.posteriors['intercept'].shape[0]):
-        data['mean'] = 0
-        data['variance'] = 0
-        for posterior, posterior_samples in model.posteriors.items():
-            if posterior != 'variance':
-                data['mean'] += data[posterior]*posterior_samples[i, :].mean()
-            else:
-                data['variance'] = posterior_samples[i, :].mean()
-
+        data = model.compute_model_parameters_at_observation(i)
         likelihood = model.likelihood(data = data)
-
         deviance.append(-2*np.sum(np.log(likelihood)))
 
     return np.mean(deviance)

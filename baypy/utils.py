@@ -93,3 +93,9 @@ def matrices_to_frame(matrices_dict: dict) -> pd.DataFrame:
             raise ValueError(f"Matrix '{matrix_name}' is empty")
 
     return pd.DataFrame({col: flatten_matrix(matrix) for col, matrix in matrices_dict.items()})
+
+
+def dot_product(data: pd.DataFrame, regressors: dict):
+
+    data = data[regressors.keys()]
+    return np.dot(data, list(regressors.values()))

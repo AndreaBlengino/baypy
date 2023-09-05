@@ -70,6 +70,14 @@ class Model(ABC):
 
 
     @abstractmethod
+    def compute_model_parameters_at_posterior_means(self) -> None: ...
+
+
+    @abstractmethod
+    def compute_model_parameters_at_observation(self, i: int) -> None: ...
+
+
+    @abstractmethod
     def likelihood(self, data: pd.DataFrame) -> None: ...
 
 
