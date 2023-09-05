@@ -74,6 +74,10 @@ class Model(ABC):
 
 
     @abstractmethod
+    def predict_distribution(self, predictors: dict) -> None: ...
+
+
+    @abstractmethod
     def compute_model_parameters_at_posterior_means(self) -> None: ...
 
 

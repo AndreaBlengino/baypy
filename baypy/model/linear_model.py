@@ -249,6 +249,53 @@ class LinearModel(Model):
         return data
 
 
+    def predict_distribution(self, predictors: dict) -> np.ndarray:
+        """Predicts a posterior distribution for an unobserved values. For each posterior sample, it draws a sample from
+         the likelihood.
+
+        Parameters
+        ----------
+        predictors : dict
+            Values of predictors :math:`X` at which compute the posterior distribution. Each predictor has to be set as a
+            key-value pair.
+
+        Returns
+        -------
+        numpy.ndarray
+            Array of the predicted posterior distribution. It contains a number of element equal to the number of
+            regression iterations times the number of model Markov chains.
+
+        Raises
+        ------
+        TypeError
+            - if ``predictors`` is not a ``dict``.
+        KeyError
+            - if a ``predictors`` key is not a key of ``posteriors``.
+        ValueError
+            - if ``predictors`` is an empty ``dict``.
+
+        See Also
+        --------
+        :meth:`baypy.regression.linear_regression.LinearRegression`
+        """
+        if not isinstance(predictors, dict):
+            raise TypeError("Parameter 'predictors' must be a dictionary")
+
+        if len(predictors) == 0:
+            raise ValueError("Parameter 'predictors' cannot be an empty dictionary")
+
+        for regressor in predictors.keys():
+            if regressor not in self.__posteriors.keys():
+                raise KeyError(f"Regressor '{regressor}' not found in 'posteriors' keys")
+
+        prediction = matrices_to_frame(matrices_dict = self.__posteriors)
+        prediction['mean'] = prediction['intercept'] + dot_product(data = prediction, regressors = predictors)
+
+        return norm.rvs(loc = prediction['mean'],
+                        scale = np.sqrt(prediction['variance']),
+                        size = len(prediction))
+
+
     def compute_model_parameters_at_posterior_means(self) -> pd.DataFrame:
 
         posterior_means = {posterior: flatten_matrix(posterior_samples).mean()
