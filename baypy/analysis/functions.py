@@ -146,7 +146,7 @@ def summary(posteriors: dict, alpha: float = 0.05, quantiles: list = None, print
         if posterior_samples.size == 0:
             raise ValueError(f"Posterior '{posterior}' data is empty")
 
-    if (not isinstance(alpha, float)) and (alpha not in [0, 1]):
+    if not isinstance(alpha, float):
         raise TypeError("Parameter 'alpha' must be a float")
     if (alpha < 0) or (alpha > 1):
         raise ValueError("Parameter 'alpha' must be between 0 and 1")

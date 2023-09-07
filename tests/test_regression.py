@@ -22,20 +22,22 @@ class TestLinearRegressionInit:
 class TestLinearRegressionSample:
 
 
-    def test_method(self, model, general_testing_data):
-        sampler = bp.regression.LinearRegression(model = model)
+    def test_method(self, complete_model, general_testing_data):
+        sampler = bp.regression.LinearRegression(model = complete_model)
         sampler.sample(n_iterations = general_testing_data['n_iterations'],
                        burn_in_iterations = general_testing_data['burn_in_iterations'],
                        n_chains = general_testing_data['n_chains'],
                        seed = general_testing_data['seed'])
 
-        assert model.posteriors.keys() == general_testing_data['priors'].keys()
-        assert all(np.array([posterior_samples.shape for posterior_samples in model.posteriors.values()])[:, 0] == general_testing_data['n_iterations'])
-        assert all(np.array([posterior_samples.shape for posterior_samples in model.posteriors.values()])[:, 1] == general_testing_data['n_chains'])
+        assert complete_model.posteriors.keys() == general_testing_data['priors'].keys()
+        assert all(np.array([posterior_samples.shape for posterior_samples in complete_model.posteriors.values()])[:, 0]
+                   == general_testing_data['n_iterations'])
+        assert all(np.array([posterior_samples.shape for posterior_samples in complete_model.posteriors.values()])[:, 1]
+                   == general_testing_data['n_chains'])
 
 
-    def test_raises_type_error(self, model, linear_regression_sample_type_error):
-        sampler = bp.regression.LinearRegression(model = model)
+    def test_raises_type_error(self, complete_model, linear_regression_sample_type_error):
+        sampler = bp.regression.LinearRegression(model = complete_model)
         with raises(TypeError):
             sampler.sample(n_iterations = linear_regression_sample_type_error['n_iterations'],
                            burn_in_iterations = linear_regression_sample_type_error['burn_in_iterations'],
@@ -43,8 +45,8 @@ class TestLinearRegressionSample:
                            seed = linear_regression_sample_type_error['seed'])
 
 
-    def test_raises_value_error(self, model, linear_regression_sample_value_error):
-        sampler = bp.regression.LinearRegression(model = model)
+    def test_raises_value_error(self, complete_model, linear_regression_sample_value_error):
+        sampler = bp.regression.LinearRegression(model = complete_model)
         with raises(ValueError):
             sampler.sample(n_iterations = linear_regression_sample_value_error['n_iterations'],
                            burn_in_iterations = linear_regression_sample_value_error['burn_in_iterations'],

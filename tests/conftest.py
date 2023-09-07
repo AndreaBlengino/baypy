@@ -92,74 +92,12 @@ linear_regression_model_prior_not_in_data.priors = {'x': {'mean': 0,
                                                'scale': 1}}
 
 
-analysis_value_error_posterior_data_empty = bp.model.LinearModel()
-analysis_value_error_posterior_data_empty.data = pd.DataFrame(columns = ['response_variable'], index = [0])
-analysis_value_error_posterior_data_empty.response_variable = 'response_variable'
-analysis_value_error_posterior_data_empty.posteriors = {'intercept': np.array([])}
-
-analysis_value_error_posterior_not_in_data = bp.model.LinearModel()
-analysis_value_error_posterior_not_in_data.data = pd.DataFrame(columns = ['response_variable'], index = [0])
-analysis_value_error_posterior_not_in_data.response_variable = 'response_variable'
-analysis_value_error_posterior_not_in_data.posteriors = {'intercept': np.array([0]), 'x': np.array([0])}
-
-analysis_value_error_data_empty = bp.model.LinearModel()
-analysis_value_error_data_empty.data = pd.DataFrame(columns = ['not_response_variable'], index = [0])
-analysis_value_error_data_empty.data.drop(index = [0], inplace = True)
-analysis_value_error_data_empty.response_variable = 'response_variable'
-analysis_value_error_data_empty.posteriors = {'intercept': np.array([0])}
-
-analysis_value_error_response_variable_not_in_data = bp.model.LinearModel()
-analysis_value_error_response_variable_not_in_data.data = pd.DataFrame(columns = ['not_response_variable'], index = [0])
-analysis_value_error_response_variable_not_in_data.response_variable = 'response_variable'
-analysis_value_error_response_variable_not_in_data.posteriors = {'intercept': np.array([0])}
 
 
-types_to_check = ['string', 1, 1.1, True, (0, 1), [0, 1], {0, 1}, {0: 1}, None,
-                  pd.DataFrame(columns = ['response_variable'], index = [0]), np.ndarray([0])]
 
-analysis_residuals_plot_type_error_1 = [bp.model.LinearModel() for type_to_check in types_to_check if not isinstance(type_to_check, dict)]
-for model, type_to_check in zip(analysis_residuals_plot_type_error_1, types_to_check):
-    if not isinstance(type_to_check, dict):
-        model.data = pd.DataFrame(columns = ['response_variable'], index = [0])
-        model.response_variable = 'response_variable'
-        model.posteriors = type_to_check
+types_to_check = ['string', 2, 2.2, True, (0, 1), [0, 1], {0, 1}, {0: 1}, None,
+                  pd.DataFrame(columns = ['response_variable'], index = [0]), np.array([0])]
 
-analysis_residuals_plot_type_error_2 = [bp.model.LinearModel() for type_to_check in types_to_check if not isinstance(type_to_check, np.ndarray)]
-for model, type_to_check in zip(analysis_residuals_plot_type_error_2, types_to_check):
-    if not isinstance(type_to_check, np.ndarray):
-        model.data = pd.DataFrame(columns = ['response_variable'], index = [0])
-        model.response_variable = 'response_variable'
-        model.posteriors = {'intercept': type_to_check}
-
-
-analysis_compute_dic_type_error_1 = [{'model': type_to_check, 'print_summary': False}
-                                     for type_to_check in types_to_check]
-
-analysis_compute_dic_type_error_2 = [{'model': bp.model.LinearModel(),
-                                      'print_summary': False} for type_to_check in types_to_check
-                                     if not isinstance(type_to_check, dict)]
-for args, type_to_check in zip(analysis_compute_dic_type_error_2, types_to_check):
-    if not isinstance(type_to_check, dict):
-        args['model'].data = pd.DataFrame(columns = ['response_variable'], index = [0])
-        args['model'].response_variable = 'response_variable'
-        args['model'].posteriors = type_to_check
-
-analysis_compute_dic_type_error_3 = [{'model': bp.model.LinearModel(),
-                                      'print_summary': False} for type_to_check in types_to_check
-                                     if not isinstance(type_to_check, np.ndarray)]
-for args, type_to_check in zip(analysis_compute_dic_type_error_3, types_to_check):
-    if not isinstance(type_to_check, np.ndarray):
-        args['model'].data = pd.DataFrame(columns = ['response_variable'], index = [0])
-        args['model'].response_variable = 'response_variable'
-        args['model'].posteriors = {'intercept': type_to_check}
-
-analysis_compute_dic_type_error_4 = [{'model': bp.model.LinearModel(),
-                                      'print_summary': type_to_check} for type_to_check in types_to_check
-                                     if not isinstance(type_to_check, bool)]
-for args in analysis_compute_dic_type_error_4:
-    args['model'].data = pd.DataFrame(columns = ['response_variable'], index = [0])
-    args['model'].response_variable = 'response_variable'
-    args['model'].posteriors = {'intercept': np.ndarray([0])}
 
 
 @fixture(scope = 'session',
@@ -217,25 +155,22 @@ def empty_model():
     return model
 
 
-@fixture(params = ['data', 1, 1.1, True, (0, 1), [0, 1], {0, 1}, None])
+@fixture(params = [type_to_check for type_to_check in types_to_check if not isinstance(type_to_check, pd.DataFrame)])
 def model_data_type_error(request):
     return request.param
 
 
-@fixture(params = [1, 1.1, True, (0, 1), [0, 1], {0, 1}, None])
+@fixture(params = [type_to_check for type_to_check in types_to_check if not isinstance(type_to_check, str)])
 def model_response_variable_type_error(request):
     return request.param
 
 
-@fixture(params = ['priors', 1, 1.1, True, (0, 1), [0, 1], {0, 1}, None,
-                   {'intercept': 'intercept', 'variance': 'variance'},
-                   {'intercept': 1, 'variance': 1},
-                   {'intercept': 1.1, 'variance': 1.1},
-                   {'intercept': True, 'variance': True},
-                   {'intercept': (0, 1), 'variance': (0, 1)},
-                   {'intercept': [0, 1], 'variance': [0, 1]},
-                   {'intercept': {0, 1}, 'variance': {0, 1}},
-                   {'intercept': None, 'variance': None}])
+model_priors_type_error_1 = [type_to_check for type_to_check in types_to_check if not isinstance(type_to_check, dict)]
+model_priors_type_error_2 = [{'intercept': type_to_check, 'variance': type_to_check} for type_to_check in types_to_check
+                             if not isinstance(type_to_check, dict)]
+
+@fixture(params = [*model_priors_type_error_1,
+                   *model_priors_type_error_2])
 def model_priors_type_error(request):
     return request.param
 
@@ -260,7 +195,7 @@ def model_priors_value_error(request):
 
 
 @fixture(scope = 'session')
-def model(general_testing_data):
+def complete_model(general_testing_data):
     complete_model = bp.model.LinearModel()
     complete_model.data = general_testing_data['data']
     complete_model.response_variable = general_testing_data['response_variable']
@@ -268,7 +203,7 @@ def model(general_testing_data):
     return complete_model
 
 
-@fixture(params = ['model', 1, 1.1, True, (0, 1), [0, 1], {0, 1}, {'model': 1}, None])
+@fixture(params = [type_to_check for type_to_check in types_to_check if not isinstance(type_to_check, bp.model.Model)])
 def linear_regression_init_type_error(request):
     return request.param
 
@@ -282,33 +217,26 @@ def linear_regression_init_value_error(request):
     return request.param
 
 
-@fixture(params = [{'n_iterations': '100', 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137},
-                   {'n_iterations': 100.0, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137},
-                   {'n_iterations': (100, 200), 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137},
-                   {'n_iterations': [100, 200], 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137},
-                   {'n_iterations': {100, 200}, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137},
-                   {'n_iterations': {'100': 100}, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137},
-                   {'n_iterations': None, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137},
-                   {'n_iterations': 100, 'burn_in_iterations': '50', 'n_chains': 3, 'seed': 137},
-                   {'n_iterations': 100, 'burn_in_iterations': 50.0, 'n_chains': 3, 'seed': 137},
-                   {'n_iterations': 100, 'burn_in_iterations': (50, 100), 'n_chains': 3, 'seed': 137},
-                   {'n_iterations': 100, 'burn_in_iterations': [50, 100], 'n_chains': 3, 'seed': 137},
-                   {'n_iterations': 100, 'burn_in_iterations': {50, 100}, 'n_chains': 3, 'seed': 137},
-                   {'n_iterations': 100, 'burn_in_iterations': {'50': 50}, 'n_chains': 3, 'seed': 137},
-                   {'n_iterations': 100, 'burn_in_iterations': None, 'n_chains': 3, 'seed': 137},
-                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': '3', 'seed': 137},
-                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3.0, 'seed': 137},
-                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': (3, 6), 'seed': 137},
-                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': [4, 6], 'seed': 137},
-                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': {3, 6}, 'seed': 137},
-                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': {'3': 3}, 'seed': 137},
-                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': None, 'seed': 137},
-                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': '137'},
-                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': 137.0},
-                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': (137, 137)},
-                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': [137, 137]},
-                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': {137, 137}},
-                   {'n_iterations': 100, 'burn_in_iterations': 50, 'n_chains': 3, 'seed': {'137': 137}}])
+linear_regression_sample_type_error_1 = [{'n_iterations': type_to_check, 'burn_in_iterations': 50,
+                                          'n_chains': 3, 'seed': 137} for type_to_check in types_to_check
+                                         if not isinstance(type_to_check, int)]
+
+linear_regression_sample_type_error_2 = [{'n_iterations': 100, 'burn_in_iterations': type_to_check,
+                                          'n_chains': 3, 'seed': 137} for type_to_check in types_to_check
+                                         if not isinstance(type_to_check, int)]
+
+linear_regression_sample_type_error_3 = [{'n_iterations': 100, 'burn_in_iterations': 50,
+                                          'n_chains': type_to_check, 'seed': 137} for type_to_check in types_to_check
+                                         if not isinstance(type_to_check, int)]
+
+linear_regression_sample_type_error_4 = [{'n_iterations': 100, 'burn_in_iterations': 50,
+                                          'n_chains': 3, 'seed': type_to_check} for type_to_check in types_to_check
+                                         if not isinstance(type_to_check, int) and type_to_check is not None]
+
+@fixture(params = [*linear_regression_sample_type_error_1,
+                   *linear_regression_sample_type_error_2,
+                   *linear_regression_sample_type_error_3,
+                   *linear_regression_sample_type_error_4])
 def linear_regression_sample_type_error(request):
     return request.param
 
@@ -322,30 +250,22 @@ def linear_regression_sample_value_error(request):
     return request.param
 
 
-@fixture(params = [{'posteriors': 'posteriors', 'max_lags': 30},
-                   {'posteriors': 1, 'max_lags': 30},
-                   {'posteriors': 1.1, 'max_lags': 30},
-                   {'posteriors': True, 'max_lags': 30},
-                   {'posteriors': (0, 1), 'max_lags': 30},
-                   {'posteriors': [0, 1], 'max_lags': 30},
-                   {'posteriors': {0, 1}, 'max_lags': 30},
-                   {'posteriors': None, 'max_lags': 30},
-                   {'posteriors': {'intercept': '1'}, 'max_lags': 30},
-                   {'posteriors': {'intercept': 1}, 'max_lags': 30},
-                   {'posteriors': {'intercept': 1.1}, 'max_lags': 30},
-                   {'posteriors': {'intercept': True}, 'max_lags': 30},
-                   {'posteriors': {'intercept': (0, 1)}, 'max_lags': 30},
-                   {'posteriors': {'intercept': [0, 1]}, 'max_lags': 30},
-                   {'posteriors': {'intercept': {0, 1}}, 'max_lags': 30},
-                   {'posteriors': {'intercept': {0 : 1}}, 'max_lags': 30},
-                   {'posteriors': {'intercept': None}, 'max_lags': 30},
-                   {'posteriors': {'intercept': np.array([0])}, 'max_lags': 'max_lags'},
-                   {'posteriors': {'intercept': np.array([0])}, 'max_lags': 1.1},
-                   {'posteriors': {'intercept': np.array([0])}, 'max_lags': (0, 1)},
-                   {'posteriors': {'intercept': np.array([0])}, 'max_lags': [0, 1]},
-                   {'posteriors': {'intercept': np.array([0])}, 'max_lags': {0, 1}},
-                   {'posteriors': {'intercept': np.array([0])}, 'max_lags': {'30': 30}},
-                   {'posteriors': {'intercept': np.array([0])}, 'max_lags': None}])
+diagnostics_autocorrelation_plot_type_error_1 = [{'posteriors': type_to_check, 'max_lags': 30}
+                                                 for type_to_check in types_to_check
+                                                 if not isinstance(type_to_check, dict)]
+
+diagnostics_autocorrelation_plot_type_error_2 = [{'posteriors': {'intercept': type_to_check}, 'max_lags': 30}
+                                                 for type_to_check in types_to_check
+                                                 if not isinstance(type_to_check, np.ndarray)]
+
+diagnostics_autocorrelation_plot_type_error_3 = [{'posteriors': {'intercept': np.array([0])},
+                                                  'max_lags': type_to_check}
+                                                 for type_to_check in types_to_check
+                                                 if not isinstance(type_to_check, int)]
+
+@fixture(params = [*diagnostics_autocorrelation_plot_type_error_1,
+                   *diagnostics_autocorrelation_plot_type_error_2,
+                   *diagnostics_autocorrelation_plot_type_error_3])
 def diagnostics_autocorrelation_plot_type_error(request):
     return request.param
 
@@ -356,44 +276,38 @@ def diagnostics_autocorrelation_plot_value_error(request):
     return request.param
 
 
-@fixture(params = [{'posteriors': 'posteriors', 'lags': [0, 1], 'print_summary': False},
-                   {'posteriors': 1, 'lags': [0, 1], 'print_summary': False},
-                   {'posteriors': 1.1, 'lags': [0, 1], 'print_summary': False},
-                   {'posteriors': True, 'lags': [0, 1], 'print_summary': False},
-                   {'posteriors': (0, 1), 'lags': [0, 1], 'print_summary': False},
-                   {'posteriors': [0, 1], 'lags': [0, 1], 'print_summary': False},
-                   {'posteriors': {0, 1}, 'lags': [0, 1], 'print_summary': False},
-                   {'posteriors': None, 'lags': [0, 1], 'print_summary': False},
-                   {'posteriors': {'intercept': '1'}, 'lags': [0, 1], 'print_summary': False},
-                   {'posteriors': {'intercept': 1}, 'lags': [0, 1], 'print_summary': False},
-                   {'posteriors': {'intercept': 1.1}, 'lags': [0, 1], 'print_summary': False},
-                   {'posteriors': {'intercept': True}, 'lags': [0, 1], 'print_summary': False},
-                   {'posteriors': {'intercept': (0, 1)}, 'lags': [0, 1], 'print_summary': False},
-                   {'posteriors': {'intercept': [0, 1]}, 'lags': [0, 1], 'print_summary': False},
-                   {'posteriors': {'intercept': {0, 1}}, 'lags': [0, 1], 'print_summary': False},
-                   {'posteriors': {'intercept': {0: 1}}, 'lags': [0, 1], 'print_summary': False},
-                   {'posteriors': {'intercept': None}, 'lags': [0, 1], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'lags': 'lags', 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'lags': 1, 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'lags': 1.1, 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'lags': True, 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'lags': (0, 1), 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'lags': {'30': 30}, 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'lags': {0, 1}, 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'lags': ['lag'], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'lags': [1.1], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'lags': [(0, 1)], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'lags': [[0, 1]], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'lags': [{0, 1}], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'lags': [{'lag': 1}], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'lags': [None], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'lags': [0, 1], 'print_summary': 'False'},
-                   {'posteriors': {'intercept': np.array([0])}, 'lags': [0, 1], 'print_summary': 1.1},
-                   {'posteriors': {'intercept': np.array([0])}, 'lags': [0, 1], 'print_summary': (0, 1)},
-                   {'posteriors': {'intercept': np.array([0])}, 'lags': [0, 1], 'print_summary': [0, 1]},
-                   {'posteriors': {'intercept': np.array([0])}, 'lags': [0, 1], 'print_summary': {0, 1}},
-                   {'posteriors': {'intercept': np.array([0])}, 'lags': [0, 1], 'print_summary': {0: 1}},
-                   {'posteriors': {'intercept': np.array([0])}, 'lags': [0, 1], 'print_summary': None}])
+diagnostics_autocorrelation_summary_type_error_1 = [{'posteriors': type_to_check,
+                                                     'lags': [0, 1], 'print_summary': False}
+                                                    for type_to_check in types_to_check
+                                                    if not isinstance(type_to_check, dict)]
+
+diagnostics_autocorrelation_summary_type_error_2 = [{'posteriors': {'intercept': type_to_check},
+                                                     'lags': [0, 1], 'print_summary': False}
+                                                    for type_to_check in types_to_check
+                                                    if not isinstance(type_to_check, np.ndarray)]
+
+diagnostics_autocorrelation_summary_type_error_3 = [{'posteriors': {'intercept': np.array([0])},
+                                                     'lags': type_to_check, 'print_summary': False}
+                                                    for type_to_check in types_to_check
+                                                    if not isinstance(type_to_check, list) and
+                                                    type_to_check is not None]
+
+diagnostics_autocorrelation_summary_type_error_4 = [{'posteriors': {'intercept': np.array([0])},
+                                                     'lags': [type_to_check, type_to_check], 'print_summary': False}
+                                                    for type_to_check in types_to_check
+                                                    if not isinstance(type_to_check, int)]
+
+diagnostics_autocorrelation_summary_type_error_5 = [{'posteriors': {'intercept': np.array([0])},
+                                                     'lags': [0, 1], 'print_summary': type_to_check}
+                                                    for type_to_check in types_to_check
+                                                    if not isinstance(type_to_check, bool)]
+
+
+@fixture(params = [*diagnostics_autocorrelation_summary_type_error_1,
+                   *diagnostics_autocorrelation_summary_type_error_2,
+                   *diagnostics_autocorrelation_summary_type_error_3,
+                   *diagnostics_autocorrelation_summary_type_error_4,
+                   *diagnostics_autocorrelation_summary_type_error_5])
 def diagnostics_autocorrelation_summary_type_error(request):
     return request.param
 
@@ -405,83 +319,70 @@ def diagnostics_autocorrelation_summary_value_error(request):
     return request.param
 
 
-@fixture(params = [{'posteriors': 'posteriors', 'print_summary': False},
-                   {'posteriors': 1, 'print_summary': False},
-                   {'posteriors': 1.1, 'print_summary': False},
-                   {'posteriors': True, 'print_summary': False},
-                   {'posteriors': (0, 1), 'print_summary': False},
-                   {'posteriors': [0, 1], 'print_summary': False},
-                   {'posteriors': {0, 1}, 'print_summary': False},
-                   {'posteriors': None, 'print_summary': False},
-                   {'posteriors': {'intercept': '1'}, 'print_summary': False},
-                   {'posteriors': {'intercept': 1}, 'print_summary': False},
-                   {'posteriors': {'intercept': 1.1}, 'print_summary': False},
-                   {'posteriors': {'intercept': True}, 'print_summary': False},
-                   {'posteriors': {'intercept': (0, 1)}, 'print_summary': False},
-                   {'posteriors': {'intercept': [0, 1]}, 'print_summary': False},
-                   {'posteriors': {'intercept': {0, 1}}, 'print_summary': False},
-                   {'posteriors': {'intercept': {0: 1}}, 'print_summary': False},
-                   {'posteriors': {'intercept': None}, 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'print_summary': 'False'},
-                   {'posteriors': {'intercept': np.array([0])}, 'print_summary': 1.1},
-                   {'posteriors': {'intercept': np.array([0])}, 'print_summary': (0, 1)},
-                   {'posteriors': {'intercept': np.array([0])}, 'print_summary': [0, 1]},
-                   {'posteriors': {'intercept': np.array([0])}, 'print_summary': {0, 1}},
-                   {'posteriors': {'intercept': np.array([0])}, 'print_summary': {0: 1}}])
+diagnostics_effective_sample_size_type_error_1 = [{'posteriors': type_to_check, 'print_summary': False}
+                                                  for type_to_check in types_to_check
+                                                  if not isinstance(type_to_check, dict)]
+
+diagnostics_effective_sample_size_type_error_2 = [{'posteriors': {'intercept': type_to_check}, 'print_summary': False}
+                                                  for type_to_check in types_to_check
+                                                  if not isinstance(type_to_check, np.ndarray)]
+
+diagnostics_effective_sample_size_type_error_3 = [{'posteriors': {'intercept': np.array([0])},
+                                                   'print_summary': type_to_check}
+                                                  for type_to_check in types_to_check
+                                                  if not isinstance(type_to_check, bool)]
+
+@fixture(params = [*diagnostics_effective_sample_size_type_error_1,
+                   *diagnostics_effective_sample_size_type_error_2,
+                   *diagnostics_effective_sample_size_type_error_3])
 def diagnostics_effective_sample_size_type_error(request):
     return request.param
 
 
-@fixture(params = ['posteriors', 1, 1.1, True, (0, 1), [0, 1], {0, 1}, None,
-                   {'intercept': [0]}])
+analysis_trace_plot_type_error_1 = [type_to_check for type_to_check in types_to_check
+                                    if not isinstance(type_to_check, dict)]
+
+analysis_trace_plot_type_error_2 = [{'intercept': type_to_check}
+                                    for type_to_check in types_to_check
+                                    if not isinstance(type_to_check, np.ndarray)]
+
+@fixture(params = [*analysis_trace_plot_type_error_1,
+                   *analysis_trace_plot_type_error_2])
 def analysis_trace_plot_type_error(request):
     return request.param
 
 
-@fixture(params = [{'posteriors': 'posteriors', 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': 1, 'alpha': 0.05,'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': 1.1, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': True, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': (0, 1), 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': [0, 1], 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {0, 1}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': None, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': '1'}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': 1}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': 1.1}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': True}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': (0, 1)}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': [0, 1]}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': {0, 1}}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': {0: 1}}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': None}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 'alpha', 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 2, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': (0, 1), 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': [0, 1], 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': {0, 1}, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': {'0': 1}, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': None, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': 'quantiles', 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': 1, 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': 1.1, 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': True, 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': (0, 1), 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': {'0.1': 0.1}, 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': {0, 1}, 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': ['quantiles'], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [1], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [(0, 1)], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [[0, 1]], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [{0, 1}], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [{'quantiles': 1}], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [None], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': 'False'},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': 1.1},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': (0, 1)},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': [0, 1]},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': {0, 1}},
-                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': None}])
+analysis_summary_type_error_1 = [{'posteriors': type_to_check, 'alpha': 0.05,
+                                  'quantiles': [0.1, 0.9], 'print_summary': False}
+                                 for type_to_check in types_to_check if not isinstance(type_to_check, dict)]
+
+analysis_summary_type_error_2 = [{'posteriors': {'intercept': type_to_check}, 'alpha': 0.05,
+                                  'quantiles': [0.1, 0.9], 'print_summary': False}
+                                 for type_to_check in types_to_check if not isinstance(type_to_check, np.ndarray)]
+
+analysis_summary_type_error_3 = [{'posteriors': {'intercept': np.array([0])}, 'alpha': type_to_check,
+                                  'quantiles': [0.1, 0.9], 'print_summary': False}
+                                 for type_to_check in types_to_check
+                                 if not isinstance(type_to_check, float) and not isinstance(type_to_check, bool)]
+
+analysis_summary_type_error_4 = [{'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05,
+                                  'quantiles': type_to_check, 'print_summary': False}
+                                 for type_to_check in types_to_check if not isinstance(type_to_check, list) and type_to_check is not None]
+
+analysis_summary_type_error_5 = [{'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05,
+                                  'quantiles': [type_to_check, type_to_check], 'print_summary': False}
+                                 for type_to_check in types_to_check if not isinstance(type_to_check, float)]
+
+analysis_summary_type_error_6 = [{'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05,
+                                  'quantiles': [0.1, 0.9], 'print_summary': type_to_check}
+                                 for type_to_check in types_to_check if not isinstance(type_to_check, bool)]
+
+@fixture(params = [*analysis_summary_type_error_1,
+                   *analysis_summary_type_error_2,
+                   *analysis_summary_type_error_3,
+                   *analysis_summary_type_error_4,
+                   *analysis_summary_type_error_5,
+                   *analysis_summary_type_error_6])
 def analysis_summary_type_error(request):
     return request.param
 
@@ -496,6 +397,20 @@ def analysis_summary_value_error(request):
     return request.param
 
 
+analysis_residuals_plot_type_error_1 = [bp.model.LinearModel() for type_to_check in types_to_check if not isinstance(type_to_check, dict)]
+for model, type_to_check in zip(analysis_residuals_plot_type_error_1, types_to_check):
+    if not isinstance(type_to_check, dict):
+        model.data = pd.DataFrame(columns = ['response_variable'], index = [0])
+        model.response_variable = 'response_variable'
+        model.posteriors = type_to_check
+
+analysis_residuals_plot_type_error_2 = [bp.model.LinearModel() for type_to_check in types_to_check if not isinstance(type_to_check, np.ndarray)]
+for model, type_to_check in zip(analysis_residuals_plot_type_error_2, types_to_check):
+    if not isinstance(type_to_check, np.ndarray):
+        model.data = pd.DataFrame(columns = ['response_variable'], index = [0])
+        model.response_variable = 'response_variable'
+        model.posteriors = {'intercept': type_to_check}
+
 @fixture(params = [*types_to_check,
                    *analysis_residuals_plot_type_error_1,
                    *analysis_residuals_plot_type_error_2])
@@ -503,32 +418,53 @@ def analysis_residuals_plot_type_error(request):
     return request.param
 
 
-@fixture(params = [analysis_value_error_posterior_data_empty,
-                   analysis_value_error_posterior_not_in_data,
-                   analysis_value_error_data_empty,
-                   analysis_value_error_response_variable_not_in_data])
+analysis_residuals_plot_value_error_1 = bp.model.LinearModel()
+analysis_residuals_plot_value_error_1.data = pd.DataFrame(columns = ['response_variable'], index = [0])
+analysis_residuals_plot_value_error_1.response_variable = 'response_variable'
+analysis_residuals_plot_value_error_1.posteriors = {'intercept': np.array([])}
+
+analysis_residuals_plot_value_error_2 = bp.model.LinearModel()
+analysis_residuals_plot_value_error_2.data = pd.DataFrame(columns = ['response_variable'], index = [0])
+analysis_residuals_plot_value_error_2.response_variable = 'response_variable'
+analysis_residuals_plot_value_error_2.posteriors = {'intercept': np.array([0]), 'x': np.array([0])}
+
+analysis_residuals_plot_value_error_3 = bp.model.LinearModel()
+analysis_residuals_plot_value_error_3.data = pd.DataFrame(columns = ['not_response_variable'], index = [0])
+analysis_residuals_plot_value_error_3.data.drop(index = [0], inplace = True)
+analysis_residuals_plot_value_error_3.response_variable = 'response_variable'
+analysis_residuals_plot_value_error_3.posteriors = {'intercept': np.array([0])}
+
+analysis_residuals_plot_value_error_4 = bp.model.LinearModel()
+analysis_residuals_plot_value_error_4.data = pd.DataFrame(columns = ['not_response_variable'], index = [0])
+analysis_residuals_plot_value_error_4.response_variable = 'response_variable'
+analysis_residuals_plot_value_error_4.posteriors = {'intercept': np.array([0])}
+
+@fixture(params = [analysis_residuals_plot_value_error_1,
+                   analysis_residuals_plot_value_error_2,
+                   analysis_residuals_plot_value_error_3,
+                   analysis_residuals_plot_value_error_4])
 def analysis_residuals_plot_value_error(request):
     return request.param
 
 
-@fixture(params = [{'posteriors': 'posteriors', 'predictors': {'predictor': 1}},
-                   {'posteriors': 1, 'predictors': {'regressor': 1}},
-                   {'posteriors': 1.1, 'predictors': {'regressor': 1}},
-                   {'posteriors': True, 'predictors': {'regressor': 1}},
-                   {'posteriors': (0, 1), 'predictors': {'regressor': 1}},
-                   {'posteriors': [0, 1], 'predictors': {'regressor': 1}},
-                   {'posteriors': {0, 1}, 'predictors': {'regressor': 1}},
-                   {'posteriors': None, 'predictors': {'regressor': 1}},
-                   {'posteriors': {'intercept': [0], 'variance': np.array([0])}, 'predictors': {'predictor': 1}},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'predictors': 'predictors'},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'predictors': 1},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'predictors': 1.1},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'predictors': True},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'predictors': (0, 1)},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'predictors': [0, 1]},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'predictors': {0, 1}},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'predictors': pd.DataFrame()},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'predictors': None}])
+analysis_predict_distribution_type_error_1 = [{'posteriors': type_to_check,
+                                               'predictors': {'regressor': 1}}
+                                              for type_to_check in types_to_check
+                                              if not isinstance(type_to_check, dict)]
+
+analysis_predict_distribution_type_error_2 = [{'posteriors': {'intercept': type_to_check},
+                                               'predictors': {'regressor': 1}}
+                                              for type_to_check in types_to_check
+                                              if not isinstance(type_to_check, np.ndarray)]
+
+analysis_predict_distribution_type_error_3 = [{'posteriors': {'intercept': np.array([0])},
+                                               'predictors': type_to_check}
+                                              for type_to_check in types_to_check
+                                              if not isinstance(type_to_check, dict)]
+
+@fixture(params = [*analysis_predict_distribution_type_error_1,
+                   *analysis_predict_distribution_type_error_2,
+                   *analysis_predict_distribution_type_error_3])
 def analysis_predict_distribution_type_error(request):
     return request.param
 
@@ -545,6 +481,35 @@ def analysis_predict_distribution_value_error(request):
     return request.param
 
 
+analysis_compute_dic_type_error_1 = [{'model': type_to_check, 'print_summary': False}
+                                     for type_to_check in types_to_check]
+
+analysis_compute_dic_type_error_2 = [{'model': bp.model.LinearModel(),
+                                      'print_summary': False} for type_to_check in types_to_check
+                                     if not isinstance(type_to_check, dict)]
+for args, type_to_check in zip(analysis_compute_dic_type_error_2, types_to_check):
+    if not isinstance(type_to_check, dict):
+        args['model'].data = pd.DataFrame(columns = ['response_variable'], index = [0])
+        args['model'].response_variable = 'response_variable'
+        args['model'].posteriors = type_to_check
+
+analysis_compute_dic_type_error_3 = [{'model': bp.model.LinearModel(),
+                                      'print_summary': False} for type_to_check in types_to_check
+                                     if not isinstance(type_to_check, np.ndarray)]
+for args, type_to_check in zip(analysis_compute_dic_type_error_3, types_to_check):
+    if not isinstance(type_to_check, np.ndarray):
+        args['model'].data = pd.DataFrame(columns = ['response_variable'], index = [0])
+        args['model'].response_variable = 'response_variable'
+        args['model'].posteriors = {'intercept': type_to_check}
+
+analysis_compute_dic_type_error_4 = [{'model': bp.model.LinearModel(),
+                                      'print_summary': type_to_check} for type_to_check in types_to_check
+                                     if not isinstance(type_to_check, bool)]
+for args in analysis_compute_dic_type_error_4:
+    args['model'].data = pd.DataFrame(columns = ['response_variable'], index = [0])
+    args['model'].response_variable = 'response_variable'
+    args['model'].posteriors = {'intercept': np.array([0])}
+
 @fixture(params = [*analysis_compute_dic_type_error_1,
                    *analysis_compute_dic_type_error_2,
                    *analysis_compute_dic_type_error_3,
@@ -553,10 +518,31 @@ def analysis_compute_dic_type_error(request):
     return request.param
 
 
-@fixture(params = [analysis_value_error_posterior_data_empty,
-                   analysis_value_error_posterior_not_in_data,
-                   analysis_value_error_data_empty,
-                   analysis_value_error_response_variable_not_in_data])
+analysis_compute_dic_value_error_value_error_1 = bp.model.LinearModel()
+analysis_compute_dic_value_error_value_error_1.data = pd.DataFrame(columns = ['response_variable'], index = [0])
+analysis_compute_dic_value_error_value_error_1.response_variable = 'response_variable'
+analysis_compute_dic_value_error_value_error_1.posteriors = {'intercept': np.array([])}
+
+analysis_compute_dic_value_error_value_error_2 = bp.model.LinearModel()
+analysis_compute_dic_value_error_value_error_2.data = pd.DataFrame(columns = ['response_variable'], index = [0])
+analysis_compute_dic_value_error_value_error_2.response_variable = 'response_variable'
+analysis_compute_dic_value_error_value_error_2.posteriors = {'intercept': np.array([0]), 'x': np.array([0])}
+
+analysis_compute_dic_value_error_value_error_3 = bp.model.LinearModel()
+analysis_compute_dic_value_error_value_error_3.data = pd.DataFrame(columns = ['not_response_variable'], index = [0])
+analysis_compute_dic_value_error_value_error_3.data.drop(index = [0], inplace = True)
+analysis_compute_dic_value_error_value_error_3.response_variable = 'response_variable'
+analysis_compute_dic_value_error_value_error_3.posteriors = {'intercept': np.array([0])}
+
+analysis_compute_dic_value_error_value_error_4 = bp.model.LinearModel()
+analysis_compute_dic_value_error_value_error_4.data = pd.DataFrame(columns = ['not_response_variable'], index = [0])
+analysis_compute_dic_value_error_value_error_4.response_variable = 'response_variable'
+analysis_compute_dic_value_error_value_error_4.posteriors = {'intercept': np.array([0])}
+
+@fixture(params = [analysis_compute_dic_value_error_value_error_1,
+                   analysis_compute_dic_value_error_value_error_2,
+                   analysis_compute_dic_value_error_value_error_3,
+                   analysis_compute_dic_value_error_value_error_4])
 def analysis_compute_dic_value_error(request):
     return request.param
 
@@ -587,12 +573,18 @@ def solved_model(general_testing_data):
     return model
 
 
-@fixture(params = ['1', 1, 1.1, True, (0, 1), [0, 1], {1, 2}, {0: 1}, None])
+@fixture(params = [type_to_check for type_to_check in types_to_check if not isinstance(type_to_check, np.ndarray)])
 def utils_flatten_matrix_type_error(request):
     return request.param
 
 
-@fixture(params = ['1', 1, 1.1, True, (0, 1), [0, 1], {0, 1}, None, {'a': 'a'}, {'a': 1}, {'a': 1.1}, {'a': True},
-                   {'a': (0, 1)}, {'a': [0, 1]}, {'a': {0, 1}}, {'a': {0: 1}}, {'a': None}])
+utils_matrices_to_frame_type_error_1 = [type_to_check for type_to_check in types_to_check
+                                        if not isinstance(type_to_check, dict)]
+
+utils_matrices_to_frame_type_error_2 = [{'a': type_to_check} for type_to_check in types_to_check
+                                        if not isinstance(type_to_check, np.ndarray)]
+
+@fixture(params = [*utils_matrices_to_frame_type_error_1,
+                   *utils_matrices_to_frame_type_error_2])
 def utils_matrices_to_frame_type_error(request):
     return request.param
