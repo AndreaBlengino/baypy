@@ -95,12 +95,6 @@ class TestAnalysisResidualsPlot:
         with raises(TypeError):
             bp.analysis.residuals_plot(model = analysis_residuals_plot_type_error)
 
-    def test_raises_key_error(self):
-        model = bp.model.LinearModel()
-        model.posteriors = {'variance': np.ndarray([0])}
-        with raises(KeyError):
-            bp.analysis.residuals_plot(model = model)
-
 
     def test_raises_value_error(self, analysis_residuals_plot_value_error):
         with raises(ValueError):
@@ -124,13 +118,6 @@ class TestAnalysisComputeDIC:
         with raises(TypeError):
             bp.analysis.compute_DIC(model = analysis_compute_dic_type_error['model'],
                                     print_summary = analysis_compute_dic_type_error['print_summary'])
-
-
-    def test_raises_key_error(self):
-        model = bp.model.LinearModel()
-        model.posteriors = {'variance': np.ndarray([0])}
-        with raises(KeyError):
-            bp.analysis.compute_DIC(model = model)
 
 
     def test_raises_value_error(self, analysis_compute_dic_value_error):
