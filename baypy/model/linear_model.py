@@ -161,7 +161,7 @@ class LinearModel(Model):
         super(LinearModel, type(self)).priors.fset(self, priors)
 
         if 'variance' not in priors.keys():
-            raise KeyError(f"Parameter 'priors' must contain a 'variance' key")
+            raise KeyError("Parameter 'priors' must contain a 'variance' key")
 
         for prior, values in priors.items():
             if not isinstance(values, dict):
@@ -210,6 +210,10 @@ class LinearModel(Model):
     @posteriors.setter
     def posteriors(self, posteriors: dict) -> None:
         super(LinearModel, type(self)).posteriors.fset(self, posteriors)
+
+        if 'variance' not in posteriors.keys():
+            raise KeyError("Parameter 'posteriors' must contain a 'variance' key")
+
         self.__posteriors = posteriors
 
 
@@ -237,6 +241,17 @@ class LinearModel(Model):
 
 
     def residuals(self) -> pd.DataFrame:
+        assert super().residuals() is None
+
+        if self.__data is None:
+            raise ValueError("Data not available, set data with 'baypy.model.LinearModel.data")
+
+        if self.__response_variable not in self.__data.columns:
+            raise ValueError(f"Column '{self.__response_variable}' not found in 'data'")
+
+        if self.__posteriors is None:
+            raise ValueError("Posteriors not available, run 'baypy.regression.LinearRegression.sample' to generate "
+                             "posteriors")
 
         posterior_means = {posterior: flatten_matrix(posterior_samples).mean()
                            for posterior, posterior_samples in self.__posteriors.items() if posterior != 'variance'}
@@ -278,11 +293,7 @@ class LinearModel(Model):
         --------
         :meth:`baypy.regression.linear_regression.LinearRegression`
         """
-        if not isinstance(predictors, dict):
-            raise TypeError("Parameter 'predictors' must be a dictionary")
-
-        if len(predictors) == 0:
-            raise ValueError("Parameter 'predictors' cannot be an empty dictionary")
+        super().predict_distribution(predictors = predictors)
 
         for regressor in predictors.keys():
             if regressor not in self.__posteriors.keys():
@@ -296,7 +307,31 @@ class LinearModel(Model):
                         size = len(prediction))
 
 
-    def compute_model_parameters_at_posterior_means(self) -> pd.DataFrame:
+    def likelihood(self, data: pd.DataFrame) -> np.ndarray:
+        super().likelihood(data = data)
+
+        for col in [self.__response_variable, 'mean', 'variance']:
+            if col not in data.columns:
+                raise ValueError(f"Column '{col}' not found in 'data'")
+
+        return norm.pdf(x = data[self.__response_variable],
+                        loc = data['mean'],
+                        scale = np.sqrt(data['variance']))
+
+
+    def log_likelihood(self, data: pd.DataFrame) -> np.ndarray:
+        super().log_likelihood(data = data)
+
+        for col in [self.__response_variable, 'mean', 'variance']:
+            if col not in data.columns:
+                raise ValueError(f"Column '{col}' not found in 'data'")
+
+        return norm.logpdf(x = data[self.__response_variable],
+                           loc = data['mean'],
+                           scale = np.sqrt(data['variance']))
+
+
+    def _compute_model_parameters_at_posterior_means(self) -> pd.DataFrame:
 
         posterior_means = {posterior: flatten_matrix(posterior_samples).mean()
                            for posterior, posterior_samples in self.__posteriors.items() if posterior != 'variance'}
@@ -309,7 +344,7 @@ class LinearModel(Model):
         return data
 
 
-    def compute_model_parameters_at_observation(self, i: int):
+    def _compute_model_parameters_at_observation(self, i: int):
 
         posterior_means = {posterior: posterior_samples[i, :].mean()
                            for posterior, posterior_samples in self.__posteriors.items() if posterior != 'variance'}
@@ -320,17 +355,3 @@ class LinearModel(Model):
         data['variance'] = self.__posteriors['variance'][i, :].mean()
 
         return data
-
-
-    def likelihood(self, data: pd.DataFrame) -> np.ndarray:
-
-        return norm.pdf(x = data[self.__response_variable],
-                        loc = data['mean'],
-                        scale = np.sqrt(data['variance']))
-
-
-    def log_likelihood(self, data: pd.DataFrame) -> np.ndarray:
-
-        return norm.logpdf(x = data[self.__response_variable],
-                           loc = data['mean'],
-                           scale = np.sqrt(data['variance']))

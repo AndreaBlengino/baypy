@@ -34,13 +34,13 @@ def trace_plot(posteriors: dict) -> None:
     :meth:`baypy.regression.linear_regression.LinearRegression`
     """
     if not isinstance(posteriors, dict):
-        raise TypeError(f"Parameter 'posteriors' must be a dictionary")
+        raise TypeError("Parameter 'posteriors' must be a dictionary")
 
     if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
         raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
 
     if 'intercept' not in posteriors.keys():
-        raise KeyError(f"Parameter 'posteriors' must contain a 'intercept' key")
+        raise KeyError("Parameter 'posteriors' must contain a 'intercept' key")
 
     for posterior, posterior_samples in posteriors.items():
         if posterior_samples.size == 0:
@@ -131,7 +131,7 @@ def summary(posteriors: dict, alpha: float = 0.05, quantiles: list = None, print
     :meth:`baypy.regression.linear_regression.LinearRegression`
     """
     if not isinstance(posteriors, dict):
-        raise TypeError(f"Parameter 'posteriors' must be a dictionary")
+        raise TypeError("Parameter 'posteriors' must be a dictionary")
 
     if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
         raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
@@ -140,7 +140,7 @@ def summary(posteriors: dict, alpha: float = 0.05, quantiles: list = None, print
         raise TypeError("Parameter 'print_summary' must be a boolean")
 
     if 'intercept' not in posteriors.keys():
-        raise KeyError(f"Parameter 'posteriors' must contain a 'intercept' key")
+        raise KeyError("Parameter 'posteriors' must contain a 'intercept' key")
 
     for posterior, posterior_samples in posteriors.items():
         if posterior_samples.size == 0:
@@ -261,18 +261,10 @@ def residuals_plot(model: Model) -> None:
     if not isinstance(model, Model):
         raise TypeError(f"Parameter 'model' must be an instance of '{Model.__module__}.{Model.__name__}'")
 
-    if not isinstance(model.posteriors, dict):
-        raise TypeError(f"Parameter 'model.posteriors' must be a dictionary")
-
-    if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in model.posteriors.values()]):
-        raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
-
-    if 'intercept' not in model.posteriors.keys():
-        raise KeyError(f"Parameter 'model.posteriors' must contain a 'intercept' key")
+    if model.posteriors is None:
+        raise ValueError("Posteriors not available, run 'baypy.regression.Regression.sample' to generate posteriors")
 
     for posterior, posterior_samples in model.posteriors.items():
-        if posterior_samples.size == 0:
-            raise ValueError(f"Posterior '{posterior}' data is empty")
         if (posterior not in ['intercept', 'variance']) and (posterior not in model.data.columns):
             raise ValueError(f"Column '{posterior}' not found in 'model.data'")
 
@@ -394,21 +386,13 @@ def compute_DIC(model: Model, print_summary: bool = True) -> dict:
     if not isinstance(model, Model):
         raise TypeError(f"Parameter 'model' must be an instance of '{Model.__module__}.{Model.__name__}'")
 
-    if not isinstance(model.posteriors, dict):
-        raise TypeError(f"Parameter 'model.posteriors' must be a dictionary")
-
-    if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in model.posteriors.values()]):
-        raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
+    if model.posteriors is None:
+        raise ValueError("Posteriors not available, run 'baypy.regression.Regression.sample' to generate posteriors")
 
     if not isinstance(print_summary, bool):
         raise TypeError("Parameter 'print_summary' must be a boolean")
 
-    if 'intercept' not in model.posteriors.keys():
-        raise KeyError(f"Parameter 'model.posteriors' must contain a 'intercept' key")
-
     for posterior, posterior_samples in model.posteriors.items():
-        if posterior_samples.size == 0:
-            raise ValueError(f"Posterior '{posterior}' data is empty")
         if (posterior not in ['intercept', 'variance']) and (posterior not in model.data.columns):
             raise ValueError(f"Column '{posterior}' not found in 'model.data'")
 
@@ -436,18 +420,16 @@ def compute_DIC(model: Model, print_summary: bool = True) -> dict:
 
 
 def _compute_deviance_at_posterior_means(model: Model) -> float:
-
-    data = model.compute_model_parameters_at_posterior_means()
+    data = model._compute_model_parameters_at_posterior_means()
     likelihood = model.likelihood(data = data)
 
     return -2*np.sum(np.log(likelihood))
 
 
 def _compute_posterior_mean_deviance(model: Model) -> float:
-
     deviance = []
     for i in range(model.posteriors['intercept'].shape[0]):
-        data = model.compute_model_parameters_at_observation(i)
+        data = model._compute_model_parameters_at_observation(i)
         likelihood = model.likelihood(data = data)
         deviance.append(-2*np.sum(np.log(likelihood)))
 

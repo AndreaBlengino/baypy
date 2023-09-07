@@ -37,13 +37,13 @@ def autocorrelation_plot(posteriors: dict, max_lags: int = 30) -> None:
     :meth:`baypy.diagnostics.functions.effective_sample_size`
     """
     if not isinstance(posteriors, dict):
-        raise TypeError(f"Parameter 'posteriors' must be a dictionary")
+        raise TypeError("Parameter 'posteriors' must be a dictionary")
 
     if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
         raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
 
     if 'intercept' not in posteriors.keys():
-        raise KeyError(f"Parameter 'posteriors' must contain a 'intercept' key")
+        raise KeyError("Parameter 'posteriors' must contain a 'intercept' key")
 
     for posterior, posterior_samples in posteriors.items():
         if posterior_samples.size == 0:
@@ -151,7 +151,7 @@ def autocorrelation_summary(posteriors: dict, lags: list = None, print_summary: 
     each chain.
     """
     if not isinstance(posteriors, dict):
-        raise TypeError(f"Parameter 'posteriors' must be a dictionary")
+        raise TypeError("Parameter 'posteriors' must be a dictionary")
 
     if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
         raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
@@ -160,7 +160,7 @@ def autocorrelation_summary(posteriors: dict, lags: list = None, print_summary: 
         raise TypeError("Parameter 'print_summary' must be a boolean")
 
     if 'intercept' not in posteriors.keys():
-        raise KeyError(f"Parameter 'posteriors' must contain a 'intercept' key")
+        raise KeyError("Parameter 'posteriors' must contain a 'intercept' key")
 
     for posterior, posterior_samples in posteriors.items():
         if posterior_samples.size == 0:
@@ -238,7 +238,7 @@ def effective_sample_size(posteriors: dict, print_summary: bool = True) -> pd.Da
     effective sample size of the posterior.
     """
     if not isinstance(posteriors, dict):
-        raise TypeError(f"Parameter 'posteriors' must be a dictionary")
+        raise TypeError("Parameter 'posteriors' must be a dictionary")
 
     if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
         raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
@@ -247,7 +247,7 @@ def effective_sample_size(posteriors: dict, print_summary: bool = True) -> pd.Da
         raise TypeError("Parameter 'print_summary' must be a boolean")
 
     if 'intercept' not in posteriors.keys():
-        raise KeyError(f"Parameter 'posteriors' must contain a 'intercept' key")
+        raise KeyError("Parameter 'posteriors' must contain a 'intercept' key")
 
     for posterior, posterior_samples in posteriors.items():
         if posterior_samples.size == 0:

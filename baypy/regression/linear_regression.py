@@ -126,7 +126,7 @@ class LinearRegression(Regression):
         Xt_y = np.dot(X.transpose(), y)[np.newaxis].transpose()
         Sigma_0_inv_Beta_0 = np.dot(Sigma_0_inv, Beta_0)
 
-        self.model.posteriors = {variable: [[] for _ in range(n_chains)] for variable in self.model.variable_names}
+        posteriors = {variable: [[] for _ in range(n_chains)] for variable in self.model.variable_names}
 
         if seed is not None:
             np.random.seed(seed)
@@ -138,9 +138,9 @@ class LinearRegression(Regression):
 
         for i in range(burn_in_iterations + n_iterations + 1):
             for k in range(n_chains):
-                [self.model.posteriors[regressor][k].append(beta[k][j])
+                [posteriors[regressor][k].append(beta[k][j])
                  for j, regressor in enumerate(regressor_names, 0)]
-                self.model.posteriors['variance'][k].append(sigma2[k])
+                posteriors['variance'][k].append(sigma2[k])
 
             beta = [sample_beta(Xt_X = Xt_X,
                                 Xt_y = Xt_y,
@@ -155,4 +155,4 @@ class LinearRegression(Regression):
                                     theta_0 = theta_0) for k in range(n_chains)]
 
         self.model.posteriors = {posterior: np.array(posterior_samples).transpose()[burn_in_iterations + 1:, :]
-                                 for posterior, posterior_samples in self.model.posteriors.items()}
+                                 for posterior, posterior_samples in posteriors.items()}
