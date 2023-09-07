@@ -28,19 +28,19 @@ model_1.priors = {'intercept': {'mean': 0, 'variance': 1e6},
                   'variance': {'shape': 1, 'scale': 1e-6}}
 
 regression_1 = bp.regression.LinearRegression(model = model_1)
-posteriors_1 = regression_1.sample(n_iterations = 500, burn_in_iterations = 50, n_chains = 3, seed = 137)
+regression_1.sample(n_iterations = 500, burn_in_iterations = 50, n_chains = 3, seed = 137)
 
 
-bp.diagnostics.effective_sample_size(posteriors = posteriors_1)
-bp.diagnostics.autocorrelation_summary(posteriors = posteriors_1)
-bp.diagnostics.autocorrelation_plot(posteriors = posteriors_1)
+bp.diagnostics.effective_sample_size(posteriors = model_1.posteriors)
+bp.diagnostics.autocorrelation_summary(posteriors = model_1.posteriors)
+bp.diagnostics.autocorrelation_plot(posteriors = model_1.posteriors)
 
-bp.analysis.trace_plot(posteriors = posteriors_1)
-bp.analysis.residuals_plot(posteriors = posteriors_1, data = data, response_variable = 'Sales')
+bp.analysis.trace_plot(posteriors = model_1.posteriors)
+bp.analysis.residuals_plot(model = model_1)
 
 
 posteriors_data = pd.DataFrame()
-for posterior, posterior_sample in posteriors_1.items():
+for posterior, posterior_sample in model_1.posteriors.items():
     posteriors_data[posterior] = np.asarray(posterior_sample).reshape(-1)
 posteriors_data['error 1'] = np.random.normal(loc = 0, scale = np.sqrt(posteriors_data['variance']), size = len(posteriors_data))
 
@@ -86,20 +86,20 @@ model_2.priors = {'intercept': {'mean': 0, 'variance': 1e6},
                   'variance': {'shape': 1, 'scale': 1e-6}}
 
 regression_2 = bp.regression.LinearRegression(model = model_2)
-posteriors_2 = regression_2.sample(n_iterations = 500, burn_in_iterations = 50, n_chains = 3, seed = 137)
+regression_2.sample(n_iterations = 500, burn_in_iterations = 50, n_chains = 3, seed = 137)
 
 
-bp.diagnostics.effective_sample_size(posteriors = posteriors_2)
-bp.diagnostics.autocorrelation_summary(posteriors = posteriors_2)
-bp.diagnostics.autocorrelation_plot(posteriors = posteriors_2)
+bp.diagnostics.effective_sample_size(posteriors = model_2.posteriors)
+bp.diagnostics.autocorrelation_summary(posteriors = model_2.posteriors)
+bp.diagnostics.autocorrelation_plot(posteriors = model_2.posteriors)
 
-bp.analysis.trace_plot(posteriors = posteriors_2)
-bp.analysis.residuals_plot(posteriors = posteriors_2, data = data, response_variable = 'log Sales')
-bp.analysis.summary(posteriors = posteriors_2)
+bp.analysis.trace_plot(posteriors = model_2.posteriors)
+bp.analysis.residuals_plot(model = model_2)
+bp.analysis.summary(posteriors = model_2.posteriors)
 
 
 posteriors_data = pd.DataFrame()
-for posterior, posterior_sample in posteriors_2.items():
+for posterior, posterior_sample in model_2.posteriors.items():
     posteriors_data[posterior] = np.asarray(posterior_sample).reshape(-1)
 posteriors_data['error 2'] = np.random.normal(loc = 0, scale = np.sqrt(posteriors_data['variance']), size = len(posteriors_data))
 
@@ -140,5 +140,5 @@ plt.tight_layout()
 plt.show()
 
 
-bp.analysis.compute_DIC(posteriors = posteriors_1, data = data, response_variable = 'Sales')
-bp.analysis.compute_DIC(posteriors = posteriors_2, data = data, response_variable = 'log Sales')
+bp.analysis.compute_DIC(model = model_1)
+bp.analysis.compute_DIC(model = model_2)

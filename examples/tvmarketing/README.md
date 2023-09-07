@@ -56,8 +56,8 @@ each chain and discarding the first 50 burn-in draws:
 
 ```python
 regression_1 = bp.regression.LinearRegression(model = model_1)
-posteriors_1 = regression_1.sample(n_iterations = 500, burn_in_iterations = 50, 
-                                   n_chains = 3, seed = 137)
+regression_1.sample(n_iterations = 500, burn_in_iterations = 50, 
+                    n_chains = 3, seed = 137)
 ```
 
 ### Convergence Diagnostics
@@ -65,7 +65,7 @@ posteriors_1 = regression_1.sample(n_iterations = 500, burn_in_iterations = 50,
 Asses the model convergence diagnostics:
 
 ```python
-bp.diagnostics.effective_sample_size(posteriors = posteriors_1)
+bp.diagnostics.effective_sample_size(posteriors = model_1.posteriors)
 ```
 ```
                        intercept       TV  variance
@@ -73,7 +73,7 @@ Effective Sample Size    1371.51  1280.94   1428.17
 ```
 
 ```python
-bp.diagnostics.autocorrelaion_summary(posteriors = posteriors_1)
+bp.diagnostics.autocorrelaion_summary(posteriors = model_1.posteriors)
 ```
 ```
         intercept        TV  variance
@@ -85,7 +85,7 @@ Lag 30  -0.028900 -0.023383  0.032368
 ```
 
 ```python
-bp.diagnostics.autocorrelation_plot(posteriors = posteriors_1)
+bp.diagnostics.autocorrelation_plot(posteriors = model_1.posteriors)
 ```
 
 <p align="center">
@@ -100,7 +100,7 @@ converged to the stationary distribution.
 Asses posterior analysis:
 
 ```python
-bp.analysis.trace_plot(posteriors = posteriors_1)
+bp.analysis.trace_plot(posteriors = model_1.posteriors)
 ```
 
 <p align="center">
@@ -108,7 +108,7 @@ bp.analysis.trace_plot(posteriors = posteriors_1)
 </p>
 
 ```python
-bp.analysis.residuals_plot(posteriors = posteriors_1, data = data, response_variable = 'Sales')
+bp.analysis.residuals_plot(model = model_1)
 ```
 
 <p align="center">
@@ -125,7 +125,7 @@ Comparing data to fitted model posteriors:
 import numpy as np
 
 posteriors_data = pd.DataFrame()
-for posterior, posterior_sample in posteriors_1.items():
+for posterior, posterior_sample in model_1.posteriors.items():
     posteriors_data[posterior] = np.asarray(posterior_sample).reshape(-1)
 posteriors_data['error 1'] = np.random.normal(loc = 0, scale = np.sqrt(posteriors_data['variance']), size = len(posteriors_data))
 
@@ -207,8 +207,8 @@ each chain and discarding the first 50 burn-in draws:
 
 ```python
 regression_2 = bp.regression.LinearRegression(model = model_2)
-posteriors_2 = regression_2.sample(n_iterations = 500, burn_in_iterations = 50, 
-                                   n_chains = 3, seed = 137)
+regression_2.sample(n_iterations = 500, burn_in_iterations = 50, 
+                    n_chains = 3, seed = 137)
 ```
 
 ### Convergence Diagnostics
@@ -216,7 +216,7 @@ posteriors_2 = regression_2.sample(n_iterations = 500, burn_in_iterations = 50,
 Asses the model convergence diagnostics:
 
 ```python
-bp.diagnostics.effective_sample_size(posteriors = posteriors_2)
+bp.diagnostics.effective_sample_size(posteriors = model_2.posteriors)
 ```
 ```
                        intercept   log TV  variance
@@ -224,7 +224,7 @@ Effective Sample Size    1373.29  1321.11   1428.17
 ```
 
 ```python
-bp.diagnostics.autocorrelation_summary(posteriors = posteriors_2)
+bp.diagnostics.autocorrelation_summary(posteriors = model_2.posteriors)
 ```
 ```
         intercept    log TV  variance
@@ -236,7 +236,7 @@ Lag 30  -0.028748 -0.030245  0.032368
 ```
 
 ```python
-bp.diagnostics.autocorrelation_plot(posteriors = posteriors_2)
+bp.diagnostics.autocorrelation_plot(posteriors = model_2.posteriors)
 ```
 
 <p align="center">
@@ -251,7 +251,7 @@ converged to the stationary distribution.
 Asses posterior analysis:
 
 ```python
-bp.analysis.trace_plot(posteriors = posteriors_2)
+bp.analysis.trace_plot(posteriors = model_2.posteriors)
 ```
 
 <p align="center">
@@ -259,7 +259,7 @@ bp.analysis.trace_plot(posteriors = posteriors_2)
 </p>
 
 ```python
-bp.analysis.residuals_plot(posteriors = posteriors_2, data = data, response_variable = 'log Sales')
+bp.analysis.residuals_plot(model = model_2)
 ```
 
 <p align="center">
@@ -273,7 +273,7 @@ data are concentrated toward high values of *TV*. The slight growing
 pattern is partially caused by this data heterogeneity. 
 
 ```python
-bp.analysis.summary(posteriors = posteriors_2)
+bp.analysis.summary(posteriors = model_2.posteriors)
 ```
 ```
 Number of chains:           3
@@ -301,7 +301,7 @@ Comparing data to fitted model posteriors:
 
 ```python
 posteriors_data = pd.DataFrame()
-for posterior, posterior_sample in posteriors_2.items():
+for posterior, posterior_sample in model_2.posteriors.items():
     posteriors_data[posterior] = np.asarray(posterior_sample).reshape(-1)
 posteriors_data['error 2'] = np.random.normal(loc = 0, scale = np.sqrt(posteriors_data['variance']), size = len(posteriors_data))
 
@@ -356,22 +356,22 @@ the data and take into account data dispersion.
 For completeness, compare the two models using the *DIC*:
 
 ```python
-bp.analysis.compute_DIC(posteriors = posteriors_1, data = data, response_variable = 'Sales')
+bp.analysis.compute_DIC(model = model_1)
 ```
 ```
-Deviance at posterior means           646.21
-Posterior mean deviance               644.42
-Effective number of parameteres        -1.79
-Deviace Information Criterion         642.63
+Deviance at posterior means          1038.13
+Posterior mean deviance              1039.18
+Effective number of parameteres         1.05
+Deviace Information Criterion        1040.23
 ```
 ```python
-bp.analysis.compute_DIC(posteriors = posteriors_2, data = data, response_variable = 'log Sales')
+bp.analysis.compute_DIC(model = model_2)
 ```
 ```
-Deviance at posterior means          -448.84
-Posterior mean deviance              -450.63
-Effective number of parameteres        -1.79
-Deviace Information Criterion        -452.42
+Deviance at posterior means           -56.87
+Posterior mean deviance               -55.82
+Effective number of parameteres         1.05
+Deviace Information Criterion         -54.77
 ```
 
 *DIC* is lower for the alternative model, indicating a preference for 

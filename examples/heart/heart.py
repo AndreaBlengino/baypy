@@ -15,13 +15,13 @@ model.priors = {'intercept': {'mean': 0, 'variance': 1e6},
                 'variance': {'shape': 1, 'scale': 1e-9}}
 
 regression = bp.regression.LinearRegression(model = model)
-posteriors = regression.sample(n_iterations = 500, burn_in_iterations = 50, n_chains = 3, seed = 137)
+regression.sample(n_iterations = 500, burn_in_iterations = 50, n_chains = 3, seed = 137)
 
 
-bp.diagnostics.effective_sample_size(posteriors = posteriors)
-bp.diagnostics.autocorrelation_summary(posteriors = posteriors)
-bp.diagnostics.autocorrelation_plot(posteriors = posteriors)
+bp.diagnostics.effective_sample_size(posteriors = model.posteriors)
+bp.diagnostics.autocorrelation_summary(posteriors = model.posteriors)
+bp.diagnostics.autocorrelation_plot(posteriors = model.posteriors)
 
-bp.analysis.trace_plot(posteriors = posteriors)
-bp.analysis.residuals_plot(posteriors = posteriors, data = data, response_variable = 'heart disease')
-bp.analysis.summary(posteriors = posteriors)
+bp.analysis.trace_plot(posteriors = model.posteriors)
+bp.analysis.residuals_plot(model = model)
+bp.analysis.summary(posteriors = model.posteriors)

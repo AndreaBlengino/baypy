@@ -73,8 +73,8 @@ each chain and discarding the first 50 burn-in draws:
 
 ```python
 regression = bp.regression.LinearRegression(model = model)
-posteriors = regression.sample(n_iterations = 1000, burn_in_iterations = 50, 
-                              n_chains = 3, seed = 137)
+regression.sample(n_iterations = 1000, burn_in_iterations = 50, 
+                  n_chains = 3, seed = 137)
 ```
 
 ### Convergence Diagnostics
@@ -82,7 +82,7 @@ posteriors = regression.sample(n_iterations = 1000, burn_in_iterations = 50,
 Asses the model convergence diagnostics:
 
 ```python
-bp.diagnostics.effective_sample_size(posteriors = posteriors)
+bp.diagnostics.effective_sample_size(posteriors = model.posteriors)
 ```
 ```
                        intercept  cylinders  log weight  acceleration  model year  variance
@@ -90,7 +90,7 @@ Effective Sample Size    2873.12    2754.12     2685.45       2510.45     2338.3
 ```
 
 ```python
-bp.diagnostics.autocorrelation_summary(posteriors = posteriors)
+bp.diagnostics.autocorrelation_summary(posteriors = model.posteriors)
 ```
 ```
         intercept  cylinders  log weight  acceleration  model year  variance
@@ -102,7 +102,7 @@ Lag 30  -0.023641  -0.010533   -0.026705      0.005014    0.002749  0.021754
 ```
 
 ```python
-bp.diagnostics.autocorrelation_plot(posteriors = posteriors)
+bp.diagnostics.autocorrelation_plot(posteriors = model.posteriors)
 ```
 
 <p align="center">
@@ -117,7 +117,7 @@ converged to the stationary distribution.
 Asses posterior analysis:
 
 ```python
-bp.analysis.trace_plot(posteriors = posteriors)
+bp.analysis.trace_plot(posteriors = model.posteriors)
 ```
 
 <p align="center">
@@ -127,7 +127,7 @@ bp.analysis.trace_plot(posteriors = posteriors)
 Traces are good, incidating draws from the stationary distribution.
 
 ```python
-bp.analysis.residuals_plot(posteriors = posteriors, data = data, response_variable = 'y')
+bp.analysis.residuals_plot(model = model)
 ```
 
 <p align="center">
@@ -138,7 +138,7 @@ Also the residuals plot is good: no evidence for patterns, shapes or
 outliers.
 
 ```python
-bp.analysis.summary(posteriors = posteriors)
+bp.analysis.summary(posteriors = model.posteriors)
 ```
 ```
 Number of chains:           3

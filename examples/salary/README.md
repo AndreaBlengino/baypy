@@ -33,8 +33,8 @@ each chain and discarding the first 50 burn-in draws:
 
 ```python
 regression = bp.regression.LinearRegression(model = model)
-posteriors = regression.sample(n_iterations = 5000, burn_in_iterations = 50, 
-                              n_chains = 3, seed = 137)
+regression.sample(n_iterations = 5000, burn_in_iterations = 50, 
+                  n_chains = 3, seed = 137)
 ```
 
 ### Convergence Diagnostics
@@ -42,7 +42,7 @@ posteriors = regression.sample(n_iterations = 5000, burn_in_iterations = 50,
 Asses the model convergence diagnostics:
 
 ```python
-bp.diagnostics.effective_sample_size(posteriors = posteriors)
+bp.diagnostics.effective_sample_size(posteriors = model.posteriors)
 ```
 ```
                        intercept  YearsExperience  variance
@@ -50,7 +50,7 @@ Effective Sample Size   14757.25         14718.82  12692.31
 ```
 
 ```python
-bp.diagnostics.autocorrelation_summary(posteriors = posteriors)
+bp.diagnostics.autocorrelation_summary(posteriors = model.posteriors)
 ```
 ```
         intercept  YearsExperience  variance
@@ -62,7 +62,7 @@ Lag 30  -0.000465        -0.002819  0.000682
 ```
 
 ```python
-bp.diagnostics.autocorrelation_plot(posteriors = posteriors)
+bp.diagnostics.autocorrelation_plot(posteriors = model.posteriors)
 ```
 
 <p align="center">
@@ -77,7 +77,7 @@ converged to the stationary distribution.
 Asses posterior analysis:
 
 ```python
-bp.analysis.trace_plot(posteriors = posteriors)
+bp.analysis.trace_plot(posteriors = model.posteriors)
 ```
 
 <p align="center">
@@ -87,7 +87,7 @@ bp.analysis.trace_plot(posteriors = posteriors)
 Traces are good, incidating draws from the stationary distribution.
 
 ```python
-bp.analysis.residuals_plot(posteriors = posteriors, data = data, response_variable = 'y')
+bp.analysis.residuals_plot(model = model)
 ```
 
 <p align="center">
@@ -98,7 +98,7 @@ Also the residuals plot is good: no evidence for patterns, shapes or
 outliers.
 
 ```python
-bp.analysis.summary(posteriors = posteriors)
+bp.analysis.summary(posteriors = model.posteriors)
 ```
 ```
 Number of chains:           3
@@ -129,7 +129,7 @@ experience, so the predictor is `YearsExperience = 5`:
 import matplotlib.pyplot as plt
 import numpy as np
 
-distribution = bp.analysis.predict_distribution(posteriors = posteriors, predictors = {'YearsExperience': 5})
+distribution = model.predict_distribution(predictors = {'YearsExperience': 5})
 
 fig_2, ax_2 = plt.subplots()
 
@@ -152,7 +152,7 @@ Comparing data to fitted model posteriors:
 
 ```python
 posteriors_data = pd.DataFrame()
-for posterior, posterior_sample in posteriors.items():
+for posterior, posterior_sample in model.posteriors.items():
     posteriors_data[posterior] = np.asarray(posterior_sample).reshape(-1)
 posteriors_data['error'] = np.random.normal(loc = 0, scale = np.sqrt(posteriors_data['variance']), size = len(posteriors_data))
 

@@ -37,8 +37,8 @@ each chain and discarding the first 50 burn-in draws:
 
 ```python
 regression = bp.regression.LinearRegression(model = model)
-posteriors = regression.sample(n_iterations = 500, burn_in_iterations = 50, 
-                               n_chains = 3, seed = 137)
+regression.sample(n_iterations = 500, burn_in_iterations = 50, 
+                  n_chains = 3, seed = 137)
 ```
 
 ### Convergence Diagnostics
@@ -46,26 +46,26 @@ posteriors = regression.sample(n_iterations = 500, burn_in_iterations = 50,
 Asses the model convergence diagnostics:
 
 ```python
-bp.diagnostics.effective_sample_size(posteriors = posteriors)
+bp.diagnostics.effective_sample_size(posteriors = model.posteriors)
 ```
 ```
-                       intercept  biking  smoking  variance
-Effective Sample Size    1456.14  1357.8  1242.45   1182.23
+                       intercept   biking  smoking  variance
+Effective Sample Size    1389.56  1449.73  1362.26   1426.75
 ```
 ```python
-bp.diagnostics.autocorrelation_summary(posteriors = posteriors)
+bp.diagnostics.autocorrelation_summary(posteriors = model.posteriors)
 ```
 ```
         intercept    biking   smoking  variance
 Lag 0    1.000000  1.000000  1.000000  1.000000
-Lag 1   -0.035702 -0.030386 -0.005538  0.029446
-Lag 5   -0.002354  0.004302  0.038233  0.000475
-Lag 10   0.003016 -0.013481  0.016623  0.004290
-Lag 30   0.030952  0.002635  0.043764 -0.010863
+Lag 1   -0.025015 -0.021166  0.009275 -0.021082
+Lag 5    0.027681 -0.007564  0.046201  0.030989
+Lag 10   0.015334  0.014290  0.043676 -0.057992
+Lag 30  -0.041058 -0.008922 -0.013752 -0.040056
 ```
 
 ```python
-bp.diagnostics.autocorrelation_plot(posteriors = posteriors)
+bp.diagnostics.autocorrelation_plot(posteriors = model.posteriors)
 ```
 
 <p align="center">
@@ -80,7 +80,7 @@ converged to the stationary distribution.
 Asses posterior analysis:
 
 ```python
-bp.analysis.trace_plot(posteriors = posteriors)
+bp.analysis.trace_plot(posteriors = model.posteriors)
 ```
 
 <p align="center">
@@ -91,7 +91,7 @@ Traces are quite good, incidating draws from the stationary
 distribution.
 
 ```python
-bp.analysis.residuals_plot(posteriors = posteriors, data = data, response_variable = 'y')
+bp.analysis.residuals_plot(model = model)
 ```
 
 <p align="center">
@@ -102,7 +102,7 @@ Also the residuals plot is good: no evidence for patterns, shapes or
 outliers.
 
 ```python
-bp.analysis.summary(posteriors = posteriors)
+bp.analysis.summary(posteriors = model.posteriors)
 ```
 ```
 Number of chains:           3
@@ -111,18 +111,18 @@ Sample size per chian:    500
 Empirical mean, standard deviation, 95% HPD interval for each variable:
 
                 Mean        SD    HPD min    HPD max
-intercept  14.985846  0.079870  14.828688  15.143414
-biking     -0.200165  0.001396  -0.203008  -0.197700
-smoking     0.178305  0.003526   0.170718   0.184603
-variance    0.428741  0.027626   0.379180   0.481603
+intercept  14.985169  0.079494  14.811145  15.126328
+biking     -0.200122  0.001387  -0.203015  -0.197531
+smoking     0.178261  0.003535   0.171384   0.185280
+variance    0.427870  0.027745   0.374502   0.480325
 
 Quantiles for each variable:
 
                 2.5%        25%        50%        75%      97.5%
-intercept  14.831346  14.932129  14.984797  15.040651  15.148851
-biking     -0.202870  -0.201129  -0.200194  -0.199177  -0.197511
-smoking     0.171375   0.175875   0.178331   0.180618   0.185389
-variance    0.381039   0.409852   0.427476   0.445582   0.486702
+intercept  14.822835  14.933689  14.986087  15.039621  15.141583
+biking     -0.202909  -0.201028  -0.200086  -0.199219  -0.197334
+smoking     0.171140   0.175893   0.178261   0.180621   0.185169
+variance    0.380265   0.408345   0.426025   0.446627   0.488800
 ```
 
 The summary reports a statistical evidence for:

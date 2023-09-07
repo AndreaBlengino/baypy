@@ -79,8 +79,8 @@ each chain and discarding the first 50 burn-in draws:
 
 ```python
 regression = bp.regression.LinearRegression(model = model)
-posteriors = regression.sample(n_iterations = 1000, burn_in_iterations = 50, 
-                              n_chains = 3, seed = 137)
+regression.sample(n_iterations = 1000, burn_in_iterations = 50, 
+                  n_chains = 3, seed = 137)
 ```
 
 ### Convergence Diagnostics
@@ -88,7 +88,7 @@ posteriors = regression.sample(n_iterations = 1000, burn_in_iterations = 50,
 Asses the model convergence diagnostics:
 
 ```python
-bp.diagnostics.effective_sample_size(posteriors = posteriors)
+bp.diagnostics.effective_sample_size(posteriors = model.posteriors)
 ```
 ```
                        intercept  transaction date  house age  log MRT station distance  stores number  latitude  longitude  variance
@@ -96,7 +96,7 @@ Effective Sample Size    2767.17           2833.16    2548.86                   
 ```
 
 ```python
-bp.diagnostics.autocorrelation_summary(posteriors = posteriors)
+bp.diagnostics.autocorrelation_summary(posteriors = model.posteriors)
 ```
 ```
         intercept  transaction date  house age  log MRT station distance  stores number  latitude  longitude  variance
@@ -108,7 +108,7 @@ Lag 30  -0.000886          0.031398  -0.030163                 -0.027021       0
 ```
 
 ```python
-bp.diagnostics.autocorrelation_plot(posteriors = posteriors)
+bp.diagnostics.autocorrelation_plot(posteriors = model.posteriors)
 ```
 
 <p align="center">
@@ -123,7 +123,7 @@ converged to the stationary distribution.
 Asses posterior analysis:
 
 ```python
-bp.analysis.trace_plot(posteriors = posteriors)
+bp.analysis.trace_plot(posteriors = model.posteriors)
 ```
 
 <p align="center">
@@ -133,7 +133,7 @@ bp.analysis.trace_plot(posteriors = posteriors)
 Traces are good, incidating draws from the stationary distribution.
 
 ```python
-bp.analysis.residuals_plot(posteriors = posteriors, data = data, response_variable = 'y')
+bp.analysis.residuals_plot(model = model)
 ```
 
 <p align="center">
@@ -144,7 +144,7 @@ Also the residuals plot is good: no evidence for patterns, shapes or
 outliers.
 
 ```python
-bp.analysis.summary(posteriors = posteriors)
+bp.analysis.summary(posteriors = model.posteriors)
 ```
 ```
 Number of chains:           3
