@@ -231,10 +231,8 @@ def residuals_plot(model: Model) -> None:
     ------
     TypeError
         - If ``model`` is not a ``baypy.model.model.Model``,
-        - ff ``model.posteriors`` is not a ``dict``,
-        - if a posterior sample is not a ``numpy.ndarray``,
-        - if ``model.data`` is not an instance of ``pandas.DataFrame``,
-        - if ``model.response_variable`` is not a ``str``.
+        - if ``model.posteriors`` is not a ``dict``,
+        - if a posterior sample is not a ``numpy.ndarray``.
     KeyError
         If ``model.posteriors`` does not contain ``intercept``  key.
     ValueError
@@ -277,12 +275,6 @@ def residuals_plot(model: Model) -> None:
             raise ValueError(f"Posterior '{posterior}' data is empty")
         if (posterior not in ['intercept', 'variance']) and (posterior not in model.data.columns):
             raise ValueError(f"Column '{posterior}' not found in 'model.data'")
-
-    if not isinstance(model.data, pd.DataFrame):
-        raise TypeError("Parameter 'model.data' must be an instance of 'pandas.DataFrame'")
-
-    if not isinstance(model.response_variable, str):
-        raise TypeError("Parameter 'model.response_variable' must be a string")
 
     if model.data.empty:
         raise ValueError("Parameter 'model.data' cannot be an empty 'pandas.DataFrame'")
@@ -332,8 +324,6 @@ def compute_DIC(model: Model, print_summary: bool = True) -> dict:
         - If ``model`` is not a ``baypy.model.model.Model``,
         - if ``model.posteriors`` is not a ``dict``,
         - if a posterior sample is not a ``numpy.ndarray``,
-        - if ``model.data`` is not an instance of ``pandas.DataFrame``,
-        - if ``model.response_variable`` is not a ``str``,
         - if ``print_summary`` is not a ``bool``.
     KeyError
         If ``model.posteriors`` does not contain ``intercept`` key.
@@ -421,12 +411,6 @@ def compute_DIC(model: Model, print_summary: bool = True) -> dict:
             raise ValueError(f"Posterior '{posterior}' data is empty")
         if (posterior not in ['intercept', 'variance']) and (posterior not in model.data.columns):
             raise ValueError(f"Column '{posterior}' not found in 'model.data'")
-
-    if not isinstance(model.data, pd.DataFrame):
-        raise TypeError("Parameter 'model.data' must be an instance of 'pandas.DataFrame'")
-
-    if not isinstance(model.response_variable, str):
-        raise TypeError("Parameter 'model.response_variable' must be a string")
 
     if model.data.empty:
         raise ValueError("Parameter 'model.data' cannot be an empty 'pandas.DataFrame'")

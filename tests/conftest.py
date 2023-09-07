@@ -42,17 +42,17 @@ q_max = 0.975
 predictors = {'x_1': 20, 'x_2': 5, 'x_3': -45}
 predictors['x_1 * x_2'] = predictors['x_1']*predictors['x_2']
 
-model_no_data = bp.model.LinearModel()
-model_no_data.priors = {'x': {'mean': 0,
+linear_regression_model_no_data = bp.model.LinearModel()
+linear_regression_model_no_data.priors = {'x': {'mean': 0,
                               'variance': 1},
                         'intercept': {'mean': 0,
                                       'variance': 1},
                         'variance': {'shape': 1,
                                      'scale': 1}}
 
-model_no_response_variable = bp.model.LinearModel()
-model_no_response_variable.data = pd.DataFrame(columns = ['x', 'y', 'z'], index = [0])
-model_no_response_variable.priors = {'x': {'mean': 0,
+linear_regression_model_no_response_variable = bp.model.LinearModel()
+linear_regression_model_no_response_variable.data = pd.DataFrame(columns = ['x', 'y', 'z'], index = [0])
+linear_regression_model_no_response_variable.priors = {'x': {'mean': 0,
                                            'variance': 1},
                                      'y': {'mean': 0,
                                            'variance': 1},
@@ -61,14 +61,14 @@ model_no_response_variable.priors = {'x': {'mean': 0,
                                      'variance': {'shape': 1,
                                                   'scale': 1}}
 
-model_no_priors = bp.model.LinearModel()
-model_no_priors.data = pd.DataFrame(columns = ['x', 'z'], index = [0])
-model_no_priors.response_variable = 'z'
+linear_regression_model_no_priors = bp.model.LinearModel()
+linear_regression_model_no_priors.data = pd.DataFrame(columns = ['x', 'z'], index = [0])
+linear_regression_model_no_priors.response_variable = 'z'
 
-model_response_variable_not_in_data = bp.model.LinearModel()
-model_response_variable_not_in_data.data = pd.DataFrame(columns = ['x', 'y', 'z'], index = [0])
-model_response_variable_not_in_data.response_variable = 'w'
-model_response_variable_not_in_data.priors = {'x': {'mean': 0,
+linear_regression_model_response_variable_not_in_data = bp.model.LinearModel()
+linear_regression_model_response_variable_not_in_data.data = pd.DataFrame(columns = ['x', 'y', 'z'], index = [0])
+linear_regression_model_response_variable_not_in_data.response_variable = 'w'
+linear_regression_model_response_variable_not_in_data.priors = {'x': {'mean': 0,
                                                     'variance': 1},
                                               'y': {'mean': 0,
                                                     'variance': 1},
@@ -77,10 +77,10 @@ model_response_variable_not_in_data.priors = {'x': {'mean': 0,
                                               'variance': {'shape': 1,
                                                            'scale': 1}}
 
-model_prior_not_in_data = bp.model.LinearModel()
-model_prior_not_in_data.data = pd.DataFrame(columns = ['x', 'y', 'z'], index = [0])
-model_prior_not_in_data.response_variable = 'z'
-model_prior_not_in_data.priors = {'x': {'mean': 0,
+linear_regression_model_prior_not_in_data = bp.model.LinearModel()
+linear_regression_model_prior_not_in_data.data = pd.DataFrame(columns = ['x', 'y', 'z'], index = [0])
+linear_regression_model_prior_not_in_data.response_variable = 'z'
+linear_regression_model_prior_not_in_data.priors = {'x': {'mean': 0,
                                         'variance': 1},
                                   'y': {'mean': 0,
                                         'variance': 1},
@@ -90,6 +90,76 @@ model_prior_not_in_data.priors = {'x': {'mean': 0,
                                                 'variance': 1},
                                   'variance': {'shape': 1,
                                                'scale': 1}}
+
+
+analysis_value_error_posterior_data_empty = bp.model.LinearModel()
+analysis_value_error_posterior_data_empty.data = pd.DataFrame(columns = ['response_variable'], index = [0])
+analysis_value_error_posterior_data_empty.response_variable = 'response_variable'
+analysis_value_error_posterior_data_empty.posteriors = {'intercept': np.array([])}
+
+analysis_value_error_posterior_not_in_data = bp.model.LinearModel()
+analysis_value_error_posterior_not_in_data.data = pd.DataFrame(columns = ['response_variable'], index = [0])
+analysis_value_error_posterior_not_in_data.response_variable = 'response_variable'
+analysis_value_error_posterior_not_in_data.posteriors = {'intercept': np.array([0]), 'x': np.array([0])}
+
+analysis_value_error_data_empty = bp.model.LinearModel()
+analysis_value_error_data_empty.data = pd.DataFrame(columns = ['not_response_variable'], index = [0])
+analysis_value_error_data_empty.data.drop(index = [0], inplace = True)
+analysis_value_error_data_empty.response_variable = 'response_variable'
+analysis_value_error_data_empty.posteriors = {'intercept': np.array([0])}
+
+analysis_value_error_response_variable_not_in_data = bp.model.LinearModel()
+analysis_value_error_response_variable_not_in_data.data = pd.DataFrame(columns = ['not_response_variable'], index = [0])
+analysis_value_error_response_variable_not_in_data.response_variable = 'response_variable'
+analysis_value_error_response_variable_not_in_data.posteriors = {'intercept': np.array([0])}
+
+
+types_to_check = ['string', 1, 1.1, True, (0, 1), [0, 1], {0, 1}, {0: 1}, None,
+                  pd.DataFrame(columns = ['response_variable'], index = [0]), np.ndarray([0])]
+
+analysis_residuals_plot_type_error_1 = [bp.model.LinearModel() for type_to_check in types_to_check if not isinstance(type_to_check, dict)]
+for model, type_to_check in zip(analysis_residuals_plot_type_error_1, types_to_check):
+    if not isinstance(type_to_check, dict):
+        model.data = pd.DataFrame(columns = ['response_variable'], index = [0])
+        model.response_variable = 'response_variable'
+        model.posteriors = type_to_check
+
+analysis_residuals_plot_type_error_2 = [bp.model.LinearModel() for type_to_check in types_to_check if not isinstance(type_to_check, np.ndarray)]
+for model, type_to_check in zip(analysis_residuals_plot_type_error_2, types_to_check):
+    if not isinstance(type_to_check, np.ndarray):
+        model.data = pd.DataFrame(columns = ['response_variable'], index = [0])
+        model.response_variable = 'response_variable'
+        model.posteriors = {'intercept': type_to_check}
+
+
+analysis_compute_dic_type_error_1 = [{'model': type_to_check, 'print_summary': False}
+                                     for type_to_check in types_to_check]
+
+analysis_compute_dic_type_error_2 = [{'model': bp.model.LinearModel(),
+                                      'print_summary': False} for type_to_check in types_to_check
+                                     if not isinstance(type_to_check, dict)]
+for args, type_to_check in zip(analysis_compute_dic_type_error_2, types_to_check):
+    if not isinstance(type_to_check, dict):
+        args['model'].data = pd.DataFrame(columns = ['response_variable'], index = [0])
+        args['model'].response_variable = 'response_variable'
+        args['model'].posteriors = type_to_check
+
+analysis_compute_dic_type_error_3 = [{'model': bp.model.LinearModel(),
+                                      'print_summary': False} for type_to_check in types_to_check
+                                     if not isinstance(type_to_check, np.ndarray)]
+for args, type_to_check in zip(analysis_compute_dic_type_error_3, types_to_check):
+    if not isinstance(type_to_check, np.ndarray):
+        args['model'].data = pd.DataFrame(columns = ['response_variable'], index = [0])
+        args['model'].response_variable = 'response_variable'
+        args['model'].posteriors = {'intercept': type_to_check}
+
+analysis_compute_dic_type_error_4 = [{'model': bp.model.LinearModel(),
+                                      'print_summary': type_to_check} for type_to_check in types_to_check
+                                     if not isinstance(type_to_check, bool)]
+for args in analysis_compute_dic_type_error_4:
+    args['model'].data = pd.DataFrame(columns = ['response_variable'], index = [0])
+    args['model'].response_variable = 'response_variable'
+    args['model'].posteriors = {'intercept': np.ndarray([0])}
 
 
 @fixture(scope = 'session',
@@ -203,11 +273,11 @@ def linear_regression_init_type_error(request):
     return request.param
 
 
-@fixture(params = [model_no_data,
-                   model_no_response_variable,
-                   model_no_priors,
-                   model_response_variable_not_in_data,
-                   model_prior_not_in_data])
+@fixture(params = [linear_regression_model_no_data,
+                   linear_regression_model_no_response_variable,
+                   linear_regression_model_no_priors,
+                   linear_regression_model_response_variable_not_in_data,
+                   linear_regression_model_prior_not_in_data])
 def linear_regression_init_value_error(request):
     return request.param
 
@@ -363,7 +433,7 @@ def diagnostics_effective_sample_size_type_error(request):
 
 
 @fixture(params = ['posteriors', 1, 1.1, True, (0, 1), [0, 1], {0, 1}, None,
-                   {'intercept': [0], 'variance': np.array([0])}])
+                   {'intercept': [0]}])
 def analysis_trace_plot_type_error(request):
     return request.param
 
@@ -376,82 +446,67 @@ def analysis_trace_plot_type_error(request):
                    {'posteriors': [0, 1], 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
                    {'posteriors': {0, 1}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
                    {'posteriors': None, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': [0], 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 'alpha', 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 2, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': (0, 1), 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': [0, 1], 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': {0, 1}, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': {'0': 1}, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': None, 'quantiles': [0.1, 0.9], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': 'quantiles', 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': 1, 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': 1.1, 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': True, 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': (0, 1), 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': {'0.1': 0.1}, 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': {0, 1}, 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': ['quantiles'], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': [1], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': [(0, 1)], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': [[0, 1]], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': [{0, 1}], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': [{'quantiles': 1}], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': [None], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': 'False'},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': 1.1},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': (0, 1)},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': [0, 1]},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': {0, 1}},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': None}])
+                   {'posteriors': {'intercept': '1'}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
+                   {'posteriors': {'intercept': 1}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
+                   {'posteriors': {'intercept': 1.1}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
+                   {'posteriors': {'intercept': True}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
+                   {'posteriors': {'intercept': (0, 1)}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
+                   {'posteriors': {'intercept': [0, 1]}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
+                   {'posteriors': {'intercept': {0, 1}}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
+                   {'posteriors': {'intercept': {0: 1}}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
+                   {'posteriors': {'intercept': None}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': False},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 'alpha', 'quantiles': [0.1, 0.9], 'print_summary': False},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 2, 'quantiles': [0.1, 0.9], 'print_summary': False},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': (0, 1), 'quantiles': [0.1, 0.9], 'print_summary': False},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': [0, 1], 'quantiles': [0.1, 0.9], 'print_summary': False},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': {0, 1}, 'quantiles': [0.1, 0.9], 'print_summary': False},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': {'0': 1}, 'quantiles': [0.1, 0.9], 'print_summary': False},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': None, 'quantiles': [0.1, 0.9], 'print_summary': False},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': 'quantiles', 'print_summary': False},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': 1, 'print_summary': False},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': 1.1, 'print_summary': False},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': True, 'print_summary': False},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': (0, 1), 'print_summary': False},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': {'0.1': 0.1}, 'print_summary': False},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': {0, 1}, 'print_summary': False},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': ['quantiles'], 'print_summary': False},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [1], 'print_summary': False},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [(0, 1)], 'print_summary': False},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [[0, 1]], 'print_summary': False},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [{0, 1}], 'print_summary': False},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [{'quantiles': 1}], 'print_summary': False},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [None], 'print_summary': False},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': 'False'},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': 1.1},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': (0, 1)},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': [0, 1]},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': {0, 1}},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9], 'print_summary': None}])
 def analysis_summary_type_error(request):
     return request.param
 
 
-@fixture(params = [{'posteriors': {'intercept': np.array([]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9]},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': -0.5, 'quantiles': [0.1, 0.9]},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 1.5, 'quantiles': [0.1, 0.9]},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': []},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': [-0.5]},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'alpha': 0.05, 'quantiles': [1.5]}])
+@fixture(params = [{'posteriors': {'intercept': np.array([])}, 'alpha': 0.05, 'quantiles': [0.1, 0.9]},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': -0.5, 'quantiles': [0.1, 0.9]},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 1.5, 'quantiles': [0.1, 0.9]},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': []},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [-0.5]},
+                   {'posteriors': {'intercept': np.array([0])}, 'alpha': 0.05, 'quantiles': [1.5]}])
 def analysis_summary_value_error(request):
     return request.param
 
 
-@fixture(params = [{'posteriors': 'posteriors', 'data': pd.DataFrame(), 'response_variable': 'response_variable'},
-                   {'posteriors': 1, 'data': pd.DataFrame(), 'response_variable': 'response_variable'},
-                   {'posteriors': 1.1, 'data': pd.DataFrame(), 'response_variable': 'response_variable'},
-                   {'posteriors': True, 'data': pd.DataFrame(), 'response_variable': 'response_variable'},
-                   {'posteriors': (0, 1), 'data': pd.DataFrame(), 'response_variable': 'response_variable'},
-                   {'posteriors': [0, 1], 'data': pd.DataFrame(), 'response_variable': 'response_variable'},
-                   {'posteriors': {0, 1}, 'data': pd.DataFrame(), 'response_variable': 'response_variable'},
-                   {'posteriors': None, 'data': pd.DataFrame(), 'response_variable': 'response_variable'},
-                   {'posteriors': {'intercept': [0], 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': 'response_variable'},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': 'data', 'response_variable': 'response_variable'},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': 1, 'response_variable': 'response_variable'},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': 1.1, 'response_variable': 'response_variable'},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': True, 'response_variable': 'response_variable'},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': (0, 1), 'response_variable': 'response_variable'},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': [0, 1], 'response_variable': 'response_variable'},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': {0, 1}, 'response_variable': 'response_variable'},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': {'0': 1}, 'response_variable': 'response_variable'},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': None, 'response_variable': 'response_variable'},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': 1},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': 1.1},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': True},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': (0, 1)},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': [0, 1]},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': {0, 1}},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': {'response_variable': 1}},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': None}])
+@fixture(params = [*types_to_check,
+                   *analysis_residuals_plot_type_error_1,
+                   *analysis_residuals_plot_type_error_2])
 def analysis_residuals_plot_type_error(request):
     return request.param
 
 
-@fixture(params = [{'posteriors': {'intercept': np.array([]), 'variance': np.array([0])}, 'data': pd.DataFrame(columns = ['response_variable'], index = [0]), 'response_variable': 'response_variable'},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0]), 'x': np.array([0])}, 'data': pd.DataFrame(columns = ['response_variable'], index = [0]), 'response_variable': 'response_variable'},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': 'response_variable'},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(columns = ['not_response_variable'], index = [0]), 'response_variable': 'response_variable'}])
+@fixture(params = [analysis_value_error_posterior_data_empty,
+                   analysis_value_error_posterior_not_in_data,
+                   analysis_value_error_data_empty,
+                   analysis_value_error_response_variable_not_in_data])
 def analysis_residuals_plot_value_error(request):
     return request.param
 
@@ -490,46 +545,18 @@ def analysis_predict_distribution_value_error(request):
     return request.param
 
 
-@fixture(params = [{'posteriors': 'posteriors', 'data': pd.DataFrame(), 'response_variable': 'response_variable', 'print_summary': False},
-                   {'posteriors': 1, 'data': pd.DataFrame(), 'response_variable': 'response_variable', 'print_summary': False},
-                   {'posteriors': 1.1, 'data': pd.DataFrame(), 'response_variable': 'response_variable', 'print_summary': False},
-                   {'posteriors': True, 'data': pd.DataFrame(), 'response_variable': 'response_variable', 'print_summary': False},
-                   {'posteriors': (0, 1), 'data': pd.DataFrame(), 'response_variable': 'response_variable', 'print_summary': False},
-                   {'posteriors': [0, 1], 'data': pd.DataFrame(), 'response_variable': 'response_variable', 'print_summary': False},
-                   {'posteriors': {0, 1}, 'data': pd.DataFrame(), 'response_variable': 'response_variable', 'print_summary': False},
-                   {'posteriors': None, 'data': pd.DataFrame(), 'response_variable': 'response_variable', 'print_summary': False},
-                   {'posteriors': {'intercept': [0], 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': 'response_variable', 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': 'data', 'response_variable': 'response_variable', 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': 1, 'response_variable': 'response_variable', 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': 1.1, 'response_variable': 'response_variable', 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': True, 'response_variable': 'response_variable', 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': (0, 1), 'response_variable': 'response_variable', 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': [0, 1], 'response_variable': 'response_variable', 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': {0, 1}, 'response_variable': 'response_variable', 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': {'0': 1}, 'response_variable': 'response_variable', 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': None, 'response_variable': 'response_variable', 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': 1, 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': 1.1, 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': True, 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': (0, 1), 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': [0, 1], 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': {0, 1}, 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': { 'response_variable': 1}, 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': None, 'print_summary': False},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': 'response_variable', 'print_summary': 'False'},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': 'response_variable', 'print_summary': 1.1},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': 'response_variable', 'print_summary': (0, 1)},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': 'response_variable', 'print_summary': [0, 1]},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': 'response_variable', 'print_summary': {0, 1}},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': 'response_variable', 'print_summary': None}])
+@fixture(params = [*analysis_compute_dic_type_error_1,
+                   *analysis_compute_dic_type_error_2,
+                   *analysis_compute_dic_type_error_3,
+                   *analysis_compute_dic_type_error_4])
 def analysis_compute_dic_type_error(request):
     return request.param
 
 
-@fixture(params = [{'posteriors': {'intercept': np.array([]), 'variance': np.array([0])}, 'data': pd.DataFrame(columns = ['response_variable'], index = [0]), 'response_variable': 'response_variable'},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0]), 'x': np.array([0])}, 'data': pd.DataFrame(columns = ['response_variable'], index = [0]), 'response_variable': 'response_variable'},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(), 'response_variable': 'response_variable'},
-                   {'posteriors': {'intercept': np.array([0]), 'variance': np.array([0])}, 'data': pd.DataFrame(columns = ['not_response_variable'], index = [0]), 'response_variable': 'response_variable'}])
+@fixture(params = [analysis_value_error_posterior_data_empty,
+                   analysis_value_error_posterior_not_in_data,
+                   analysis_value_error_data_empty,
+                   analysis_value_error_response_variable_not_in_data])
 def analysis_compute_dic_value_error(request):
     return request.param
 
@@ -545,6 +572,19 @@ def posteriors(general_testing_data):
                    burn_in_iterations = general_testing_data['burn_in_iterations'],
                    n_chains = general_testing_data['n_chains'])
     return model.posteriors
+
+
+@fixture(scope = 'session')
+def solved_model(general_testing_data):
+    model = bp.model.LinearModel()
+    model.data = general_testing_data['data']
+    model.response_variable = general_testing_data['response_variable']
+    model.priors = general_testing_data['priors']
+    sampler = bp.regression.LinearRegression(model = model)
+    sampler.sample(n_iterations = general_testing_data['n_iterations'],
+                   burn_in_iterations = general_testing_data['burn_in_iterations'],
+                   n_chains = general_testing_data['n_chains'])
+    return model
 
 
 @fixture(params = ['1', 1, 1.1, True, (0, 1), [0, 1], {1, 2}, {0: 1}, None])

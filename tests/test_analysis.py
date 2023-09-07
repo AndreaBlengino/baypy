@@ -21,12 +21,12 @@ class TestAnalysisTracePlot:
 
     def test_raises_key_error(self):
         with raises(KeyError):
-            bp.analysis.trace_plot({'variance': np.array([0])})
+            bp.analysis.trace_plot(posteriors = {'variance': np.array([0])})
 
 
     def test_raises_value_error(self):
         with raises(ValueError):
-            bp.analysis.trace_plot(posteriors = {'intercept': np.array([]), 'variance': np.array([0])})
+            bp.analysis.trace_plot(posteriors = {'intercept': np.array([])})
 
 
 @mark.analysis
@@ -86,78 +86,33 @@ class TestAnalysisSummary:
 class TestAnalysisResidualsPlot:
 
 
-    def test_method(self, posteriors, general_testing_data, monkeypatch):
+    def test_method(self, solved_model, monkeypatch):
         monkeypatch.setattr(plt, 'show', lambda: None)
-        bp.analysis.residuals_plot(posteriors = posteriors,
-                                   data = general_testing_data['data'],
-                                   response_variable = general_testing_data['response_variable'])
+        bp.analysis.residuals_plot(model = solved_model)
 
 
     def test_raises_type_error(self, analysis_residuals_plot_type_error):
         with raises(TypeError):
-            bp.analysis.residuals_plot(posteriors = analysis_residuals_plot_type_error['posteriors'],
-                                       data = analysis_residuals_plot_type_error['data'],
-                                       response_variable = analysis_residuals_plot_type_error['response_variable'])
+            bp.analysis.residuals_plot(model = analysis_residuals_plot_type_error)
 
     def test_raises_key_error(self):
+        model = bp.model.LinearModel()
+        model.posteriors = {'variance': np.ndarray([0])}
         with raises(KeyError):
-            bp.analysis.residuals_plot(posteriors = {'variance': np.array([0])},
-                                       data = pd.DataFrame(columns = ['response_variable'], index = [0]),
-                                       response_variable = 'response_variable')
+            bp.analysis.residuals_plot(model = model)
 
 
     def test_raises_value_error(self, analysis_residuals_plot_value_error):
         with raises(ValueError):
-            bp.analysis.residuals_plot(posteriors = analysis_residuals_plot_value_error['posteriors'],
-                                       data = analysis_residuals_plot_value_error['data'],
-                                       response_variable = analysis_residuals_plot_value_error['response_variable'])
-
-
-@mark.analysis
-class TestAnalysisPredictDistribution:
-
-
-    def test_method(self, posteriors, general_testing_data):
-        predicted = bp.analysis.predict_distribution(posteriors = posteriors, predictors = general_testing_data['predictors'])
-
-        lower_bound = np.quantile(predicted, general_testing_data['q_min'])
-        upper_bound = np.quantile(predicted, general_testing_data['q_max'])
-
-        data_tmp = general_testing_data['data'].copy()
-        data_tmp['intercept'] = 1
-        linear_model_results = np.linalg.lstsq(a = data_tmp[general_testing_data['regressor_names']],
-                                               b = data_tmp[general_testing_data['response_variable']],
-                                               rcond = None)[0]
-        linear_model_prediction = linear_model_results[0] + np.dot(np.array(list(general_testing_data['predictors'].values())),
-                                                                   linear_model_results[1:])
-
-        assert lower_bound <= linear_model_prediction <= upper_bound
-
-    def test_raises_type_error(self, analysis_predict_distribution_type_error):
-        with raises(TypeError):
-            bp.analysis.predict_distribution(posteriors = analysis_predict_distribution_type_error['posteriors'],
-                                             predictors = analysis_predict_distribution_type_error['predictors'])
-
-    def test_raises_key_error(self, analysis_predict_distribution_key_error):
-        with raises(KeyError):
-            bp.analysis.predict_distribution(posteriors = analysis_predict_distribution_key_error['posteriors'],
-                                             predictors = analysis_predict_distribution_key_error['predictors'])
-
-
-    def test_raises_value_error(self, analysis_predict_distribution_value_error):
-        with raises(ValueError):
-            bp.analysis.predict_distribution(posteriors = analysis_predict_distribution_value_error['posteriors'],
-                                             predictors = analysis_predict_distribution_value_error['predictors'])
+            bp.analysis.residuals_plot(model = analysis_residuals_plot_value_error)
 
 
 @mark.analysis
 class TestAnalysisComputeDIC:
 
 
-    def test_method(self, posteriors, general_testing_data):
-        summary = bp.analysis.compute_DIC(posteriors = posteriors,
-                                          data = general_testing_data['data'],
-                                          response_variable = general_testing_data['response_variable'])
+    def test_method(self, solved_model):
+        summary = bp.analysis.compute_DIC(model = solved_model)
 
         assert isinstance(summary, dict)
         assert list(summary.keys()) == ['deviance at posterior means', 'posterior mean deviance',
@@ -167,21 +122,17 @@ class TestAnalysisComputeDIC:
 
     def test_raises_type_error(self, analysis_compute_dic_type_error):
         with raises(TypeError):
-            bp.analysis.compute_DIC(posteriors = analysis_compute_dic_type_error['posteriors'],
-                                    data = analysis_compute_dic_type_error['data'],
-                                    response_variable = analysis_compute_dic_type_error['response_variable'],
+            bp.analysis.compute_DIC(model = analysis_compute_dic_type_error['model'],
                                     print_summary = analysis_compute_dic_type_error['print_summary'])
 
 
     def test_raises_key_error(self):
+        model = bp.model.LinearModel()
+        model.posteriors = {'variance': np.ndarray([0])}
         with raises(KeyError):
-            bp.analysis.compute_DIC(posteriors = {'variance': np.array([0])},
-                                    data = pd.DataFrame(columns = ['response_variable'], index = [0]),
-                                    response_variable = 'response_variable')
+            bp.analysis.compute_DIC(model = model)
 
 
     def test_raises_value_error(self, analysis_compute_dic_value_error):
         with raises(ValueError):
-            bp.analysis.compute_DIC(posteriors = analysis_compute_dic_value_error['posteriors'],
-                                    data = analysis_compute_dic_value_error['data'],
-                                    response_variable = analysis_compute_dic_value_error['response_variable'])
+            bp.analysis.compute_DIC(model = analysis_compute_dic_value_error)
