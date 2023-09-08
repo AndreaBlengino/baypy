@@ -593,8 +593,13 @@ utils_dot_product_type_error_1 = [{'data': type_to_check, 'regressors': {}}
 utils_dot_product_type_error_2 = [{'data': pd.DataFrame(columns = ['a', 'b'], index = [0]), 'regressors': type_to_check}
                                   for type_to_check in types_to_check if not isinstance(type_to_check, dict)]
 
+utils_dot_product_type_error_3 = [{'data': pd.DataFrame(columns = ['a', 'b'], index = [0]),
+                                   'regressors': {'a': type_to_check}} for type_to_check in types_to_check
+                                  if not isinstance(type_to_check, int) and not isinstance(type_to_check, float)]
+
 @fixture(params = [*utils_dot_product_type_error_1,
-                   *utils_dot_product_type_error_2])
+                   *utils_dot_product_type_error_2,
+                   *utils_dot_product_type_error_3])
 def utils_dot_product_type_error(request):
     return request.param
 
