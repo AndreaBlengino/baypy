@@ -117,7 +117,8 @@ def dot_product(data: pd.DataFrame, regressors: dict) -> np.ndarray:
     ------
     TypeError
         - If ``data`` is not a ``pandas.DataFrame``,
-        - if ``regressors`` is not a ``dict``.
+        - if ``regressors`` is not a ``dict``,
+        - if a ``regressors`` value is not a ``int`` or a ``float``.
     KeyError
         If a ``regressors`` key is not a column of ``data``.
     ValueError
@@ -147,6 +148,9 @@ def dot_product(data: pd.DataFrame, regressors: dict) -> np.ndarray:
     for regressor in regressors.keys():
         if regressor not in data.columns:
             raise KeyError(f"Column '{regressor}' not found in 'data'")
+
+    if not all([isinstance(regressor, float) or isinstance(regressor, int) for regressor in regressors.values()]):
+        raise TypeError("All 'regressors' values must be integers or float.")
 
     data = data[regressors.keys()]
     return np.dot(data, list(regressors.values()))
