@@ -96,6 +96,42 @@ def matrices_to_frame(matrices_dict: dict) -> pd.DataFrame:
 
 
 def dot_product(data: pd.DataFrame, regressors: dict) -> np.ndarray:
+    """Computes the dot product between columns of ``data`` and values of ``regressors``.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Dataframe to be used for the dot product. It cannot be empty. It must contain all ``regressors`` keys.
+
+    regressors : dict
+        Dictionary with regressors' values. It cannot be empty. All regressors and relative values must be a key-value
+        pair.
+
+    Returns
+    -------
+    numpy.ndarray
+        Array of computed dot product. Each element is the dot product of a ``data`` row with respect to each
+        ``regressors``. It has the same length of ``data``.
+
+    Raises
+    ------
+    TypeError
+        - If ``data`` is not a ``pandas.DataFrame``,
+        - if ``regressors`` is not a ``dict``.
+    KeyError
+        If a ``regressors`` key is not a column of ``data``.
+    ValueError
+        - If ``data`` is an empty ``pandas.DataFrame``,
+        - if ``regressors`` is an empty ``dict``.
+
+    Examples
+    --------
+    >>> import pandas as pd
+    >>> data = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6]})
+    >>> regressors = {'a': 2, 'b': -1}
+    >>> dot_product(data = data, regressors = regressors)
+    >>> array([-2, -1,  0])
+    """
     if not isinstance(data, pd.DataFrame):
         raise TypeError("Parameter 'data' must be an instance of 'pandas.DataFrame'")
 
