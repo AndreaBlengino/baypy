@@ -95,7 +95,22 @@ def matrices_to_frame(matrices_dict: dict) -> pd.DataFrame:
     return pd.DataFrame({col: flatten_matrix(matrix) for col, matrix in matrices_dict.items()})
 
 
-def dot_product(data: pd.DataFrame, regressors: dict):
+def dot_product(data: pd.DataFrame, regressors: dict) -> np.ndarray:
+    if not isinstance(data, pd.DataFrame):
+        raise TypeError("Parameter 'data' must be an instance of 'pandas.DataFrame'")
+
+    if data.empty:
+        raise ValueError("Parameter 'data' cannot be an empty 'pandas.DataFrame'")
+
+    if not isinstance(regressors, dict):
+        raise TypeError("Parameter 'regressors' must be a dictionary")
+
+    if len(regressors) == 0:
+        raise ValueError("Parameter 'regressors' cannot be an empty dictionary")
+
+    for regressor in regressors.keys():
+        if regressor not in data.columns:
+            raise KeyError(f"Column '{regressor}' not found in 'data'")
 
     data = data[regressors.keys()]
     return np.dot(data, list(regressors.values()))
