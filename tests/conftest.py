@@ -42,62 +42,9 @@ q_max = 0.975
 predictors = {'x_1': 20, 'x_2': 5, 'x_3': -45}
 predictors['x_1 * x_2'] = predictors['x_1']*predictors['x_2']
 
-linear_regression_model_no_data = bp.model.LinearModel()
-linear_regression_model_no_data.priors = {'x': {'mean': 0,
-                              'variance': 1},
-                        'intercept': {'mean': 0,
-                                      'variance': 1},
-                        'variance': {'shape': 1,
-                                     'scale': 1}}
-
-linear_regression_model_no_response_variable = bp.model.LinearModel()
-linear_regression_model_no_response_variable.data = pd.DataFrame(columns = ['x', 'y', 'z'], index = [0])
-linear_regression_model_no_response_variable.priors = {'x': {'mean': 0,
-                                           'variance': 1},
-                                     'y': {'mean': 0,
-                                           'variance': 1},
-                                     'intercept': {'mean': 0,
-                                                   'variance': 1},
-                                     'variance': {'shape': 1,
-                                                  'scale': 1}}
-
-linear_regression_model_no_priors = bp.model.LinearModel()
-linear_regression_model_no_priors.data = pd.DataFrame(columns = ['x', 'z'], index = [0])
-linear_regression_model_no_priors.response_variable = 'z'
-
-linear_regression_model_response_variable_not_in_data = bp.model.LinearModel()
-linear_regression_model_response_variable_not_in_data.data = pd.DataFrame(columns = ['x', 'y', 'z'], index = [0])
-linear_regression_model_response_variable_not_in_data.response_variable = 'w'
-linear_regression_model_response_variable_not_in_data.priors = {'x': {'mean': 0,
-                                                    'variance': 1},
-                                              'y': {'mean': 0,
-                                                    'variance': 1},
-                                              'intercept': {'mean': 0,
-                                                            'variance': 1},
-                                              'variance': {'shape': 1,
-                                                           'scale': 1}}
-
-linear_regression_model_prior_not_in_data = bp.model.LinearModel()
-linear_regression_model_prior_not_in_data.data = pd.DataFrame(columns = ['x', 'y', 'z'], index = [0])
-linear_regression_model_prior_not_in_data.response_variable = 'z'
-linear_regression_model_prior_not_in_data.priors = {'x': {'mean': 0,
-                                        'variance': 1},
-                                  'y': {'mean': 0,
-                                        'variance': 1},
-                                  'w': {'mean': 0,
-                                        'variance': 1},
-                                  'intercept': {'mean': 0,
-                                                'variance': 1},
-                                  'variance': {'shape': 1,
-                                               'scale': 1}}
-
-
-
-
 
 types_to_check = ['string', 2, 2.2, True, (0, 1), [0, 1], {0, 1}, {0: 1}, None,
                   pd.DataFrame(columns = ['response_variable'], index = [0]), np.array([0])]
-
 
 
 @fixture(scope = 'session',
@@ -272,11 +219,60 @@ def linear_regression_init_type_error(request):
     return request.param
 
 
-@fixture(params = [linear_regression_model_no_data,
-                   linear_regression_model_no_response_variable,
-                   linear_regression_model_no_priors,
-                   linear_regression_model_response_variable_not_in_data,
-                   linear_regression_model_prior_not_in_data])
+linear_regression_init_value_error_1 = bp.model.LinearModel()
+linear_regression_init_value_error_1.priors = {'x': {'mean': 0,
+                                                     'variance': 1},
+                                               'intercept': {'mean': 0,
+                                                             'variance': 1},
+                                               'variance': {'shape': 1,
+                                                            'scale': 1}}
+
+linear_regression_init_value_error_2 = bp.model.LinearModel()
+linear_regression_init_value_error_2.data = pd.DataFrame(columns = ['x', 'y', 'z'], index = [0])
+linear_regression_init_value_error_2.priors = {'x': {'mean': 0,
+                                                     'variance': 1},
+                                               'y': {'mean': 0,
+                                                     'variance': 1},
+                                               'intercept': {'mean': 0,
+                                                             'variance': 1},
+                                               'variance': {'shape': 1,
+                                                            'scale': 1}}
+
+linear_regression_init_value_error_3 = bp.model.LinearModel()
+linear_regression_init_value_error_3.data = pd.DataFrame(columns = ['x', 'z'], index = [0])
+linear_regression_init_value_error_3.response_variable = 'z'
+
+linear_regression_init_value_error_4 = bp.model.LinearModel()
+linear_regression_init_value_error_4.data = pd.DataFrame(columns = ['x', 'y', 'z'], index = [0])
+linear_regression_init_value_error_4.response_variable = 'w'
+linear_regression_init_value_error_4.priors = {'x': {'mean': 0,
+                                                     'variance': 1},
+                                               'y': {'mean': 0,
+                                                     'variance': 1},
+                                               'intercept': {'mean': 0,
+                                                             'variance': 1},
+                                               'variance': {'shape': 1,
+                                                            'scale': 1}}
+
+linear_regression_init_value_error_5 = bp.model.LinearModel()
+linear_regression_init_value_error_5.data = pd.DataFrame(columns = ['x', 'y', 'z'], index = [0])
+linear_regression_init_value_error_5.response_variable = 'z'
+linear_regression_init_value_error_5.priors = {'x': {'mean': 0,
+                                                     'variance': 1},
+                                               'y': {'mean': 0,
+                                                     'variance': 1},
+                                               'w': {'mean': 0,
+                                                     'variance': 1},
+                                               'intercept': {'mean': 0,
+                                                             'variance': 1},
+                                               'variance': {'shape': 1,
+                                                            'scale': 1}}
+
+@fixture(params = [linear_regression_init_value_error_1,
+                   linear_regression_init_value_error_2,
+                   linear_regression_init_value_error_3,
+                   linear_regression_init_value_error_4,
+                   linear_regression_init_value_error_5])
 def linear_regression_init_value_error(request):
     return request.param
 
