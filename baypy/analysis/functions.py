@@ -224,19 +224,14 @@ def residuals_plot(model: Model) -> None:
     Parameters
     ----------
     model : baypy.model.model.Model
-        Model with data, regressors, response variable, initial values and priors to be solved through Monte Carlo
-        sampling.
+        Model with data, regressors, response variable and priors to be solved through Monte Carlo sampling.
 
     Raises
     ------
     TypeError
-        - If ``model`` is not a ``baypy.model.model.Model``,
-        - if ``model.posteriors`` is not a ``dict``,
-        - if a posterior sample is not a ``numpy.ndarray``.
-    KeyError
-        If ``model.posteriors`` does not contain ``intercept``  key.
+        If ``model`` is not a ``baypy.model.model.Model``.
     ValueError
-        - If a posterior sample is an empty ``numpy.ndarray``,
+        - If a ``model.posteriors`` is ``None`` because the sampling has not been done yet,
         - if a posterior key is not a column of ``model.data``,
         - if ``model.data`` is an empty ``pandas.DataFrame``,
         - if ``model.response_variable`` is not a column of ``model.data``.
@@ -247,7 +242,8 @@ def residuals_plot(model: Model) -> None:
 
     Notes
     -----
-    Predicted values are computed at data points :math:`X` using the posteriors means for each regressor's parameter:
+    Predicted values are computed at data points :math:`X` using the posteriors means for each regressor's parameter.
+    In the case of linear model:
 
     .. math::
         \hat{y_i} = \beta_0 + \sum_{j = 1}^{m} \beta_j x_{i,j}
@@ -296,8 +292,7 @@ def compute_DIC(model: Model, print_summary: bool = True) -> dict:
     Parameters
     ----------
     model : baypy.model.model.Model
-        Model with data, regressors, response variable, initial values and priors to be solved through Monte Carlo
-        sampling.
+        Model with data, regressors, response variable and priors to be solved through Monte Carlo sampling.
     print_summary : bool, optional
         If ``True`` prints the deviance summary report. Default is ``True``.
 
@@ -314,13 +309,9 @@ def compute_DIC(model: Model, print_summary: bool = True) -> dict:
     ------
     TypeError
         - If ``model`` is not a ``baypy.model.model.Model``,
-        - if ``model.posteriors`` is not a ``dict``,
-        - if a posterior sample is not a ``numpy.ndarray``,
         - if ``print_summary`` is not a ``bool``.
-    KeyError
-        If ``model.posteriors`` does not contain ``intercept`` key.
     ValueError
-        - If a posterior sample is an empty ``numpy.ndarray``,
+        - If a ``model.posteriors`` is ``None`` because the sampling has not been done yet,
         - if a posterior key is not a column of ``model.data``,
         - if ``model.data`` is an empty ``pandas.DataFrame``,
         - if ``model.response_variable`` is not a column of ``model.data``.
@@ -334,8 +325,8 @@ def compute_DIC(model: Model, print_summary: bool = True) -> dict:
     The DIC measures posterior predictive error by penalizing the fit of a model (deviance) by its complexity,
     determined by the effective number of parameters.
     Comparing some alternative models, the smaller the DIC of a model, the *better* the model.
-    Pretending to fit a linear regression of the response variable :math:`y` with respect to regressors :math:`X`,
-    according to the following model:
+    Consider a linear regression of the response variable :math:`y` with respect to regressors :math:`X`, according to
+    the following model:
 
     .. math::
         y \sim N(\mu, \sigma^2)

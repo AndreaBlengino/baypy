@@ -10,16 +10,34 @@ class LinearModel(Model):
 
     Attributes
     ----------
-    :meth:`baypy.model.linear_model.LinearModel.data`: pandas.DataFrame
+    :py:attr:`baypy.model.linear_model.LinearModel.data` : pandas.DataFrame
         Data for the linear regression model, is a ``pandas.DataFrame`` containing all regressor variables
         :math:`X` and the response variable :math:`y`.
-    :meth:`baypy.model.linear_model.LinearModel.response_variable`: string
+    :py:attr:`baypy.model.linear_model.LinearModel.response_variable` : string
         Response variable :math:`y` of the linear model.
-    :meth:`baypy.model.linear_model.LinearModel.priors` : dict
+    :py:attr:`baypy.model.linear_model.LinearModel.priors` : dict
         Priors for the regressors' and variance parameters.
-    :meth:`baypy.model.linear_model.LinearModel.variable_names` : list
+    :py:attr:`baypy.model.linear_model.LinearModel.variable_names` : list
         List of all model variables: the regressors :math:`X`, including the ``intercept`` and the ``variance``
         :math:`\sigma^2`.
+    :py:attr:`baypy.model.linear_model.LinearModel.posteriors` : dict
+        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
+        with a number of rows equals to the number of iterations and a number of columns equal to the number of Markov
+        chains.
+
+    Methods
+    -------
+    :meth:`baypy.model.linear_model.LinearModel.posteriors_to_frame()`
+        Organizes the ``posteriors`` in a ``pandas.DataFrame``.
+    :meth:`baypy.model.linear_model.LinearModel.residuals`
+        Compute the residuals :math:`\epsilon` with respect to predicted values :math:`\hat{y}`.
+    :meth:`baypy.model.linear_model.LinearModel.predict_distribution`
+        Predicts a posterior distribution for an unobserved values.
+    :meth:`baypy.model.linear_model.LinearModel.likelihood`
+        Computes the likelihood of observations ``model.response_variable`` given a model ``'mean'`` and ``'variance'``.
+    :meth:`baypy.model.linear_model.LinearModel.log_likehood`
+        Computes the log likelihood of observations ``model.response_variable`` given a model ``'mean'`` and
+        ``'variance'``.
     """
 
 
@@ -105,7 +123,10 @@ class LinearModel(Model):
             - if a ``priors``' value is not a ``dict``.
         ValueError
             - If ``priors`` is an empty ``dict``,
-            - if a ``priors``' value is a empty ``dict``.
+            - if a ``priors``' value is a empty ``dict``,
+            - if a ``variance`` value is not positive,
+            - if a ``shape`` value is not positive,
+            - if a ``scale`` value is not positive.
         KeyError
             - If ``priors`` does not contain both ``intercept`` and ``variance`` keys,
             - if a prior's hyperparameters are not:
@@ -130,7 +151,7 @@ class LinearModel(Model):
 
         Examples
         --------
-        Pretending to fit a linear regression of the response variable :math:`y` with respect to regressors :math:`x_1`,
+        Consider a linear regression of the response variable :math:`y` with respect to regressors :math:`x_1`,
         :math:`x_2` and :math:`x_3`, according to the following model:
 
         .. math::
@@ -203,6 +224,28 @@ class LinearModel(Model):
 
     @property
     def posteriors(self) -> dict:
+        r"""Posteriors of the regressors' and variance parameters.
+        Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
+        with a number of rows equals to the number of iterations and a number of columns equal to the number of Markov
+        chains.
+
+        Returns
+        -------
+        dict
+            Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
+            with a number of rows equals to the number of iterations and a number of columns equal to the number of
+            Markov chains.
+
+        Raises
+        ------
+        TypeError
+            - If ``posteriors`` is not a ``dict``,
+            - if a posterior sample is not a ``numpy.ndarray``.
+        KeyError
+            If ``posteriors`` does not contain both ``intercept`` and ``variance`` keys.
+        ValueError
+            If a posterior sample is an empty ``numpy.ndarray``.
+        """
         assert super().posteriors is None
         return self.__posteriors
 
@@ -241,6 +284,34 @@ class LinearModel(Model):
 
 
     def residuals(self) -> pd.DataFrame:
+        r"""Compute the residuals :math:`\epsilon` with respect to predicted values :math:`\hat{y}`.
+
+        Returns
+        -------
+        pandas.DataFrame
+            Returns a copy of ``data`` with 3 more columns: ``intercept``, ``predicted`` and ``residuals``.
+
+        Raises
+        ------
+        ValueError
+            - If ``model.data`` is ``None`` because the property ``baypy.model.LinearModel.data`` has not been set
+            - if ``model.response_variable`` is not a column of ``model.data``,
+            - If a ``model.posteriors`` is ``None`` because the sampling has not been done yet.
+
+        Notes
+        -----
+        Predicted values are computed at data points :math:`X` using the posteriors means for each regressor's
+        parameter:
+
+        .. math::
+            \hat{y_i} = \beta_0 + \sum_{j = 1}^{m} \beta_j x_{i,j}
+
+        while residuals are the difference between the observed values and the predicted values of the
+        ``response_variable``:
+
+        .. math::
+            \epsilon_i = y_i - \hat{y_i}
+        """
         assert super().residuals() is None
 
         if self.__data is None:
@@ -271,8 +342,8 @@ class LinearModel(Model):
         Parameters
         ----------
         predictors : dict
-            Values of predictors :math:`X` at which compute the posterior distribution. Each predictor has to be set as a
-            key-value pair.
+            Values of predictors :math:`X` at which compute the posterior distribution. Each predictor has to be set as
+            a key-value pair.
 
         Returns
         -------
@@ -283,11 +354,11 @@ class LinearModel(Model):
         Raises
         ------
         TypeError
-            - if ``predictors`` is not a ``dict``.
+            If ``predictors`` is not a ``dict``.
         KeyError
-            - if a ``predictors`` key is not a key of ``posteriors``.
+            If a ``predictors`` key is not a key of ``posteriors``.
         ValueError
-            - if ``predictors`` is an empty ``dict``.
+            If ``predictors`` is an empty ``dict``.
 
         See Also
         --------
@@ -308,6 +379,40 @@ class LinearModel(Model):
 
 
     def likelihood(self, data: pd.DataFrame) -> np.ndarray:
+        r"""Computes the likelihood of observations ``model.response_variable`` given a model ``'mean'`` and
+        ``'variance'``.
+
+        Parameters
+        ----------
+        data: pandas.DataFrame
+            Data to use for likelihood computation. It cannot be empty. It must contain columns
+            ``model.response_variable``, ``'mean'`` and ``'variance'``.
+
+        Returns
+        -------
+        numpy.ndarray
+            Array of computed likelihood. It has the same length of ``data``. Each element is a likelihood computation
+            of each row of ``data``.
+
+        Raises
+        ------
+        TypeError
+            If ``data`` is not an instance of ``pandas.DataFrame``.
+        ValueError
+            - If ``data`` is an empty ``pandas.DataFrame``,
+            - if ``model.response_variable`` is not a column of ``data``,
+            - if ``'mean'`` is not a column of ``data``,
+            - if ``'variance'`` is not a column of ``data``.
+
+        Notes
+        -----
+        The likelihood is computed with the normal distribution probability density function:
+
+        .. math::
+            L(y) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp{- \frac{\left(y - \mu \right)^2}{2 \sigma^2}}
+
+        where :math:`\mu` is the ``'mean'`` column and :math:`\sigma^2` is the ``'variance'`` column.
+        """
         super().likelihood(data = data)
 
         for col in [self.__response_variable, 'mean', 'variance']:
@@ -320,6 +425,40 @@ class LinearModel(Model):
 
 
     def log_likelihood(self, data: pd.DataFrame) -> np.ndarray:
+        r"""Computes the log likelihood of observations ``model.response_variable`` given a model ``'mean'`` and
+        ``'variance'``.
+
+        Parameters
+        ----------
+        data: pandas.DataFrame
+            Data to use for log likelihood computation. It cannot be empty. It must contain columns
+            ``model.response_variable``, ``'mean'`` and ``'variance'``.
+
+        Returns
+        -------
+        numpy.ndarray
+            Array of computed log likelihood. It has the same length of ``data``. Each element is a log likelihood
+            computation of each row of ``data``.
+
+        Raises
+        ------
+        TypeError
+            If ``data`` is not an instance of ``pandas.DataFrame``.
+        ValueError
+            - If ``data`` is an empty ``pandas.DataFrame``,
+            - if ``model.response_variable`` is not a column of ``data``,
+            - if ``'mean'`` is not a column of ``data``,
+            - if ``'variance'`` is not a column of ``data``.
+
+        Notes
+        -----
+        The log likelihood is computed as the log of the normal distribution probability density function:
+
+        .. math::
+            l(y) = - \frac{1}{2} \log{2 \pi \sigma^2} - \frac{1}{2} \frac{\left(y - \mu \right)^2}{\sigma^2}
+
+        where :math:`\mu` is the ``'mean'`` column and :math:`\sigma^2` is the ``'variance'`` column.
+        """
         super().log_likelihood(data = data)
 
         for col in [self.__response_variable, 'mean', 'variance']:

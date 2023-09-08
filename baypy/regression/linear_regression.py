@@ -13,22 +13,18 @@ class LinearRegression(Regression):
     Parameters
     ----------
     model : baypy.model.model.Model
-        Model with data, regressors, response variable, initial values and priors to be solved through Monte Carlo
-        sampling.
+        Model with data, regressors, response variable and priors to be solved through Monte Carlo sampling.
 
     Attributes
     ----------
     model : baypy.model.model.Model
-        Model with data, regressors, response variable, initial values and priors to be solved through Monte Carlo
-        sampling.
+        Model with data, regressors, response variable and priors to be solved through Monte Carlo sampling.
 
     Methods
     -------
     :meth:`baypy.regression.linear_regression.LinearRegression.sample()`
         Samples a sequence of observations from the full posterior distribution of regressors' parameters
         :math:`\beta_j` and ``variance`` :math:`\sigma^2`.
-    :meth:`baypy.regression.linear_regression.LinearRegression.posteriors_to_frame()`
-        Organizes the ``posteriors`` in a ``pandas.DataFrame``.
 
     Raises
     ------
@@ -94,8 +90,8 @@ class LinearRegression(Regression):
         and the likelihood is:
 
         .. math::
-            p \left( y \left\vert B,\sigma^2 \right. \right) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp{\frac{\left(y -
-            \mu \right)^2}{\sigma^2}} .
+            p \left( y \left\vert B,\sigma^2 \right. \right) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp{- \frac{\left(y -
+            \mu \right)^2}{2 \sigma^2}} .
         """
         super().sample(n_iterations = n_iterations, burn_in_iterations = burn_in_iterations,
                        n_chains = n_chains, seed = seed)
