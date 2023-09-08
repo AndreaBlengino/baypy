@@ -1,4 +1,4 @@
-from baypy.utils import flatten_matrix, matrices_to_frame
+from baypy.utils import flatten_matrix, matrices_to_frame, dot_product
 import numpy as np
 import pandas as pd
 from pytest import mark, raises
@@ -51,3 +51,34 @@ class TestMatricesToFrame:
     def test_raises_value_error(self):
         with raises(ValueError):
             matrices_to_frame(matrices_dict = {'a': np.array([])})
+
+
+@mark.utils
+class TestDotProduct:
+
+
+    def test_function(self):
+        data = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6]})
+        regressors = {'a': 1, 'b': 2}
+        product = dot_product(data = data, regressors = regressors)
+
+        assert isinstance(product, np.ndarray)
+        assert len(product) == len(data)
+
+
+    def test_raises_type_error(self, utils_dot_product_type_error):
+        with raises(TypeError):
+            dot_product(data = utils_dot_product_type_error['data'],
+                        regressors = utils_dot_product_type_error['regressors'])
+
+
+    def test_raises_key_error(self):
+        with raises(KeyError):
+            dot_product(data = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6]}),
+                        regressors = {'a': 1, 'b': 2, 'c': 3})
+
+
+    def test_raises_value_error(self, utils_dot_product_value_error):
+        with raises(ValueError):
+            dot_product(data = utils_dot_product_value_error['data'],
+                        regressors = utils_dot_product_value_error['regressors'])
