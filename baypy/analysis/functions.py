@@ -336,8 +336,8 @@ def compute_DIC(model: Model, print_summary: bool = True) -> dict:
     then the *likelyhood* is:
 
     .. math::
-        p \left( y \left\vert B,\sigma^2 \right. \right) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp{\frac{\left(y - \mu
-        \right)^2}{\sigma^2}} .
+        p \left( y \left\vert B,\sigma^2 \right. \right) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp{- \frac{\left(y - \mu
+        \right)^2}{2 \sigma^2}} .
 
     The *deviance* [1]_ [2]_ is defined as:
 
