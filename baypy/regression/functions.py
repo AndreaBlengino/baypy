@@ -131,5 +131,9 @@ def sample_beta(Xt_X: np.ndarray, Xt_y: np.ndarray, sigma2: float, Sigma_0_inv: 
     """
     V = np.linalg.inv(Sigma_0_inv + Xt_X/sigma2)
     M = np.dot(V, Sigma_0_inv_Beta_0 + Xt_y/sigma2)
+    beta = multivariate_normal.rvs(mean = flatten_matrix(M), cov = V, size = 1)
 
-    return multivariate_normal.rvs(mean = flatten_matrix(M), cov = V, size = 1)
+    if Xt_X.shape != (1, 1):
+        return beta
+    else:
+        return np.array([beta])
