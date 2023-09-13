@@ -44,7 +44,7 @@ def flatten_matrix(matrix: np.ndarray) -> np.ndarray:
 
 def matrices_to_frame(matrices_dict: dict) -> pd.DataFrame:
     """Organizes a dictionary of matrices in a ``pandas.DataFrame``. Each matrix becomes a frame column, with column
-    name equal to the matrix' relative key in the dictionary. It the matrix has dimensions ``(M, N``), then the relative
+    name equal to the matrix' relative key in the dictionary. If the matrix has dimensions ``(M, N``), then the relative
     frame column has length ``M*N``.
 
     Parameters

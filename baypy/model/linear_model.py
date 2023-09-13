@@ -35,7 +35,7 @@ class LinearModel(Model):
         Predicts a posterior distribution for an unobserved values.
     :meth:`baypy.model.linear_model.LinearModel.likelihood`
         Computes the likelihood of observations ``model.response_variable`` given a model ``'mean'`` and ``'variance'``.
-    :meth:`baypy.model.linear_model.LinearModel.log_likehood`
+    :meth:`baypy.model.linear_model.LinearModel.log_likelihood`
         Computes the log likelihood of observations ``model.response_variable`` given a model ``'mean'`` and
         ``'variance'``.
     """
