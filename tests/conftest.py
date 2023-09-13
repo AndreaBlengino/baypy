@@ -1,4 +1,5 @@
 import baypy as bp
+from hypothesis.strategies import composite, integers, floats
 import numpy as np
 import pandas as pd
 from pytest import fixture
@@ -45,6 +46,57 @@ predictors['x_1 * x_2'] = predictors['x_1']*predictors['x_2']
 
 types_to_check = ['string', 2, 2.2, True, (0, 1), [0, 1], {0, 1}, {0: 1}, None,
                   pd.DataFrame(columns = ['response_variable'], index = [0]), np.array([0])]
+
+
+@composite
+def model_set_up(draw):
+    n_regressors = draw(integers(min_value = 0, max_value = 5))
+    n_data_points = draw(integers(min_value = 20, max_value = 100))
+    regressors_minimum = draw(floats(min_value = -1000, max_value = 0))
+    regressors_maximum = draw(floats(min_value = 1, max_value = 1000))
+    regressors_parameters_minimum = draw(floats(min_value = -100, max_value = -1))
+    regressors_parameters_maximum = draw(floats(min_value = 1, max_value = 100))
+    n_samples = draw(integers(min_value = 20, max_value = 1000))
+    burn_in_iterations = draw(integers(min_value = 1, max_value = 100))
+    n_chains = draw(integers(min_value = 1, max_value = 5))
+    seed = draw(integers(min_value = 1, max_value = 1000))
+
+    regressors_names = np.random.choice(list('abcdefghijklmnopqrstuvxyz'), n_regressors, replace = False).tolist()
+    data = pd.DataFrame({regressor_name: np.random.uniform(low = regressors_minimum,
+                                                           high = regressors_maximum,
+                                                           size = n_data_points)
+                         for regressor_name in regressors_names})
+    data['intercept'] = data['intercept'] = np.ones(n_data_points)
+    regressors_parameters = np.random.uniform(low = regressors_parameters_minimum,
+                                              high = regressors_parameters_maximum,
+                                              size = n_regressors + 1)
+    response_variable = np.random.choice([name for name in list('abcdefghijklmnopqrstuvxyz')
+                                          if name not in data.columns], 1).tolist()[0]
+    data[response_variable] = (data*regressors_parameters).sum(axis = 1) + \
+                              np.random.normal(loc = 0, scale = 1, size = n_data_points)
+    data.drop(columns = ['intercept'], inplace = True)
+
+    priors = {regressor_name: {'mean': 0, 'variance': 1e14} for regressor_name in regressors_names}
+    priors['intercept'] = {'mean': 0, 'variance': 1e14}
+    priors['variance'] = {'shape': 1, 'scale': 1e-14}
+
+    posteriors = {posterior_name: np.random.randn(n_samples, n_chains) for posterior_name in priors.keys()}
+    posteriors['variance'] = np.abs(posteriors['variance'])
+
+    predictors = {predictor: np.random.uniform(low = regressors_parameters_minimum,
+                                               high = regressors_parameters_maximum,
+                                               size = 1)[0]
+                  for predictor in priors.keys() if predictor not in ['intercept', 'variance']}
+
+    return {'data': data,
+            'response_variable': response_variable,
+            'priors': priors,
+            'posteriors': posteriors,
+            'n_samples': n_samples,
+            'burn_in_iterations': burn_in_iterations,
+            'n_chains': n_chains,
+            'predictors': predictors,
+            'seed': seed}
 
 
 @fixture(scope = 'session',

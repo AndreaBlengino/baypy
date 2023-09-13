@@ -1,6 +1,8 @@
 import baypy as bp
+from hypothesis import given, settings, HealthCheck
 import numpy as np
 import pandas as pd
+from tests.conftest import model_set_up
 from pytest import mark, raises
 
 
@@ -25,18 +27,27 @@ class TestLinearRegressionSample:
 
 
     @mark.genuine
-    def test_method(self, complete_model, general_testing_data):
-        sampler = bp.regression.LinearRegression(model = complete_model)
-        sampler.sample(n_iterations = general_testing_data['n_iterations'],
-                       burn_in_iterations = general_testing_data['burn_in_iterations'],
-                       n_chains = general_testing_data['n_chains'],
-                       seed = general_testing_data['seed'])
+    @given(model_set_up())
+    @settings(max_examples = 20, deadline = None, suppress_health_check = [HealthCheck.data_too_large])
+    def test_method(self, model_set_up):
+        model = bp.model.LinearModel()
+        model.data = model_set_up['data']
+        model.response_variable = model_set_up['response_variable']
+        model.priors = model_set_up['priors']
+        sampler = bp.regression.LinearRegression(model = model)
+        sampler.sample(n_iterations = model_set_up['n_samples'],
+                       burn_in_iterations = model_set_up['burn_in_iterations'],
+                       n_chains = model_set_up['n_chains'],
+                       seed = model_set_up['seed'])
 
-        assert complete_model.posteriors.keys() == general_testing_data['priors'].keys()
-        assert all(np.array([posterior_samples.shape for posterior_samples in complete_model.posteriors.values()])[:, 0]
-                   == general_testing_data['n_iterations'])
-        assert all(np.array([posterior_samples.shape for posterior_samples in complete_model.posteriors.values()])[:, 1]
-                   == general_testing_data['n_chains'])
+        assert isinstance(model.posteriors, dict)
+        assert len(model.posteriors) > 0
+        assert model.posteriors.keys() == model_set_up['priors'].keys()
+        assert all(np.array([posterior_samples.shape for posterior_samples
+                             in model.posteriors.values()])[:, 0] == model_set_up['n_samples'])
+        assert all(np.array([posterior_samples.shape for posterior_samples
+                             in model.posteriors.values()])[:, 1] == model_set_up['n_chains'])
+        assert (model.posteriors['variance'] > 0).all()
 
 
     @mark.error
