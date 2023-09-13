@@ -8,11 +8,13 @@ from pytest import mark, raises
 class TestLinearRegressionInit:
 
 
+    @mark.genuine
     def test_raises_type_error(self, linear_regression_init_type_error):
         with raises(TypeError):
             bp.regression.LinearRegression(model = linear_regression_init_type_error)
 
 
+    @mark.error
     def test_raises_value_error(self, linear_regression_init_value_error):
         with raises(ValueError):
             bp.regression.LinearRegression(model = linear_regression_init_value_error)
@@ -22,6 +24,7 @@ class TestLinearRegressionInit:
 class TestLinearRegressionSample:
 
 
+    @mark.genuine
     def test_method(self, complete_model, general_testing_data):
         sampler = bp.regression.LinearRegression(model = complete_model)
         sampler.sample(n_iterations = general_testing_data['n_iterations'],
@@ -36,6 +39,7 @@ class TestLinearRegressionSample:
                    == general_testing_data['n_chains'])
 
 
+    @mark.error
     def test_raises_type_error(self, complete_model, linear_regression_sample_type_error):
         sampler = bp.regression.LinearRegression(model = complete_model)
         with raises(TypeError):
@@ -45,6 +49,7 @@ class TestLinearRegressionSample:
                            seed = linear_regression_sample_type_error['seed'])
 
 
+    @mark.error
     def test_raises_value_error(self, complete_model, linear_regression_sample_value_error):
         sampler = bp.regression.LinearRegression(model = complete_model)
         with raises(ValueError):

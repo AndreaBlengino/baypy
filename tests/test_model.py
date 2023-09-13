@@ -7,17 +7,20 @@ from pytest import mark, raises
 class TestModelData:
 
 
+    @mark.genuine
     def test_property(self, empty_model, general_testing_data):
         empty_model.data = general_testing_data['data']
 
         assert empty_model.data.equals(general_testing_data['data'])
 
 
+    @mark.error
     def test_raises_type_error(self, empty_model, model_data_type_error):
         with raises(TypeError):
             empty_model.data = model_data_type_error
 
 
+    @mark.error
     def test_raises_value_error(self, empty_model):
         with raises(ValueError):
             empty_model.data = pd.DataFrame()
@@ -27,12 +30,14 @@ class TestModelData:
 class TestModelResponseVariable:
 
 
+    @mark.genuine
     def test_property(self, empty_model, general_testing_data):
         empty_model.response_variable = general_testing_data['response_variable']
 
         assert empty_model.response_variable == general_testing_data['response_variable']
 
 
+    @mark.error
     def test_raises_type_error(self, empty_model, model_response_variable_type_error):
         with raises(TypeError):
             empty_model.response_variable = model_response_variable_type_error
@@ -42,6 +47,7 @@ class TestModelResponseVariable:
 class TestModelPriors:
 
 
+    @mark.genuine
     def test_property(self, empty_model, general_testing_data):
         empty_model.priors = general_testing_data['priors']
 
@@ -59,16 +65,19 @@ class TestModelPriors:
         assert 'variance' in empty_model.variable_names
 
 
+    @mark.error
     def test_raises_type_error(self, empty_model, model_priors_type_error):
         with raises(TypeError):
             empty_model.priors = model_priors_type_error
 
 
+    @mark.error
     def test_raises_key_error(self, empty_model, model_priors_key_error):
         with raises(KeyError):
             empty_model.priors = model_priors_key_error
 
 
+    @mark.error
     def test_raises_value_error(self, empty_model, model_priors_value_error):
         with raises(ValueError):
             empty_model.priors = model_priors_value_error
@@ -78,6 +87,7 @@ class TestModelPriors:
 class TestModelPosteriors:
 
 
+    @mark.genuine
     def test_property(self, empty_model, general_testing_data):
         posteriors = {variable: np.zeros((general_testing_data['n_iterations'], general_testing_data['n_chains']))
                       for variable in general_testing_data['priors'].keys()}
@@ -90,16 +100,19 @@ class TestModelPosteriors:
                     for posterior_samples in empty_model.posteriors.values()])
 
 
+    @mark.error
     def test_raises_type_error(self, empty_model, model_posteriors_type_error):
         with raises(TypeError):
             empty_model.posteriors = model_posteriors_type_error
 
 
+    @mark.error
     def test_raises_key_error(self, empty_model, model_posteriors_key_error):
         with raises(KeyError):
             empty_model.posteriors = model_posteriors_key_error
 
 
+    @mark.error
     def test_raises_value_error(self, empty_model):
         with raises(ValueError):
             empty_model.posteriors = {'intercept': np.array([]), 'variance': np.array([0])}
@@ -109,6 +122,7 @@ class TestModelPosteriors:
 class TestModelPosteriorsToFrame:
 
 
+    @mark.genuine
     def test_method(self, empty_model, general_testing_data):
         posteriors = {variable: np.zeros((general_testing_data['n_iterations'], general_testing_data['n_chains']))
                       for variable in general_testing_data['priors'].keys()}
@@ -121,6 +135,7 @@ class TestModelPosteriorsToFrame:
         assert len(posteriors_frame) == general_testing_data['n_iterations']*general_testing_data['n_chains']
 
 
+    @mark.error
     def test_raises_value_error(self, complete_model):
         with raises(ValueError):
             complete_model.posteriors_to_frame()
@@ -129,6 +144,8 @@ class TestModelPosteriorsToFrame:
 @mark.model
 class TestModelResiduals:
 
+
+    @mark.genuine
     def test_method(self, solved_model, general_testing_data):
         residuals = solved_model.residuals()
 
@@ -144,6 +161,7 @@ class TestModelResiduals:
         assert set(cols) == set(general_testing_data['data'].columns)
 
 
+    @mark.error
     def test_raises_value_error(self, model_residuals_value_error):
         with raises(ValueError):
             model_residuals_value_error.residuals()
@@ -152,6 +170,8 @@ class TestModelResiduals:
 @mark.model
 class TestModelPredictDistribution:
 
+
+    @mark.genuine
     def test_method(self, solved_model, general_testing_data):
         predictors = {predictor: 1 for predictor in general_testing_data['priors'].keys()
                       if predictor not in ['intercept', 'variance']}
@@ -162,11 +182,13 @@ class TestModelPredictDistribution:
         assert len(predicted) == general_testing_data['n_iterations']*general_testing_data['n_chains']
 
 
+    @mark.error
     def test_raises_type_error(self, solved_model, model_predict_distribution_type_error):
         with raises(TypeError):
             solved_model.predict_distribution(predictors = model_predict_distribution_type_error)
 
 
+    @mark.error
     def test_raises_key_error(self, empty_model):
         empty_model.posteriors = {'intercept': np.array([0]), 'variance': np.array([0])}
         predictors = {'x': 5}
@@ -174,6 +196,7 @@ class TestModelPredictDistribution:
             empty_model.predict_distribution(predictors = predictors)
 
 
+    @mark.error
     def test_raises_value_error(self, empty_model):
         with raises(ValueError):
             empty_model.predict_distribution(predictors = {})
@@ -182,6 +205,8 @@ class TestModelPredictDistribution:
 @mark.model
 class TestModelLikelihood:
 
+
+    @mark.genuine
     def test_method(self, complete_model):
         data = pd.DataFrame({complete_model.response_variable: [0, 1, 2, 3, 4],
                              'mean': [0, 1, 2, 3, 4],
@@ -192,11 +217,13 @@ class TestModelLikelihood:
         assert len(likelihood) == len(data)
 
 
+    @mark.error
     def test_raises_type_error(self, complete_model, model_likelihood_type_error):
         with raises(TypeError):
             complete_model.likelihood(data = model_likelihood_type_error)
 
 
+    @mark.error
     def test_raises_value_error(self, complete_model, model_likelihood_value_error):
         with raises(ValueError):
             complete_model.likelihood(data = model_likelihood_value_error)
@@ -205,6 +232,8 @@ class TestModelLikelihood:
 @mark.model
 class TestModelLogLikelihood:
 
+
+    @mark.genuine
     def test_method(self, complete_model):
         data = pd.DataFrame({complete_model.response_variable: [0, 1, 2, 3, 4],
                              'mean': [0, 1, 2, 3, 4],
@@ -215,11 +244,13 @@ class TestModelLogLikelihood:
         assert len(log_likelihood) == len(data)
 
 
+    @mark.error
     def test_raises_type_error(self, complete_model, model_log_likelihood_type_error):
         with raises(TypeError):
             complete_model.log_likelihood(data = model_log_likelihood_type_error)
 
 
+    @mark.error
     def test_raises_value_error(self, complete_model, model_log_likelihood_value_error):
         with raises(ValueError):
             complete_model.log_likelihood(data = model_log_likelihood_value_error)

@@ -9,23 +9,27 @@ from pytest import mark, raises
 class TestDiagnosticsAutocorrelationPlot:
 
 
+    @mark.genuine
     def test_method(self, posteriors, monkeypatch):
         monkeypatch.setattr(plt, 'show', lambda: None)
         bp.diagnostics.autocorrelation_plot(posteriors)
 
 
+    @mark.error
     def test_raises_type_error(self, diagnostics_autocorrelation_plot_type_error):
         with raises(TypeError):
             bp.diagnostics.autocorrelation_plot(posteriors = diagnostics_autocorrelation_plot_type_error['posteriors'],
                                                 max_lags = diagnostics_autocorrelation_plot_type_error['max_lags'])
 
 
+    @mark.error
     def test_raises_key_error(self):
         with raises(KeyError):
             bp.diagnostics.autocorrelation_plot(posteriors = {'variance': np.array([0])},
                                                 max_lags = 30)
 
 
+    @mark.error
     def test_raises_value_error(self, diagnostics_autocorrelation_plot_value_error):
         with raises(ValueError):
             bp.diagnostics.autocorrelation_plot(posteriors = diagnostics_autocorrelation_plot_value_error['posteriors'],
@@ -36,6 +40,7 @@ class TestDiagnosticsAutocorrelationPlot:
 class TestDiagnosticsAutocorrelationSummary:
 
 
+    @mark.genuine
     def test_method(self, posteriors):
         acorr_summary = bp.diagnostics.autocorrelation_summary(posteriors)
 
@@ -45,6 +50,7 @@ class TestDiagnosticsAutocorrelationSummary:
         assert list(acorr_summary.columns) == list(posteriors.keys())
 
 
+    @mark.error
     def test_raises_type_error(self, diagnostics_autocorrelation_summary_type_error):
         with raises(TypeError):
             bp.diagnostics.autocorrelation_summary(posteriors = diagnostics_autocorrelation_summary_type_error['posteriors'],
@@ -52,12 +58,14 @@ class TestDiagnosticsAutocorrelationSummary:
                                                    print_summary = diagnostics_autocorrelation_summary_type_error['print_summary'])
 
 
+    @mark.error
     def test_raises_key_error(self):
         with raises(KeyError):
             bp.diagnostics.autocorrelation_summary(posteriors = {'variance': np.array([0])},
                                                    lags = [0, 1, 5, 10, 30])
 
 
+    @mark.error
     def test_raises_value_error(self, diagnostics_autocorrelation_summary_value_error):
         with raises(ValueError):
             bp.diagnostics.autocorrelation_summary(posteriors = diagnostics_autocorrelation_summary_value_error['posteriors'],
@@ -68,6 +76,7 @@ class TestDiagnosticsAutocorrelationSummary:
 class TestDiagnosticsEffectiveSampleSize:
 
 
+    @mark.genuine
     def test_method(self, posteriors):
         ess_summary = bp.diagnostics.effective_sample_size(posteriors)
 
@@ -77,17 +86,20 @@ class TestDiagnosticsEffectiveSampleSize:
         assert list(ess_summary.columns) == list(posteriors.keys())
 
 
+    @mark.error
     def test_raises_type_error(self, diagnostics_effective_sample_size_type_error):
         with raises(TypeError):
             bp.diagnostics.effective_sample_size(posteriors = diagnostics_effective_sample_size_type_error['posteriors'],
                                                  print_summary = diagnostics_effective_sample_size_type_error['print_summary'])
 
 
+    @mark.error
     def test_raises_key_error(self):
         with raises(KeyError):
             bp.diagnostics.effective_sample_size({'variance': np.array([0])})
 
 
+    @mark.error
     def test_raises_value_error(self):
         with raises(ValueError):
             bp.diagnostics.effective_sample_size(posteriors = {'intercept': np.array([])})

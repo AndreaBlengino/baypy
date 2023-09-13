@@ -9,21 +9,25 @@ from pytest import mark, raises
 class TestAnalysisTracePlot:
 
 
+    @mark.genuine
     def test_method(self, posteriors, monkeypatch):
         monkeypatch.setattr(plt, 'show', lambda: None)
         bp.analysis.trace_plot(posteriors)
 
 
+    @mark.error
     def test_raises_type_error(self, analysis_trace_plot_type_error):
         with raises(TypeError):
             bp.analysis.trace_plot(analysis_trace_plot_type_error)
 
 
+    @mark.error
     def test_raises_key_error(self):
         with raises(KeyError):
             bp.analysis.trace_plot(posteriors = {'variance': np.array([0])})
 
 
+    @mark.error
     def test_raises_value_error(self):
         with raises(ValueError):
             bp.analysis.trace_plot(posteriors = {'intercept': np.array([])})
@@ -33,6 +37,7 @@ class TestAnalysisTracePlot:
 class TestAnalysisSummary:
 
 
+    @mark.genuine
     def test_method(self, posteriors, general_testing_data):
         summary = bp.analysis.summary(posteriors)
 
@@ -60,6 +65,7 @@ class TestAnalysisSummary:
         assert all(summary['quantiles'].columns == ['2.5%', '25%', '50%', '75%', '97.5%'])
 
 
+    @mark.error
     def test_raises_type_error(self, analysis_summary_type_error):
         with raises(TypeError):
             bp.analysis.summary(posteriors = analysis_summary_type_error['posteriors'],
@@ -68,6 +74,7 @@ class TestAnalysisSummary:
                                 print_summary = analysis_summary_type_error['print_summary'])
 
 
+    @mark.error
     def test_raises_key_error(self):
         with raises(KeyError):
             bp.analysis.summary(posteriors = {'variance': np.array([0])},
@@ -75,6 +82,7 @@ class TestAnalysisSummary:
                                 quantiles = [0.1, 0.9])
 
 
+    @mark.error
     def test_raises_value_error(self, analysis_summary_value_error):
         with raises(ValueError):
             bp.analysis.summary(posteriors = analysis_summary_value_error['posteriors'],
@@ -86,16 +94,19 @@ class TestAnalysisSummary:
 class TestAnalysisResidualsPlot:
 
 
+    @mark.genuine
     def test_method(self, solved_model, monkeypatch):
         monkeypatch.setattr(plt, 'show', lambda: None)
         bp.analysis.residuals_plot(model = solved_model)
 
 
+    @mark.error
     def test_raises_type_error(self, analysis_residuals_plot_type_error):
         with raises(TypeError):
             bp.analysis.residuals_plot(model = analysis_residuals_plot_type_error)
 
 
+    @mark.error
     def test_raises_value_error(self, analysis_residuals_plot_value_error):
         with raises(ValueError):
             bp.analysis.residuals_plot(model = analysis_residuals_plot_value_error)
@@ -105,6 +116,7 @@ class TestAnalysisResidualsPlot:
 class TestAnalysisComputeDIC:
 
 
+    @mark.genuine
     def test_method(self, solved_model):
         summary = bp.analysis.compute_DIC(model = solved_model)
 
@@ -114,12 +126,14 @@ class TestAnalysisComputeDIC:
         assert all([isinstance(value, float) for value in summary.values()])
 
 
+    @mark.error
     def test_raises_type_error(self, analysis_compute_dic_type_error):
         with raises(TypeError):
             bp.analysis.compute_DIC(model = analysis_compute_dic_type_error['model'],
                                     print_summary = analysis_compute_dic_type_error['print_summary'])
 
 
+    @mark.error
     def test_raises_value_error(self, analysis_compute_dic_value_error):
         with raises(ValueError):
             bp.analysis.compute_DIC(model = analysis_compute_dic_value_error)
