@@ -1,8 +1,25 @@
 import baypy as bp
+from hypothesis import given, settings
+from hypothesis.strategies import composite, integers
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from pytest import mark, raises
+from _pytest.monkeypatch import MonkeyPatch
+
+
+@composite
+def posteriors_data(draw):
+    n_samples = draw(integers(min_value = 20, max_value = 1000))
+    n_chains = draw(integers(min_value = 1, max_value = 5))
+    n_posteriors = draw(integers(min_value = 1, max_value = 9))
+
+    posterior_names = np.random.choice(list('abcdefghij'), n_posteriors, replace = False).tolist()
+    posterior_names.append('intercept')
+    return {'n_samples': n_samples,
+            'n_chains': n_chains,
+            'n_posteriors': n_posteriors,
+            'posteriors': {posterior_name: np.random.randn(n_samples, n_chains) for posterior_name in posterior_names}}
 
 
 @mark.diagnostics
@@ -10,9 +27,13 @@ class TestDiagnosticsAutocorrelationPlot:
 
 
     @mark.genuine
-    def test_method(self, posteriors, monkeypatch):
-        monkeypatch.setattr(plt, 'show', lambda: None)
-        bp.diagnostics.autocorrelation_plot(posteriors)
+    @given(posteriors_data())
+    @settings(max_examples = 10, deadline = None)
+    def test_method(self, posteriors_data):
+        with MonkeyPatch().context() as mp:
+            mp.setattr(plt, 'show', lambda: None)
+            bp.diagnostics.autocorrelation_plot(posteriors = posteriors_data['posteriors'],
+                                                max_lags = posteriors_data['n_samples'])
 
 
     @mark.error
@@ -41,13 +62,18 @@ class TestDiagnosticsAutocorrelationSummary:
 
 
     @mark.genuine
-    def test_method(self, posteriors):
-        acorr_summary = bp.diagnostics.autocorrelation_summary(posteriors)
+    @given(posteriors_data())
+    @settings(max_examples = 20, deadline = None)
+    def test_method(self, posteriors_data):
+        lags = [lag for lag in [0, 1, 5, 10, 20, 30] if lag <= posteriors_data['n_samples'] - 1]
+        acorr_summary = bp.diagnostics.autocorrelation_summary(posteriors = posteriors_data['posteriors'],
+                                                               lags = lags)
 
         assert isinstance(acorr_summary, pd.DataFrame)
         assert not acorr_summary.empty
         assert all([index.startswith('Lag ') for index in acorr_summary.index])
-        assert list(acorr_summary.columns) == list(posteriors.keys())
+        assert list(acorr_summary.columns) == list(posteriors_data['posteriors'].keys())
+        assert all(acorr_summary.loc['Lag 0', :] - 1 < 1e-14)
 
 
     @mark.error
@@ -77,13 +103,17 @@ class TestDiagnosticsEffectiveSampleSize:
 
 
     @mark.genuine
-    def test_method(self, posteriors):
-        ess_summary = bp.diagnostics.effective_sample_size(posteriors)
+    @given(posteriors_data())
+    @settings(max_examples = 20, deadline = None)
+    def test_method(self, posteriors_data):
+        ess_summary = bp.diagnostics.effective_sample_size(posteriors = posteriors_data['posteriors'])
 
         assert isinstance(ess_summary, pd.DataFrame)
         assert not ess_summary.empty
         assert ess_summary.index[0] == 'Effective Sample Size'
-        assert list(ess_summary.columns) == list(posteriors.keys())
+        assert list(ess_summary.columns) == list(posteriors_data['posteriors'].keys())
+        assert all(ess_summary <= posteriors_data['n_samples']*posteriors_data['n_chains'])
+        assert all(ess_summary >= 1)
 
 
     @mark.error
