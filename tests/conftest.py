@@ -615,19 +615,6 @@ def analysis_compute_dic_value_error(request):
 
 
 @fixture(scope = 'session')
-def posteriors(general_testing_data):
-    model = bp.model.LinearModel()
-    model.data = general_testing_data['data']
-    model.response_variable = general_testing_data['response_variable']
-    model.priors = general_testing_data['priors']
-    sampler = bp.regression.LinearRegression(model = model)
-    sampler.sample(n_iterations = general_testing_data['n_iterations'],
-                   burn_in_iterations = general_testing_data['burn_in_iterations'],
-                   n_chains = general_testing_data['n_chains'])
-    return model.posteriors
-
-
-@fixture(scope = 'session')
 def solved_model(general_testing_data):
     model = bp.model.LinearModel()
     model.data = general_testing_data['data']
