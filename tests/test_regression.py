@@ -27,26 +27,26 @@ class TestLinearRegressionSample:
 
 
     @mark.genuine
-    @given(model_set_up())
+    @given(model_options = model_set_up())
     @settings(max_examples = 20, deadline = None, suppress_health_check = [HealthCheck.data_too_large])
-    def test_method(self, model_set_up):
+    def test_method(self, model_options):
         model = bp.model.LinearModel()
-        model.data = model_set_up['data']
-        model.response_variable = model_set_up['response_variable']
-        model.priors = model_set_up['priors']
+        model.data = model_options['data']
+        model.response_variable = model_options['response_variable']
+        model.priors = model_options['priors']
         sampler = bp.regression.LinearRegression(model = model)
-        sampler.sample(n_iterations = model_set_up['n_samples'],
-                       burn_in_iterations = model_set_up['burn_in_iterations'],
-                       n_chains = model_set_up['n_chains'],
-                       seed = model_set_up['seed'])
+        sampler.sample(n_iterations = model_options['n_samples'],
+                       burn_in_iterations = model_options['burn_in_iterations'],
+                       n_chains = model_options['n_chains'],
+                       seed = model_options['seed'])
 
         assert isinstance(model.posteriors, dict)
         assert len(model.posteriors) > 0
-        assert model.posteriors.keys() == model_set_up['priors'].keys()
+        assert model.posteriors.keys() == model_options['priors'].keys()
         assert all(np.array([posterior_samples.shape for posterior_samples
-                             in model.posteriors.values()])[:, 0] == model_set_up['n_samples'])
+                             in model.posteriors.values()])[:, 0] == model_options['n_samples'])
         assert all(np.array([posterior_samples.shape for posterior_samples
-                             in model.posteriors.values()])[:, 1] == model_set_up['n_chains'])
+                             in model.posteriors.values()])[:, 1] == model_options['n_chains'])
         assert (model.posteriors['variance'] > 0).all()
 
         regressor_names = [posterior for posterior in model.posteriors.keys() if posterior != 'variance']
@@ -57,8 +57,8 @@ class TestLinearRegressionSample:
                                                rcond = None)[0]
 
         for i, regressor in enumerate(regressor_names, 0):
-            lower_bound = np.quantile(np.asarray(model.posteriors[regressor]).reshape(-1), model_set_up['q_min'])
-            upper_bound = np.quantile(np.asarray(model.posteriors[regressor]).reshape(-1), model_set_up['q_max'])
+            lower_bound = np.quantile(np.asarray(model.posteriors[regressor]).reshape(-1), model_options['q_min'])
+            upper_bound = np.quantile(np.asarray(model.posteriors[regressor]).reshape(-1), model_options['q_max'])
 
             assert lower_bound <= linear_model_results[i] <= upper_bound
 

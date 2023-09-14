@@ -28,14 +28,14 @@ class TestModelData:
 
 
     @mark.genuine
-    @given(model_set_up())
+    @given(model_options = model_set_up())
     @settings(max_examples = 20, deadline = None, suppress_health_check = [HealthCheck.data_too_large])
-    def test_property(self, model_set_up):
+    def test_property(self, model_options):
         model = LinearModel()
-        model.data = model_set_up['data']
+        model.data = model_options['data']
 
         assert isinstance(model.data, pd.DataFrame)
-        assert model.data.equals(model_set_up['data'])
+        assert model.data.equals(model_options['data'])
         assert not model.data.empty
 
 
@@ -56,14 +56,14 @@ class TestModelResponseVariable:
 
 
     @mark.genuine
-    @given(model_set_up())
+    @given(model_options = model_set_up())
     @settings(max_examples = 20, deadline = None, suppress_health_check = [HealthCheck.data_too_large])
-    def test_property(self, model_set_up):
+    def test_property(self, model_options):
         model = LinearModel()
-        model.response_variable = model_set_up['response_variable']
+        model.response_variable = model_options['response_variable']
 
         assert isinstance(model.response_variable, str)
-        assert model.response_variable == model_set_up['response_variable']
+        assert model.response_variable == model_options['response_variable']
 
 
     @mark.error
@@ -77,15 +77,15 @@ class TestModelPriors:
 
 
     @mark.genuine
-    @given(model_set_up())
+    @given(model_options = model_set_up())
     @settings(max_examples = 20, deadline = None, suppress_health_check = [HealthCheck.data_too_large])
-    def test_property(self, model_set_up):
+    def test_property(self, model_options):
         model = LinearModel()
-        model.priors = model_set_up['priors']
+        model.priors = model_options['priors']
 
         assert isinstance(model.priors, dict)
         assert len(model.priors) > 0
-        assert model.priors == model_set_up['priors']
+        assert model.priors == model_options['priors']
         assert 'intercept' in model.priors.keys()
         assert 'variance' in model.priors.keys()
         assert all(['mean' in regressor_data.keys() for regressor, regressor_data in model.priors.items()
@@ -122,18 +122,18 @@ class TestModelPosteriors:
 
 
     @mark.genuine
-    @given(model_set_up())
+    @given(model_options = model_set_up())
     @settings(max_examples = 20, deadline = None, suppress_health_check = [HealthCheck.data_too_large])
-    def test_property(self, model_set_up):
+    def test_property(self, model_options):
         model = LinearModel()
-        model.posteriors = model_set_up['posteriors']
+        model.posteriors = model_options['posteriors']
 
         assert isinstance(model.posteriors, dict)
         assert len(model.posteriors) > 0
-        assert model.posteriors == model_set_up['posteriors']
+        assert model.posteriors == model_options['posteriors']
         assert 'intercept' in model.posteriors.keys()
         assert 'variance' in model.posteriors.keys()
-        assert all([posterior_samples.shape == (model_set_up['n_samples'], model_set_up['n_chains'])
+        assert all([posterior_samples.shape == (model_options['n_samples'], model_options['n_chains'])
                     for posterior_samples in model.posteriors.values()])
         assert (model.posteriors['variance'] > 0).all()
 
@@ -161,21 +161,21 @@ class TestModelPosteriorsToFrame:
 
 
     @mark.genuine
-    @given(model_set_up())
+    @given(model_options = model_set_up())
     @settings(max_examples = 20, deadline = None, suppress_health_check = [HealthCheck.data_too_large])
-    def test_method(self, model_set_up):
+    def test_method(self, model_options):
         model = LinearModel()
-        model.posteriors = model_set_up['posteriors']
+        model.posteriors = model_options['posteriors']
         posteriors_frame = model.posteriors_to_frame()
 
         assert isinstance(posteriors_frame, pd.DataFrame)
         assert not posteriors_frame.empty
-        assert all(posteriors_frame.columns == list(model_set_up['posteriors'].keys()))
-        assert len(posteriors_frame) == model_set_up['n_samples']*model_set_up['n_chains']
+        assert all(posteriors_frame.columns == list(model_options['posteriors'].keys()))
+        assert len(posteriors_frame) == model_options['n_samples']*model_options['n_chains']
         for col in model.posteriors.keys():
-            for i in range(model_set_up['n_samples']):
-                for j in range(model_set_up['n_chains']):
-                    assert model.posteriors[col][i, j] == posteriors_frame.loc[i*model_set_up['n_chains'] + j, col]
+            for i in range(model_options['n_samples']):
+                for j in range(model_options['n_chains']):
+                    assert model.posteriors[col][i, j] == posteriors_frame.loc[i*model_options['n_chains'] + j, col]
 
 
     @mark.error
@@ -189,25 +189,25 @@ class TestModelResiduals:
 
 
     @mark.genuine
-    @given(model_set_up())
+    @given(model_options = model_set_up())
     @settings(max_examples = 20, deadline = None, suppress_health_check = [HealthCheck.data_too_large])
-    def test_method(self, model_set_up):
+    def test_method(self, model_options):
         model = LinearModel()
-        model.data = model_set_up['data']
-        model.response_variable = model_set_up['response_variable']
-        model.posteriors = model_set_up['posteriors']
+        model.data = model_options['data']
+        model.response_variable = model_options['response_variable']
+        model.posteriors = model_options['posteriors']
         residuals = model.residuals()
 
         assert isinstance(residuals, pd.DataFrame)
         assert not residuals.empty
         assert 'predicted' in residuals.columns
         assert 'residuals' in residuals.columns
-        assert len(residuals) == len(model_set_up['data'])
+        assert len(residuals) == len(model_options['data'])
         cols = list(residuals.columns)
         cols.remove('intercept')
         cols.remove('predicted')
         cols.remove('residuals')
-        assert set(cols) == set(model_set_up['data'].columns)
+        assert set(cols) == set(model_options['data'].columns)
 
 
     @mark.error
@@ -221,17 +221,17 @@ class TestModelPredictDistribution:
 
 
     @mark.genuine
-    @given(model_set_up())
+    @given(model_options = model_set_up())
     @settings(max_examples = 20, deadline = None, suppress_health_check = [HealthCheck.data_too_large])
-    def test_method(self, model_set_up):
-        if len(model_set_up['predictors']) != 0:
+    def test_method(self, model_options):
+        if len(model_options['predictors']) != 0:
             model = LinearModel()
-            model.posteriors = model_set_up['posteriors']
-            predicted = model.predict_distribution(predictors = model_set_up['predictors'])
+            model.posteriors = model_options['posteriors']
+            predicted = model.predict_distribution(predictors = model_options['predictors'])
 
             assert isinstance(predicted, np.ndarray)
             assert predicted.size != 0
-            assert len(predicted) == model_set_up['n_samples']*model_set_up['n_chains']
+            assert len(predicted) == model_options['n_samples']*model_options['n_chains']
 
 
     @mark.error
@@ -259,18 +259,18 @@ class TestModelLikelihood:
 
 
     @mark.genuine
-    @given(likelihood_data())
+    @given(l_data = likelihood_data())
     @settings(max_examples = 20, deadline = None, suppress_health_check = [HealthCheck.data_too_large])
-    def test_method(self, likelihood_data):
+    def test_method(self, l_data):
         model = LinearModel()
         model.response_variable = 'y'
-        likelihood_data['y'] = np.random.uniform(low = likelihood_data['mean'].min(),
-                                                 high = likelihood_data['mean'].max(),
-                                                 size = len(likelihood_data))
-        likelihood = model.likelihood(data = likelihood_data)
+        l_data['y'] = np.random.uniform(low = l_data['mean'].min(),
+                                        high = l_data['mean'].max(),
+                                        size = len(l_data))
+        likelihood = model.likelihood(data = l_data)
 
         assert isinstance(likelihood, np.ndarray)
-        assert len(likelihood) == len(likelihood_data)
+        assert len(likelihood) == len(l_data)
 
 
     @mark.error
@@ -290,18 +290,18 @@ class TestModelLogLikelihood:
 
 
     @mark.genuine
-    @given(likelihood_data())
+    @given(l_data = likelihood_data())
     @settings(max_examples = 20, deadline = None, suppress_health_check = [HealthCheck.data_too_large])
-    def test_method(self, likelihood_data):
+    def test_method(self, l_data):
         model = LinearModel()
         model.response_variable = 'y'
-        likelihood_data['y'] = np.random.uniform(low = likelihood_data['mean'].min(),
-                                                 high = likelihood_data['mean'].max(),
-                                                 size = len(likelihood_data))
-        log_likelihood = model.log_likelihood(data = likelihood_data)
+        l_data['y'] = np.random.uniform(low = l_data['mean'].min(),
+                                        high = l_data['mean'].max(),
+                                        size = len(l_data))
+        log_likelihood = model.log_likelihood(data = l_data)
 
         assert isinstance(log_likelihood, np.ndarray)
-        assert len(log_likelihood) == len(likelihood_data)
+        assert len(log_likelihood) == len(l_data)
 
 
     @mark.error

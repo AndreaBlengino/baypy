@@ -12,10 +12,10 @@ class TestAnalysisTracePlot:
 
 
     @mark.genuine
-    @given(posteriors_data())
+    @given(p_data = posteriors_data())
     @settings(max_examples = 10, deadline = None)
-    def test_method(self, posteriors_data):
-        bp.analysis.trace_plot(posteriors = posteriors_data['posteriors'])
+    def test_method(self, p_data):
+        bp.analysis.trace_plot(posteriors = p_data['posteriors'])
         plt.close()
 
 
@@ -42,29 +42,29 @@ class TestAnalysisSummary:
 
 
     @mark.genuine
-    @given(model_set_up())
+    @given(model_options = model_set_up())
     @settings(max_examples = 20, deadline = None, suppress_health_check = [HealthCheck.data_too_large])
-    def test_method(self, model_set_up):
-        summary = bp.analysis.summary(model_set_up['posteriors'], quantiles = model_set_up['quantiles'])
+    def test_method(self, model_options):
+        summary = bp.analysis.summary(model_options['posteriors'], quantiles = model_options['quantiles'])
 
-        assert summary['n_chains'] == model_set_up['n_chains']
-        assert summary['n_iterations'] == model_set_up['n_samples']
+        assert summary['n_chains'] == model_options['n_chains']
+        assert summary['n_iterations'] == model_options['n_samples']
         assert isinstance(summary['summary'], pd.DataFrame)
         assert not summary['summary'].empty
-        assert list(summary['summary'].index) == list(model_set_up['posteriors'].keys())
+        assert list(summary['summary'].index) == list(model_options['posteriors'].keys())
         assert all(summary['summary'].columns == ['Mean', 'SD', 'HPD min', 'HPD max'])
         assert isinstance(summary['quantiles'], pd.DataFrame)
         assert not summary['quantiles'].empty
-        assert list(summary['quantiles'].index) == list(model_set_up['posteriors'].keys())
+        assert list(summary['quantiles'].index) == list(model_options['posteriors'].keys())
         assert all(summary['quantiles'].columns == [f'{100*quantile}%'.replace('.0%', '%')
-                                                    for quantile in model_set_up['quantiles']])
+                                                    for quantile in model_options['quantiles']])
 
-        for posterior, posterior_samples in model_set_up['posteriors'].items():
+        for posterior, posterior_samples in model_options['posteriors'].items():
             assert summary['summary'].loc[posterior, 'Mean'] == posterior_samples.mean()
             assert summary['summary'].loc[posterior, 'SD'] == posterior_samples.std()
 
-        for posterior, posterior_samples in model_set_up['posteriors'].items():
-            for quantile in model_set_up['quantiles']:
+        for posterior, posterior_samples in model_options['posteriors'].items():
+            for quantile in model_options['quantiles']:
                 assert summary['quantiles'].loc[posterior, f'{100*quantile}%'.replace('.0%', '%')] == \
                        np.quantile(np.asarray(posterior_samples).reshape(-1), quantile)
 
@@ -99,13 +99,13 @@ class TestAnalysisResidualsPlot:
 
 
     @mark.genuine
-    @given(model_set_up())
+    @given(model_options = model_set_up())
     @settings(max_examples = 20, deadline = None, suppress_health_check = [HealthCheck.data_too_large])
-    def test_method(self, model_set_up):
+    def test_method(self, model_options):
         model = bp.model.LinearModel()
-        model.data = model_set_up['data']
-        model.response_variable = model_set_up['response_variable']
-        model.posteriors = model_set_up['posteriors']
+        model.data = model_options['data']
+        model.response_variable = model_options['response_variable']
+        model.posteriors = model_options['posteriors']
         bp.analysis.residuals_plot(model = model)
         plt.close()
 
@@ -127,13 +127,13 @@ class TestAnalysisComputeDIC:
 
 
     @mark.genuine
-    @given(model_set_up())
+    @given(model_options = model_set_up())
     @settings(max_examples = 20, deadline = None, suppress_health_check = [HealthCheck.data_too_large])
-    def test_method(self, model_set_up):
+    def test_method(self, model_options):
         model = bp.model.LinearModel()
-        model.data = model_set_up['data']
-        model.response_variable = model_set_up['response_variable']
-        model.posteriors = model_set_up['posteriors']
+        model.data = model_options['data']
+        model.response_variable = model_options['response_variable']
+        model.posteriors = model_options['posteriors']
         summary = bp.analysis.compute_DIC(model = model)
 
         assert isinstance(summary, dict)

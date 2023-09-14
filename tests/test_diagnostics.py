@@ -12,11 +12,11 @@ class TestDiagnosticsAutocorrelationPlot:
 
 
     @mark.genuine
-    @given(posteriors_data())
+    @given(p_data =  posteriors_data())
     @settings(max_examples = 10, deadline = None)
-    def test_method(self, posteriors_data):
-        bp.diagnostics.autocorrelation_plot(posteriors = posteriors_data['posteriors'],
-                                            max_lags = posteriors_data['n_samples'])
+    def test_method(self, p_data):
+        bp.diagnostics.autocorrelation_plot(posteriors = p_data['posteriors'],
+                                            max_lags = p_data['n_samples'])
         plt.close()
 
 
@@ -46,17 +46,17 @@ class TestDiagnosticsAutocorrelationSummary:
 
 
     @mark.genuine
-    @given(posteriors_data())
+    @given(p_data = posteriors_data())
     @settings(max_examples = 20, deadline = None)
-    def test_method(self, posteriors_data):
-        lags = [lag for lag in [0, 1, 5, 10, 20, 30] if lag <= posteriors_data['n_samples'] - 1]
-        acorr_summary = bp.diagnostics.autocorrelation_summary(posteriors = posteriors_data['posteriors'],
+    def test_method(self, p_data):
+        lags = [lag for lag in [0, 1, 5, 10, 20, 30] if lag <= p_data['n_samples'] - 1]
+        acorr_summary = bp.diagnostics.autocorrelation_summary(posteriors = p_data['posteriors'],
                                                                lags = lags)
 
         assert isinstance(acorr_summary, pd.DataFrame)
         assert not acorr_summary.empty
         assert all([index.startswith('Lag ') for index in acorr_summary.index])
-        assert list(acorr_summary.columns) == list(posteriors_data['posteriors'].keys())
+        assert list(acorr_summary.columns) == list(p_data['posteriors'].keys())
         assert all(acorr_summary.loc['Lag 0', :] - 1 < 1e-14)
 
 
@@ -87,16 +87,16 @@ class TestDiagnosticsEffectiveSampleSize:
 
 
     @mark.genuine
-    @given(posteriors_data())
+    @given(p_data = posteriors_data())
     @settings(max_examples = 20, deadline = None)
-    def test_method(self, posteriors_data):
-        ess_summary = bp.diagnostics.effective_sample_size(posteriors = posteriors_data['posteriors'])
+    def test_method(self, p_data):
+        ess_summary = bp.diagnostics.effective_sample_size(posteriors = p_data['posteriors'])
 
         assert isinstance(ess_summary, pd.DataFrame)
         assert not ess_summary.empty
         assert ess_summary.index[0] == 'Effective Sample Size'
-        assert list(ess_summary.columns) == list(posteriors_data['posteriors'].keys())
-        assert all(ess_summary <= posteriors_data['n_samples']*posteriors_data['n_chains'])
+        assert list(ess_summary.columns) == list(p_data['posteriors'].keys())
+        assert all(ess_summary <= p_data['n_samples']*p_data['n_chains'])
         assert all(ess_summary >= 1)
 
 

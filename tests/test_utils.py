@@ -11,8 +11,8 @@ class TestFlattenMatrix:
 
 
     @mark.genuine
-    @given(integers(min_value = 1, max_value = 10000),
-           integers(min_value = 1, max_value = 10))
+    @given(n_rows = integers(min_value = 1, max_value = 10000),
+           n_columns = integers(min_value = 1, max_value = 10))
     @settings(max_examples = 20, deadline = 1000)
     def test_function(self, n_rows, n_columns):
         matrix = np.random.randn(n_rows, n_columns)
@@ -43,9 +43,9 @@ class TestMatricesToFrame:
 
 
     @mark.genuine
-    @given(integers(min_value = 1, max_value = 1000),
-           integers(min_value = 1, max_value = 5),
-           integers(min_value = 1, max_value = 10))
+    @given(n_rows = integers(min_value = 1, max_value = 1000),
+           n_columns = integers(min_value = 1, max_value = 5),
+           n_matrices = integers(min_value = 1, max_value = 10))
     @settings(max_examples = 20, deadline = None)
     def test_function(self, n_rows, n_columns, n_matrices):
         matrix_names = np.random.choice(list('abcdefghij'), n_matrices, replace = False).tolist()
@@ -80,8 +80,8 @@ class TestDotProduct:
 
 
     @mark.genuine
-    @given(integers(min_value = 1, max_value = 10000),
-           integers(min_value = 1, max_value = 10))
+    @given(n_rows = integers(min_value = 1, max_value = 10000),
+           n_columns = integers(min_value = 1, max_value = 10))
     @settings(max_examples = 20, deadline = None)
     def test_function(self, n_rows, n_columns):
         column_names = np.random.choice(list('abcdefghij'), n_columns, replace = False).tolist()
