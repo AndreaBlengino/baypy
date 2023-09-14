@@ -2,8 +2,8 @@ import baypy as bp
 from hypothesis import given, settings, HealthCheck
 import numpy as np
 import pandas as pd
-from tests.conftest import model_set_up
 from pytest import mark, raises
+from tests.conftest import model_set_up
 
 
 @mark.regression
@@ -48,6 +48,19 @@ class TestLinearRegressionSample:
         assert all(np.array([posterior_samples.shape for posterior_samples
                              in model.posteriors.values()])[:, 1] == model_set_up['n_chains'])
         assert (model.posteriors['variance'] > 0).all()
+
+        regressor_names = [posterior for posterior in model.posteriors.keys() if posterior != 'variance']
+        data = model.data.copy()
+        data['intercept'] = 1
+        linear_model_results = np.linalg.lstsq(a = data[regressor_names],
+                                               b = data[model.response_variable],
+                                               rcond = None)[0]
+
+        for i, regressor in enumerate(regressor_names, 0):
+            lower_bound = np.quantile(np.asarray(model.posteriors[regressor]).reshape(-1), model_set_up['q_min'])
+            upper_bound = np.quantile(np.asarray(model.posteriors[regressor]).reshape(-1), model_set_up['q_max'])
+
+            assert lower_bound <= linear_model_results[i] <= upper_bound
 
 
     @mark.error

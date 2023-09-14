@@ -1,25 +1,10 @@
 import baypy as bp
 from hypothesis import given, settings
-from hypothesis.strategies import composite, integers
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from pytest import mark, raises
-from _pytest.monkeypatch import MonkeyPatch
-
-
-@composite
-def posteriors_data(draw):
-    n_samples = draw(integers(min_value = 20, max_value = 1000))
-    n_chains = draw(integers(min_value = 1, max_value = 5))
-    n_posteriors = draw(integers(min_value = 1, max_value = 9))
-
-    posterior_names = np.random.choice(list('abcdefghij'), n_posteriors, replace = False).tolist()
-    posterior_names.append('intercept')
-    return {'n_samples': n_samples,
-            'n_chains': n_chains,
-            'n_posteriors': n_posteriors,
-            'posteriors': {posterior_name: np.random.randn(n_samples, n_chains) for posterior_name in posterior_names}}
+from tests.conftest import posteriors_data
 
 
 @mark.diagnostics
@@ -30,10 +15,9 @@ class TestDiagnosticsAutocorrelationPlot:
     @given(posteriors_data())
     @settings(max_examples = 10, deadline = None)
     def test_method(self, posteriors_data):
-        with MonkeyPatch().context() as mp:
-            mp.setattr(plt, 'show', lambda: None)
-            bp.diagnostics.autocorrelation_plot(posteriors = posteriors_data['posteriors'],
-                                                max_lags = posteriors_data['n_samples'])
+        bp.diagnostics.autocorrelation_plot(posteriors = posteriors_data['posteriors'],
+                                            max_lags = posteriors_data['n_samples'])
+        plt.close()
 
 
     @mark.error

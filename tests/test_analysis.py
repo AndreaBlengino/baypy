@@ -1,8 +1,10 @@
 import baypy as bp
+from hypothesis import given, settings, HealthCheck
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from pytest import mark, raises
+from tests.conftest import model_set_up, posteriors_data
 
 
 @mark.analysis
@@ -10,9 +12,11 @@ class TestAnalysisTracePlot:
 
 
     @mark.genuine
-    def test_method(self, posteriors, monkeypatch):
-        monkeypatch.setattr(plt, 'show', lambda: None)
-        bp.analysis.trace_plot(posteriors)
+    @given(posteriors_data())
+    @settings(max_examples = 10, deadline = None)
+    def test_method(self, posteriors_data):
+        bp.analysis.trace_plot(posteriors = posteriors_data['posteriors'])
+        plt.close()
 
 
     @mark.error
@@ -38,31 +42,31 @@ class TestAnalysisSummary:
 
 
     @mark.genuine
-    def test_method(self, posteriors, general_testing_data):
-        summary = bp.analysis.summary(posteriors)
+    @given(model_set_up())
+    @settings(max_examples = 20, deadline = None, suppress_health_check = [HealthCheck.data_too_large])
+    def test_method(self, model_set_up):
+        summary = bp.analysis.summary(model_set_up['posteriors'], quantiles = model_set_up['quantiles'])
 
-        data_tmp = general_testing_data['data'].copy()
-        data_tmp['intercept'] = 1
-        linear_model_results = np.linalg.lstsq(a = data_tmp[general_testing_data['regressor_names']],
-                                               b = data_tmp[general_testing_data['response_variable']],
-                                               rcond = None)[0]
-
-        for i, regressor in enumerate(general_testing_data['regressor_names'], 0):
-            lower_bound = np.quantile(np.asarray(posteriors[regressor]).reshape(-1), general_testing_data['q_min'])
-            upper_bound = np.quantile(np.asarray(posteriors[regressor]).reshape(-1), general_testing_data['q_max'])
-
-            assert lower_bound <= linear_model_results[i] <= upper_bound
-
-        assert summary['n_chains'] == general_testing_data['n_chains']
-        assert summary['n_iterations'] == general_testing_data['n_iterations']
+        assert summary['n_chains'] == model_set_up['n_chains']
+        assert summary['n_iterations'] == model_set_up['n_samples']
         assert isinstance(summary['summary'], pd.DataFrame)
         assert not summary['summary'].empty
-        assert list(summary['summary'].index) == list(posteriors.keys())
+        assert list(summary['summary'].index) == list(model_set_up['posteriors'].keys())
         assert all(summary['summary'].columns == ['Mean', 'SD', 'HPD min', 'HPD max'])
         assert isinstance(summary['quantiles'], pd.DataFrame)
         assert not summary['quantiles'].empty
-        assert list(summary['quantiles'].index) == list(posteriors.keys())
-        assert all(summary['quantiles'].columns == ['2.5%', '25%', '50%', '75%', '97.5%'])
+        assert list(summary['quantiles'].index) == list(model_set_up['posteriors'].keys())
+        assert all(summary['quantiles'].columns == [f'{100*quantile}%'.replace('.0%', '%')
+                                                    for quantile in model_set_up['quantiles']])
+
+        for posterior, posterior_samples in model_set_up['posteriors'].items():
+            assert summary['summary'].loc[posterior, 'Mean'] == posterior_samples.mean()
+            assert summary['summary'].loc[posterior, 'SD'] == posterior_samples.std()
+
+        for posterior, posterior_samples in model_set_up['posteriors'].items():
+            for quantile in model_set_up['quantiles']:
+                assert summary['quantiles'].loc[posterior, f'{100*quantile}%'.replace('.0%', '%')] == \
+                       np.quantile(np.asarray(posterior_samples).reshape(-1), quantile)
 
 
     @mark.error
@@ -95,9 +99,15 @@ class TestAnalysisResidualsPlot:
 
 
     @mark.genuine
-    def test_method(self, solved_model, monkeypatch):
-        monkeypatch.setattr(plt, 'show', lambda: None)
-        bp.analysis.residuals_plot(model = solved_model)
+    @given(model_set_up())
+    @settings(max_examples = 20, deadline = None, suppress_health_check = [HealthCheck.data_too_large])
+    def test_method(self, model_set_up):
+        model = bp.model.LinearModel()
+        model.data = model_set_up['data']
+        model.response_variable = model_set_up['response_variable']
+        model.posteriors = model_set_up['posteriors']
+        bp.analysis.residuals_plot(model = model)
+        plt.close()
 
 
     @mark.error
@@ -117,8 +127,14 @@ class TestAnalysisComputeDIC:
 
 
     @mark.genuine
-    def test_method(self, solved_model):
-        summary = bp.analysis.compute_DIC(model = solved_model)
+    @given(model_set_up())
+    @settings(max_examples = 20, deadline = None, suppress_health_check = [HealthCheck.data_too_large])
+    def test_method(self, model_set_up):
+        model = bp.model.LinearModel()
+        model.data = model_set_up['data']
+        model.response_variable = model_set_up['response_variable']
+        model.posteriors = model_set_up['posteriors']
+        summary = bp.analysis.compute_DIC(model = model)
 
         assert isinstance(summary, dict)
         assert list(summary.keys()) == ['deviance at posterior means', 'posterior mean deviance',

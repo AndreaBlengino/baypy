@@ -1,5 +1,5 @@
 import baypy as bp
-from hypothesis.strategies import composite, integers, floats
+from hypothesis.strategies import composite, integers, floats, lists
 import numpy as np
 import pandas as pd
 from pytest import fixture
@@ -60,6 +60,7 @@ def model_set_up(draw):
     burn_in_iterations = draw(integers(min_value = 1, max_value = 100))
     n_chains = draw(integers(min_value = 1, max_value = 5))
     seed = draw(integers(min_value = 1, max_value = 1000))
+    quantiles = draw(lists(integers(min_value = 0, max_value = 100), min_size = 1, max_size = 10, unique = True))
 
     regressors_names = np.random.choice(list('abcdefghijklmnopqrstuvxyz'), n_regressors, replace = False).tolist()
     data = pd.DataFrame({regressor_name: np.random.uniform(low = regressors_minimum,
@@ -96,7 +97,24 @@ def model_set_up(draw):
             'burn_in_iterations': burn_in_iterations,
             'n_chains': n_chains,
             'predictors': predictors,
-            'seed': seed}
+            'seed': seed,
+            'q_min': 0.025,
+            'q_max': 0.975,
+            'quantiles': [quantile/100 for quantile in quantiles]}
+
+
+@composite
+def posteriors_data(draw):
+    n_samples = draw(integers(min_value = 20, max_value = 1000))
+    n_chains = draw(integers(min_value = 1, max_value = 5))
+    n_posteriors = draw(integers(min_value = 1, max_value = 9))
+
+    posterior_names = np.random.choice(list('abcdefghij'), n_posteriors, replace = False).tolist()
+    posterior_names.append('intercept')
+    return {'n_samples': n_samples,
+            'n_chains': n_chains,
+            'n_posteriors': n_posteriors,
+            'posteriors': {posterior_name: np.random.randn(n_samples, n_chains) for posterior_name in posterior_names}}
 
 
 @fixture(scope = 'session',

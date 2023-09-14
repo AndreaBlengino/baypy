@@ -3,8 +3,8 @@ from hypothesis import given, settings, HealthCheck
 from hypothesis.strategies import composite, integers, floats
 import pandas as pd
 import numpy as np
-from tests.conftest import model_set_up
 from pytest import mark, raises
+from tests.conftest import model_set_up
 
 
 @composite
