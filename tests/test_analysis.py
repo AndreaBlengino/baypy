@@ -127,6 +127,7 @@ class TestAnalysisComputeDIC:
 
 
     @mark.genuine
+    @mark.filterwarnings('ignore::RuntimeWarning')
     @given(model_options = model_set_up())
     @settings(max_examples = 20, deadline = None, suppress_health_check = [HealthCheck.data_too_large])
     def test_method(self, model_options):

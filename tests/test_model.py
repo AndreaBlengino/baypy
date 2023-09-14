@@ -4,7 +4,7 @@ from hypothesis.strategies import composite, integers, floats
 import pandas as pd
 import numpy as np
 from pytest import mark, raises
-from tests.conftest import model_set_up
+from tests.conftest import model_set_up, model
 
 
 @composite
@@ -40,15 +40,17 @@ class TestModelData:
 
 
     @mark.error
-    def test_raises_type_error(self, empty_model, model_data_type_error):
+    def test_raises_type_error(self, model_data_type_error):
+        basic_model = LinearModel()
         with raises(TypeError):
-            empty_model.data = model_data_type_error
+            basic_model.data = model_data_type_error
 
 
     @mark.error
-    def test_raises_value_error(self, empty_model):
+    def test_raises_value_error(self):
+        basic_model = LinearModel()
         with raises(ValueError):
-            empty_model.data = pd.DataFrame()
+            basic_model.data = pd.DataFrame()
 
 
 @mark.model
@@ -67,9 +69,10 @@ class TestModelResponseVariable:
 
 
     @mark.error
-    def test_raises_type_error(self, empty_model, model_response_variable_type_error):
+    def test_raises_type_error(self, model_response_variable_type_error):
+        basic_model = LinearModel()
         with raises(TypeError):
-            empty_model.response_variable = model_response_variable_type_error
+            basic_model.response_variable = model_response_variable_type_error
 
 
 @mark.model
@@ -100,21 +103,24 @@ class TestModelPriors:
 
 
     @mark.error
-    def test_raises_type_error(self, empty_model, model_priors_type_error):
+    def test_raises_type_error(self, model_priors_type_error):
+        basic_model = LinearModel()
         with raises(TypeError):
-            empty_model.priors = model_priors_type_error
+            basic_model.priors = model_priors_type_error
 
 
     @mark.error
-    def test_raises_key_error(self, empty_model, model_priors_key_error):
+    def test_raises_key_error(self, model_priors_key_error):
+        basic_model = LinearModel()
         with raises(KeyError):
-            empty_model.priors = model_priors_key_error
+            basic_model.priors = model_priors_key_error
 
 
     @mark.error
-    def test_raises_value_error(self, empty_model, model_priors_value_error):
+    def test_raises_value_error(self, model_priors_value_error):
+        basic_model = LinearModel()
         with raises(ValueError):
-            empty_model.priors = model_priors_value_error
+            basic_model.priors = model_priors_value_error
 
 
 @mark.model
@@ -139,21 +145,24 @@ class TestModelPosteriors:
 
 
     @mark.error
-    def test_raises_type_error(self, empty_model, model_posteriors_type_error):
+    def test_raises_type_error(self, model_posteriors_type_error):
+        basic_model = LinearModel()
         with raises(TypeError):
-            empty_model.posteriors = model_posteriors_type_error
+            basic_model.posteriors = model_posteriors_type_error
 
 
     @mark.error
-    def test_raises_key_error(self, empty_model, model_posteriors_key_error):
+    def test_raises_key_error(self, model_posteriors_key_error):
+        basic_model = LinearModel()
         with raises(KeyError):
-            empty_model.posteriors = model_posteriors_key_error
+            basic_model.posteriors = model_posteriors_key_error
 
 
     @mark.error
-    def test_raises_value_error(self, empty_model):
+    def test_raises_value_error(self):
+        basic_model = LinearModel()
         with raises(ValueError):
-            empty_model.posteriors = {'intercept': np.array([]), 'variance': np.array([0])}
+            basic_model.posteriors = {'intercept': np.array([]), 'variance': np.array([0])}
 
 
 @mark.model
@@ -179,9 +188,10 @@ class TestModelPosteriorsToFrame:
 
 
     @mark.error
-    def test_raises_value_error(self, complete_model):
+    def test_raises_value_error(self):
+        basic_model = LinearModel()
         with raises(ValueError):
-            complete_model.posteriors_to_frame()
+            basic_model.posteriors_to_frame()
 
 
 @mark.model
@@ -235,23 +245,25 @@ class TestModelPredictDistribution:
 
 
     @mark.error
-    def test_raises_type_error(self, solved_model, model_predict_distribution_type_error):
+    def test_raises_type_error(self, model_predict_distribution_type_error):
         with raises(TypeError):
-            solved_model.predict_distribution(predictors = model_predict_distribution_type_error)
+            model.predict_distribution(predictors = model_predict_distribution_type_error)
 
 
     @mark.error
-    def test_raises_key_error(self, empty_model):
-        empty_model.posteriors = {'intercept': np.array([0]), 'variance': np.array([0])}
+    def test_raises_key_error(self):
+        basic_model = LinearModel()
+        basic_model.posteriors = {'intercept': np.array([0]), 'variance': np.array([0])}
         predictors = {'x': 5}
         with raises(KeyError):
-            empty_model.predict_distribution(predictors = predictors)
+            basic_model.predict_distribution(predictors = predictors)
 
 
     @mark.error
-    def test_raises_value_error(self, empty_model):
+    def test_raises_value_error(self):
+        basic_model = LinearModel()
         with raises(ValueError):
-            empty_model.predict_distribution(predictors = {})
+            basic_model.predict_distribution(predictors = {})
 
 
 @mark.model
@@ -274,15 +286,15 @@ class TestModelLikelihood:
 
 
     @mark.error
-    def test_raises_type_error(self, complete_model, model_likelihood_type_error):
+    def test_raises_type_error(self, model_likelihood_type_error):
         with raises(TypeError):
-            complete_model.likelihood(data = model_likelihood_type_error)
+            model.likelihood(data = model_likelihood_type_error)
 
 
     @mark.error
-    def test_raises_value_error(self, complete_model, model_likelihood_value_error):
+    def test_raises_value_error(self, model_likelihood_value_error):
         with raises(ValueError):
-            complete_model.likelihood(data = model_likelihood_value_error)
+            model.likelihood(data = model_likelihood_value_error)
 
 
 @mark.model
@@ -305,12 +317,12 @@ class TestModelLogLikelihood:
 
 
     @mark.error
-    def test_raises_type_error(self, complete_model, model_log_likelihood_type_error):
+    def test_raises_type_error(self, model_log_likelihood_type_error):
         with raises(TypeError):
-            complete_model.log_likelihood(data = model_log_likelihood_type_error)
+            model.log_likelihood(data = model_log_likelihood_type_error)
 
 
     @mark.error
-    def test_raises_value_error(self, complete_model, model_log_likelihood_value_error):
+    def test_raises_value_error(self, model_log_likelihood_value_error):
         with raises(ValueError):
-            complete_model.log_likelihood(data = model_log_likelihood_value_error)
+            model.log_likelihood(data = model_log_likelihood_value_error)

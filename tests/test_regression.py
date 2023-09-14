@@ -3,7 +3,7 @@ from hypothesis import given, settings, HealthCheck
 import numpy as np
 import pandas as pd
 from pytest import mark, raises
-from tests.conftest import model_set_up
+from tests.conftest import model_set_up, model
 
 
 @mark.regression
@@ -64,8 +64,8 @@ class TestLinearRegressionSample:
 
 
     @mark.error
-    def test_raises_type_error(self, complete_model, linear_regression_sample_type_error):
-        sampler = bp.regression.LinearRegression(model = complete_model)
+    def test_raises_type_error(self, linear_regression_sample_type_error):
+        sampler = bp.regression.LinearRegression(model = model)
         with raises(TypeError):
             sampler.sample(n_iterations = linear_regression_sample_type_error['n_iterations'],
                            burn_in_iterations = linear_regression_sample_type_error['burn_in_iterations'],
@@ -74,8 +74,8 @@ class TestLinearRegressionSample:
 
 
     @mark.error
-    def test_raises_value_error(self, complete_model, linear_regression_sample_value_error):
-        sampler = bp.regression.LinearRegression(model = complete_model)
+    def test_raises_value_error(self, linear_regression_sample_value_error):
+        sampler = bp.regression.LinearRegression(model = model)
         with raises(ValueError):
             sampler.sample(n_iterations = linear_regression_sample_value_error['n_iterations'],
                            burn_in_iterations = linear_regression_sample_value_error['burn_in_iterations'],

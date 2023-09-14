@@ -5,49 +5,6 @@ import pandas as pd
 from pytest import fixture
 
 
-np.random.seed(42)
-
-N = 50
-data = pd.DataFrame()
-data['x_1'] = np.random.uniform(low = 0, high = 100, size = N)
-data['x_2'] = np.random.uniform(low = -10, high = 10, size = N)
-data['x_3'] = np.random.uniform(low = -50, high = -40, size = N)
-data['x_1 * x_2'] = data['x_1']*data['x_2']
-
-data['y'] = 3*data['x_1'] - 20*data['x_2'] - data['x_3'] - 5*data['x_1 * x_2'] + 13 + 1*np.random.randn(N)
-
-response_variable = 'y'
-
-variance_sample_size = 5
-variance_of_variance = 10
-
-priors = {'x_1': {'mean': 0,
-                  'variance': 1e6},
-          'x_2': {'mean': 0,
-                  'variance': 1e6},
-          'x_3': {'mean': 0,
-                  'variance': 1e6},
-          'x_1 * x_2': {'mean': 0,
-                        'variance': 1e6},
-          'intercept': {'mean': 0,
-                        'variance': 1e6},
-          'variance': {'shape': variance_sample_size,
-                       'scale': variance_sample_size*variance_of_variance}}
-
-
-regressor_names = ['intercept', 'x_1', 'x_2', 'x_3', 'x_1 * x_2']
-
-q_min = 0.025
-q_max = 0.975
-
-predictors = {'x_1': 20, 'x_2': 5, 'x_3': -45}
-predictors['x_1 * x_2'] = predictors['x_1']*predictors['x_2']
-
-
-types_to_check = ['string', 2, 2.2, True, (0, 1), [0, 1], {0, 1}, {0: 1}, None,
-                  pd.DataFrame(columns = ['response_variable'], index = [0]), np.array([0])]
-
-
 @composite
 def model_set_up(draw):
     n_regressors = draw(integers(min_value = 0, max_value = 5))
@@ -117,59 +74,39 @@ def posteriors_data(draw):
             'posteriors': {posterior_name: np.random.randn(n_samples, n_chains) for posterior_name in posterior_names}}
 
 
-@fixture(scope = 'session',
-         params = [{'data': data,
-                    'response_variable': response_variable,
-                    'priors': priors,
-                    'n_iterations': 1000,
-                    'burn_in_iterations': 50,
-                    'n_chains': 3,
-                    'seed': 137,
-                    'regressor_names': regressor_names,
-                    'q_min': q_min,
-                    'q_max': q_max,
-                    'predictors': predictors},
-                   {'data': data,
-                    'response_variable': response_variable,
-                    'priors': priors,
-                    'n_iterations': 100,
-                    'burn_in_iterations': 50,
-                    'n_chains': 5,
-                    'seed': 137,
-                    'regressor_names': regressor_names,
-                    'q_min': q_min,
-                    'q_max': q_max,
-                    'predictors': predictors},
-                   {'data': data,
-                    'response_variable': response_variable,
-                    'priors': priors,
-                    'n_iterations': 1000,
-                    'burn_in_iterations': 50,
-                    'n_chains': 1,
-                    'seed': 137,
-                    'regressor_names': regressor_names,
-                    'q_min': q_min,
-                    'q_max': q_max,
-                    'predictors': predictors},
-                   {'data': data,
-                    'response_variable': response_variable,
-                    'priors': priors,
-                    'n_iterations': 1000,
-                    'burn_in_iterations': 1,
-                    'n_chains': 3,
-                    'seed': 137,
-                    'regressor_names': regressor_names,
-                    'q_min': q_min,
-                    'q_max': q_max,
-                    'predictors': predictors}])
-def general_testing_data(request):
-    return request.param
+np.random.seed(42)
+
+N = 50
+data = pd.DataFrame()
+data['x_1'] = np.random.uniform(low = 0, high = 100, size = N)
+data['x_2'] = np.random.uniform(low = -10, high = 10, size = N)
+data['x_3'] = np.random.uniform(low = -50, high = -40, size = N)
+data['x_1 * x_2'] = data['x_1']*data['x_2']
+
+response_variable = 'y'
+data[response_variable] = 3*data['x_1'] - 20*data['x_2'] - data['x_3'] - 5*data['x_1 * x_2'] + 13 + 1*np.random.randn(N)
+
+model = bp.model.LinearModel()
+model.data = data
+model.response_variable = response_variable
+model.priors = priors = {'x_1': {'mean': 0,
+                                 'variance': 1e6},
+                         'x_2': {'mean': 0,
+                                 'variance': 1e6},
+                         'x_3': {'mean': 0,
+                                 'variance': 1e6},
+                         'x_1 * x_2': {'mean': 0,
+                                       'variance': 1e6},
+                         'intercept': {'mean': 0,
+                                       'variance': 1e6},
+                         'variance': {'shape': 1,
+                                      'scale': 1e-6}}
+sampler = bp.regression.LinearRegression(model = model)
+sampler.sample(n_iterations = 500, burn_in_iterations = 50, n_chains = 3)
 
 
-@fixture(scope = 'session')
-def empty_model():
-    model = bp.model.LinearModel()
-    return model
+types_to_check = ['string', 2, 2.2, True, (0, 1), [0, 1], {0, 1}, {0: 1}, None,
+                  pd.DataFrame(columns = ['response_variable'], index = [0]), np.array([0])]
 
 
 @fixture(params = [type_to_check for type_to_check in types_to_check if not isinstance(type_to_check, pd.DataFrame)])
@@ -273,15 +210,6 @@ def model_log_likelihood_type_error(request):
                    pd.DataFrame({response_variable: [1, 2, 3], 'mean': [1, 2, 3]})])
 def model_log_likelihood_value_error(request):
     return request.param
-
-
-@fixture(scope = 'session')
-def complete_model(general_testing_data):
-    complete_model = bp.model.LinearModel()
-    complete_model.data = general_testing_data['data']
-    complete_model.response_variable = general_testing_data['response_variable']
-    complete_model.priors = general_testing_data['priors']
-    return complete_model
 
 
 @fixture(params = [type_to_check for type_to_check in types_to_check if not isinstance(type_to_check, bp.model.Model)])
@@ -612,19 +540,6 @@ analysis_compute_dic_value_error_value_error_4.posteriors = {'intercept': np.arr
                    analysis_compute_dic_value_error_value_error_4])
 def analysis_compute_dic_value_error(request):
     return request.param
-
-
-@fixture(scope = 'session')
-def solved_model(general_testing_data):
-    model = bp.model.LinearModel()
-    model.data = general_testing_data['data']
-    model.response_variable = general_testing_data['response_variable']
-    model.priors = general_testing_data['priors']
-    sampler = bp.regression.LinearRegression(model = model)
-    sampler.sample(n_iterations = general_testing_data['n_iterations'],
-                   burn_in_iterations = general_testing_data['burn_in_iterations'],
-                   n_chains = general_testing_data['n_chains'])
-    return model
 
 
 @fixture(params = [type_to_check for type_to_check in types_to_check if not isinstance(type_to_check, np.ndarray)])
