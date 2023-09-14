@@ -37,5 +37,6 @@ setup(name = 'baypy',
                           'scipy >= 1.11.1'],
       extras_require = {'dev': ['sphinx >= 7.2.2',
                                 'tox >= 4.5.1',
+                                'hypothesis >= 6.84.3'
                                 'twine >= 4.0.2']},
       python_requires = '>=3.9, <3.12')
