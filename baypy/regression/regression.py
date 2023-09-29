@@ -6,8 +6,9 @@ import pandas as pd
 class Regression(ABC):
 
 
+    @staticmethod
     @abstractmethod
-    def __init__(self, model: Model) -> None:
+    def sample(model: Model, n_iterations: int, burn_in_iterations: int, n_chains: int, seed: int = None) -> None:
         if not isinstance(model, Model):
             raise TypeError(f"Parameter 'model' must be an instance of '{Model.__module__}.{Model.__name__}'")
 
@@ -27,9 +28,6 @@ class Regression(ABC):
             if (prior not in  ['intercept', 'variance']) and (prior not in model.data.columns):
                 raise ValueError(f"Column '{prior}' not found in 'model.data'")
 
-
-    @abstractmethod
-    def sample(self, n_iterations: int, burn_in_iterations: int, n_chains: int, seed: int = None) -> None:
         if not isinstance(n_iterations, int):
             raise TypeError("Parameter 'n_iteration' must be an integer")
 
