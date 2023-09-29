@@ -10,32 +10,11 @@ from scipy.stats import norm, invgamma
 class LinearRegression(Regression):
     r"""baypy.regression.linear_regression.LinearRegression object.
 
-    Parameters
-    ----------
-    model : baypy.model.model.Model
-        Model with data, regressors, response variable and priors to be solved through Monte Carlo sampling.
-
-    Attributes
-    ----------
-    model : baypy.model.model.Model
-        Model with data, regressors, response variable and priors to be solved through Monte Carlo sampling.
-
     Methods
     -------
     :meth:`baypy.regression.linear_regression.LinearRegression.sample()`
         Samples a sequence of observations from the full posterior distribution of regressors' parameters
         :math:`\beta_j` and ``variance`` :math:`\sigma^2`.
-
-    Raises
-    ------
-    TypeError
-        If ``model`` is not a ``baypy.model.model.Model``.
-    ValueError
-        - If ``model.data`` is ``None``,
-        - if ``model.response_variable`` is ``None``,
-        - if ``model.response_variable`` is not a column of ``model.data``
-        - if ``model.priors`` is ``None``,
-        - if a ``model.priors`` key is not a column of ``model.data``,
 
     See Also
     --------
@@ -52,6 +31,8 @@ class LinearRegression(Regression):
 
         Parameters
         ----------
+        model : baypy.model.model.Model
+            Model with data, regressors, response variable and priors to be solved through Monte Carlo sampling.
         n_iterations : int
             Number of total sampling iteration for each chain. It must be a strictly positive integer.
         burn_in_iterations : int
@@ -64,11 +45,17 @@ class LinearRegression(Regression):
         Raises
         ------
         TypeError
-            - If ``n_iterations`` is not a ``int``,
+            - If ``model`` is not a ``baypy.model.model.Model``,
+            - if ``n_iterations`` is not a ``int``,
             - if ``burn_in_iterations`` is not a ``int``,
             - if ``n_chains`` is not a ``int``,
             - if ``seed`` is not a ``int``.
         ValueError
+            - If ``model.data`` is ``None``,
+            - if ``model.response_variable`` is ``None``,
+            - if ``model.response_variable`` is not a column of ``model.data``
+            - if ``model.priors`` is ``None``,
+            - if a ``model.priors`` key is not a column of ``model.data``,
             - If ``n_iterations`` is equal to or less than ``0``,
             - if ``burn_in_iterations`` is less than ``0``,
             - if ``n_chains`` is equal to or less than ``0``,
