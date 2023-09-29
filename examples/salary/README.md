@@ -16,9 +16,10 @@ regressor and *Salary* as the response variable.
 Using non-informative priors for regressors and variance:
 
 ```python
+from baypy.model import LinearModel
 import baypy as bp
 
-model = bp.model.LinearModel()
+model = LinearModel()
 model.data = data
 model.response_variable = 'Salary'
 model.priors = {'intercept': {'mean': 0, 'variance': 1e12},
@@ -32,9 +33,11 @@ Run the regression sampling on 3 Markov chains, with 5000 iterations per
 each chain and discarding the first 50 burn-in draws:
 
 ```python
+from baypy.regression import LinearRegression
+
 regression = bp.regression.LinearRegression(model = model)
-regression.sample(n_iterations = 5000, burn_in_iterations = 50, 
-                  n_chains = 3, seed = 137)
+LinearRegression.sample(model = mode, n_iterations = 5000, 
+                        burn_in_iterations = 50, n_chains = 3, seed = 137)
 ```
 
 ### Convergence Diagnostics

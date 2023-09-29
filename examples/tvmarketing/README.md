@@ -38,9 +38,10 @@ Set-up a linear regression model, considering *TV* as regressor and
 Use non-informative priors for regressor and variance:
 
 ```python
+from baypy.model import LinearModel
 import baypy as bp
 
-model_1 = bp.model.LinearModel()
+model_1 = LinearModel()
 
 model_1.data = data
 model_1.response_variable = 'Sales'
@@ -55,9 +56,10 @@ Run the regression sampling on 3 Markov chains, with 500 iterations per
 each chain and discarding the first 50 burn-in draws:
 
 ```python
-regression_1 = bp.regression.LinearRegression(model = model_1)
-regression_1.sample(n_iterations = 500, burn_in_iterations = 50, 
-                    n_chains = 3, seed = 137)
+from baypy.regression import LinearRegression
+
+LinearRegression.sample(model = model_1, n_iterations = 500, 
+                        burn_in_iterations = 50, n_chains = 3, seed = 137)
 ```
 
 ### Convergence Diagnostics
@@ -191,7 +193,7 @@ Set-up a linear regression model, considering *log TV* as regressor and
 Use non-informative priors for regressor and variance:
 
 ```python
-model_2 = bp.model.LinearModel()
+model_2 = LinearModel()
 
 model_2.data = data
 model_2.response_variable = 'log Sales'
@@ -206,9 +208,8 @@ Run the regression sampling on 3 Markov chains, with 500 iteration per
 each chain and discarding the first 50 burn-in draws:
 
 ```python
-regression_2 = bp.regression.LinearRegression(model = model_2)
-regression_2.sample(n_iterations = 500, burn_in_iterations = 50, 
-                    n_chains = 3, seed = 137)
+LinearRegression.sample(model = model_2, n_iterations = 500, 
+                        burn_in_iterations = 50, n_chains = 3, seed = 137)
 ```
 
 ### Convergence Diagnostics

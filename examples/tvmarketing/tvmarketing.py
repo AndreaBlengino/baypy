@@ -1,3 +1,5 @@
+from baypy.model import LinearModel
+from baypy.regression import LinearRegression
 import baypy as bp
 import matplotlib.pyplot as plt
 import numpy as np
@@ -19,7 +21,7 @@ ax_1.tick_params(bottom = False, top = False, left = False, right = False)
 plt.show()
 
 
-model_1 = bp.model.LinearModel()
+model_1 = LinearModel()
 
 model_1.data = data
 model_1.response_variable = 'Sales'
@@ -27,8 +29,7 @@ model_1.priors = {'intercept': {'mean': 0, 'variance': 1e6},
                   'TV': {'mean': 0, 'variance': 1e6},
                   'variance': {'shape': 1, 'scale': 1e-6}}
 
-regression_1 = bp.regression.LinearRegression(model = model_1)
-regression_1.sample(n_iterations = 500, burn_in_iterations = 50, n_chains = 3, seed = 137)
+LinearRegression.sample(model = model_1, n_iterations = 500, burn_in_iterations = 50, n_chains = 3, seed = 137)
 
 
 bp.diagnostics.effective_sample_size(posteriors = model_1.posteriors)
@@ -77,7 +78,7 @@ plt.show()
 data['log TV'] = np.log(data['TV'])
 data['log Sales'] = np.log(data['Sales'])
 
-model_2 = bp.model.LinearModel()
+model_2 = LinearModel()
 
 model_2.data = data
 model_2.response_variable = 'log Sales'
@@ -85,8 +86,7 @@ model_2.priors = {'intercept': {'mean': 0, 'variance': 1e6},
                   'log TV': {'mean': 0, 'variance': 1e6},
                   'variance': {'shape': 1, 'scale': 1e-6}}
 
-regression_2 = bp.regression.LinearRegression(model = model_2)
-regression_2.sample(n_iterations = 500, burn_in_iterations = 50, n_chains = 3, seed = 137)
+LinearRegression.sample(model = model_2, n_iterations = 500, burn_in_iterations = 50, n_chains = 3, seed = 137)
 
 
 bp.diagnostics.effective_sample_size(posteriors = model_2.posteriors)

@@ -1,3 +1,5 @@
+from baypy.model import LinearModel
+from baypy.regression import LinearRegression
 import baypy as bp
 import matplotlib.pyplot as plt
 import numpy as np
@@ -7,7 +9,7 @@ import pandas as pd
 data = pd.read_csv(r'data/data.csv')
 
 
-model = bp.model.LinearModel()
+model = LinearModel()
 
 model.data = data
 model.response_variable = 'Salary'
@@ -15,8 +17,7 @@ model.priors = {'intercept': {'mean': 0, 'variance': 1e12},
                 'YearsExperience': {'mean': 0, 'variance': 1e12},
                 'variance': {'shape': 1, 'scale': 1e-12}}
 
-regression = bp.regression.LinearRegression(model = model)
-regression.sample(n_iterations = 5000, burn_in_iterations = 50, n_chains = 3, seed = 137)
+LinearRegression.sample(model = model, n_iterations = 5000, burn_in_iterations = 50, n_chains = 3, seed = 137)
 
 
 bp.diagnostics.effective_sample_size(posteriors = model.posteriors)

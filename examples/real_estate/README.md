@@ -57,9 +57,10 @@ variable.
 Using non-informative priors for regressors and variance:
 
 ```python
+from baypy.model import LinearModel
 import baypy as bp
 
-model = bp.model.LinearModel()
+model = LinearModel()
 model.data = data
 model.response_variable = 'log house price'
 model.priors = {'intercept': {'mean': 0, 'variance': 1e6},
@@ -78,9 +79,10 @@ Run the regression sampling on 3 Markov chains, with 1000 iterations per
 each chain and discarding the first 50 burn-in draws:
 
 ```python
-regression = bp.regression.LinearRegression(model = model)
-regression.sample(n_iterations = 1000, burn_in_iterations = 50, 
-                  n_chains = 3, seed = 137)
+from baypy.regression import LinearRegression
+
+LinearRegression.sample(model = model, n_iterations = 1000, 
+                        burn_in_iterations = 50, n_chains = 3, seed = 137)
 ```
 
 ### Convergence Diagnostics

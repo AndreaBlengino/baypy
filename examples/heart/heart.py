@@ -1,3 +1,5 @@
+from baypy.model import LinearModel
+from baypy.regression import LinearRegression
 import baypy as bp
 import pandas as pd
 
@@ -5,7 +7,7 @@ import pandas as pd
 data = pd.read_csv(r'data/data.csv')
 
 
-model = bp.model.LinearModel()
+model = LinearModel()
 
 model.data = data
 model.response_variable = 'heart disease'
@@ -14,8 +16,7 @@ model.priors = {'intercept': {'mean': 0, 'variance': 1e6},
                 'smoking': {'mean': 0, 'variance': 1e9},
                 'variance': {'shape': 1, 'scale': 1e-9}}
 
-regression = bp.regression.LinearRegression(model = model)
-regression.sample(n_iterations = 500, burn_in_iterations = 50, n_chains = 3, seed = 137)
+LinearRegression.sample(model = model, n_iterations = 500, burn_in_iterations = 50, n_chains = 3, seed = 137)
 
 
 bp.diagnostics.effective_sample_size(posteriors = model.posteriors)
