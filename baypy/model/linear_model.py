@@ -27,15 +27,15 @@ class LinearModel(Model):
 
     Methods
     -------
-    :meth:`baypy.model.linear_model.LinearModel.posteriors_to_frame()`
+    :py:meth:`baypy.model.linear_model.LinearModel.posteriors_to_frame()`
         Organizes the ``posteriors`` in a ``pandas.DataFrame``.
-    :meth:`baypy.model.linear_model.LinearModel.residuals`
+    :py:meth:`baypy.model.linear_model.LinearModel.residuals`
         Compute the residuals :math:`\epsilon` with respect to predicted values :math:`\hat{y}`.
-    :meth:`baypy.model.linear_model.LinearModel.predict_distribution`
+    :py:meth:`baypy.model.linear_model.LinearModel.predict_distribution`
         Predicts a posterior distribution for an unobserved values.
-    :meth:`baypy.model.linear_model.LinearModel.likelihood`
+    :py:meth:`baypy.model.linear_model.LinearModel.likelihood`
         Computes the likelihood of observations ``model.response_variable`` given a model ``'mean'`` and ``'variance'``.
-    :meth:`baypy.model.linear_model.LinearModel.log_likelihood`
+    :py:meth:`baypy.model.linear_model.LinearModel.log_likelihood`
         Computes the log likelihood of observations ``model.response_variable`` given a model ``'mean'`` and
         ``'variance'``.
     """
@@ -362,7 +362,7 @@ class LinearModel(Model):
 
         See Also
         --------
-        :meth:`baypy.regression.linear_regression.LinearRegression`
+        :py:class:`baypy.regression.linear_regression.LinearRegression`
         """
         super().predict_distribution(predictors = predictors)
 

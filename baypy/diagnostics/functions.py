@@ -33,8 +33,8 @@ def autocorrelation_plot(posteriors: dict, max_lags: int = 30) -> None:
 
     See Also
     --------
-    :meth:`baypy.diagnostics.functions.autocorrelation_summary`
-    :meth:`baypy.diagnostics.functions.effective_sample_size`
+    :py:func:`baypy.diagnostics.functions.autocorrelation_summary`
+    :py:func:`baypy.diagnostics.functions.effective_sample_size`
     """
     if not isinstance(posteriors, dict):
         raise TypeError("Parameter 'posteriors' must be a dictionary")
@@ -142,8 +142,8 @@ def autocorrelation_summary(posteriors: dict, lags: list = None, print_summary: 
 
     See Also
     --------
-    :meth:`baypy.diagnostics.functions.autocorrelation_plot`
-    :meth:`baypy.diagnostics.functions.effective_sample_size`
+    :py:func:`baypy.diagnostics.functions.autocorrelation_plot`
+    :py:func:`baypy.diagnostics.functions.effective_sample_size`
 
     Notes
     -----
@@ -228,8 +228,8 @@ def effective_sample_size(posteriors: dict, print_summary: bool = True) -> pd.Da
 
     See Also
     --------
-    :meth:`baypy.diagnostics.functions.autocorrelation_plot`
-    :meth:`baypy.diagnostics.functions.autocorrelation_summary`
+    :py:func:`baypy.diagnostics.functions.autocorrelation_plot`
+    :py:func:`baypy.diagnostics.functions.autocorrelation_summary`
 
     Notes
     -----

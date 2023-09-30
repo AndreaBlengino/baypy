@@ -31,7 +31,7 @@ def trace_plot(posteriors: dict) -> None:
 
     See Also
     --------
-    :meth:`baypy.regression.linear_regression.LinearRegression`
+    :py:class:`baypy.regression.linear_regression.LinearRegression`
     """
     if not isinstance(posteriors, dict):
         raise TypeError("Parameter 'posteriors' must be a dictionary")
@@ -128,7 +128,7 @@ def summary(posteriors: dict, alpha: float = 0.05, quantiles: list = None, print
 
     See Also
     --------
-    :meth:`baypy.regression.linear_regression.LinearRegression`
+    :py:class:`baypy.regression.linear_regression.LinearRegression`
     """
     if not isinstance(posteriors, dict):
         raise TypeError("Parameter 'posteriors' must be a dictionary")
@@ -238,7 +238,7 @@ def residuals_plot(model: Model) -> None:
 
     See Also
     --------
-    :meth:`baypy.regression.linear_regression.LinearRegression`
+    :py:class:`baypy.regression.linear_regression.LinearRegression`
 
     Notes
     -----
@@ -318,7 +318,7 @@ def compute_DIC(model: Model, print_summary: bool = True) -> dict:
 
     See Also
     --------
-    :meth:`baypy.regression.linear_regression.LinearRegression`
+    :py:class:`baypy.regression.linear_regression.LinearRegression`
 
     Notes
     -----

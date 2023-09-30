@@ -18,7 +18,7 @@ class LinearRegression(Regression):
 
     See Also
     --------
-    :meth:`baypy.model.linear_model.LinearModel`
+    :py:class:`baypy.model.linear_model.LinearModel`
     """
 
 

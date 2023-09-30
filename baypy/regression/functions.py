@@ -29,7 +29,7 @@ def sample_sigma2(y: pd.Series, X: np.ndarray, beta: np.ndarray, k_1: float, the
 
     See Also
     --------
-    :meth:`baypy.regression.functions.sample_beta`
+    :py:func:`baypy.regression.functions.sample_beta`
 
     Notes
     -----
@@ -86,7 +86,7 @@ def sample_beta(Xt_X: np.ndarray, Xt_y: np.ndarray, sigma2: float, Sigma_0_inv: 
 
     See Also
     --------
-    :meth:`baypy.regression.functions.sample_sigma2`
+    :py:func:`baypy.regression.functions.sample_sigma2`
 
     Notes
     -----
