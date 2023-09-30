@@ -36,6 +36,8 @@ setup(name = 'baypy',
                           'pandas >= 2.0.3',
                           'scipy >= 1.11.1'],
       extras_require = {'dev': ['sphinx >= 7.2.2',
+                                'm2r2 >= 0.3.1',
+                                'furo >= 2023.8.19',
                                 'tox >= 4.5.1',
                                 'hypothesis >= 6.84.3'
                                 'twine >= 4.0.2']},
