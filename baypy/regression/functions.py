@@ -107,7 +107,7 @@ def sample_beta(Xt_X: np.ndarray, Xt_y: np.ndarray, sigma2: float, Sigma_0_inv: 
     .. math::
         V = \left( \Sigma_0^{-1} + \frac{1}{\sigma^2} X^T X \right)^{-1} .
 
-    :math:`B` is:
+    :math:`B_0` is:
 
     .. math::
         B_0 =
