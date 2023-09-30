@@ -13,6 +13,6 @@ regression
 .. toctree::
    :hidden:
 
-   baypy.regression.linear_regression.LinearRegression
-   baypy.regression.functions.sample_beta
-   baypy.regression.functions.sample_sigma2
+   LinearRegression/index
+   sample_beta
+   sample_sigma2

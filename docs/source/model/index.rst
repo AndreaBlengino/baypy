@@ -13,4 +13,4 @@ model
 .. toctree::
    :hidden:
 
-   baypy.model.linear_model.LinearModel
+   LinearModel/index

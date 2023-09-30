@@ -13,4 +13,4 @@ LinearRegression
 .. toctree::
    :hidden:
 
-   baypy.regression.linear_regression.LinearRegression.sample
+   sample

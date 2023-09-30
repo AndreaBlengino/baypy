@@ -1,5 +1,5 @@
-﻿LinearRegression.sample
-=======================
+﻿sample
+======
 
 
 .. currentmodule:: baypy.regression.linear_regression

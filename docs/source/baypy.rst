@@ -11,7 +11,7 @@ baypy
 .. toctree::
    :hidden:
 
-   baypy.analysis
-   baypy.diagnostics
-   baypy.model
-   baypy.regression
+   analysis/index
+   diagnostics/index
+   model/index
+   regression/index

@@ -12,6 +12,6 @@ diagnostics
 .. toctree::
    :hidden:
 
-   baypy.diagnostics.functions.autocorrelation_plot
-   baypy.diagnostics.functions.autocorrelation_summary
-   baypy.diagnostics.functions.effective_sample_size
+   autocorrelation_plot
+   autocorrelation_summary
+   effective_sample_size
