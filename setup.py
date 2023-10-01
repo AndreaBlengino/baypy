@@ -39,6 +39,6 @@ setup(name = 'baypy',
                                 'm2r2 >= 0.3.3.post2',
                                 'furo >= 2023.8.19',
                                 'tox >= 4.5.1',
-                                'hypothesis >= 6.84.3'
+                                'hypothesis >= 6.84.3',
                                 'twine >= 4.0.2']},
       python_requires = '>=3.9, <3.12')
