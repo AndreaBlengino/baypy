@@ -16,12 +16,10 @@ through a Monte Carlo Markov chain sampling.
 - [Source code](https://github.com/AndreaBlengino/baypy/tree/master/baypy)  
 - [Issue tracker](https://github.com/AndreaBlengino/baypy/issues)  
 - [Documentation](https://baypy.readthedocs.io/en/latest/index.html)  
+- [Installation](https://baypy.readthedocs.io/en/latest/installation.html)
+- [Usage Examples](https://baypy.readthedocs.io/en/latest/examples/index.html)  
 - [PyPI](https://pypi.org/project/baypy)  
 - [GNU General Public License v3.0](https://github.com/AndreaBlengino/baypy/blob/master/LICENSE)
-
-## Usage Examples
-
-See [usage examples](https://github.com/AndreaBlengino/baypy/tree/master/examples).
 
 ## Contributing
 

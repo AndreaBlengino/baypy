@@ -2,7 +2,7 @@
 
 Build a linear regression model for predicting *Sales* using *TV* as a
 predictor.  
-[Link to the dataset](https://github.com/AndreaBlengino/baypy/blob/master/examples/tvmarketing/data/data.csv)  
+[Link to the dataset](https://github.com/AndreaBlengino/baypy/blob/master/docs/source/examples/tvmarketing/data/data.csv)  
 Unfortunately, [the database original source](https://www.kaggle.com/datasets/devzohaib/tvmarketingcsv?select=tvmarketing.csv)
 does not report the units on each variable.
 

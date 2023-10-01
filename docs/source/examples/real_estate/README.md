@@ -3,7 +3,7 @@
 Determine the price of houses by their features.  
 The market historical data set of real estate valuation are collected 
 from Sindian Dist., New Taipei City, Taiwan.  
-[Link to the dataset](https://github.com/AndreaBlengino/baypy/blob/master/examples/real_estate/data/data.csv)  
+[Link to the dataset](https://github.com/AndreaBlengino/baypy/blob/master/docs/source/examples/real_estate/data/data.csv)  
 [Dataset original source](https://archive.ics.uci.edu/dataset/477/real+estate+valuation+data+set)
 
 ```python

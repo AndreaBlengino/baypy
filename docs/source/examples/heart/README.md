@@ -3,7 +3,7 @@
 Determine the effect that the independent variables *biking* and 
 *smoking* have on the dependent variable *heart disease* using a 
 multiple linear regression model.  
-[Link to the dataset](https://github.com/AndreaBlengino/baypy/blob/master/examples/heart/data/data.csv)  
+[Link to the dataset](https://github.com/AndreaBlengino/baypy/blob/master/docs/source/examples/heart/data/data.csv)  
 Unfortunately, [the database original source](https://www.scribbr.com/statistics/multiple-linear-regression/)
 does not report the units on each variable.
 

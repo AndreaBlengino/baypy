@@ -2,7 +2,7 @@
 
 Determine the effect of the years of experience on salary of jobholders 
 using a simple linear regression model.  
-[Link to the dataset](https://github.com/AndreaBlengino/baypy/blob/master/examples/salary/data/data.csv)  
+[Link to the dataset](https://github.com/AndreaBlengino/baypy/blob/master/docs/source/examples/salary/data/data.csv)  
 [Dataset original source](https://www.kaggle.com/datasets/rsadiq/salary)
 
 ```python

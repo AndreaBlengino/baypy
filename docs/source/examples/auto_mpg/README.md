@@ -1,7 +1,7 @@
 ### Model Set Up
 
 Determine the effect of car attributes on fuel consumption.  
-[Link to the dataset](https://github.com/AndreaBlengino/baypy/blob/master/examples/auto_mpg/data/data.csv)  
+[Link to the dataset](https://github.com/AndreaBlengino/baypy/blob/master/docs/source/examples/auto_mpg/data/data.csv)  
 [Dataset original source](https://archive.ics.uci.edu/dataset/9/auto+mpg)
 
 > The data concerns city-cycle fuel consumption in miles per gallon, to 
