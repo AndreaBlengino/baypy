@@ -11,7 +11,7 @@ import pandas as pd
 data = pd.read_csv(r'data/data.csv')
 ```
 
-Set-up a linear regression model, considering *YearsExperience* as the
+Set up a linear regression model, considering *YearsExperience* as the
 regressor and *Salary* as the response variable.  
 Using non-informative priors for regressors and variance:
 
@@ -47,7 +47,8 @@ Asses the model convergence diagnostics:
 ```python
 bp.diagnostics.effective_sample_size(posteriors = model.posteriors)
 ```
-```
+
+```text
                        intercept  YearsExperience  variance
 Effective Sample Size   14757.25         14718.82  12692.31
 ```
@@ -55,7 +56,8 @@ Effective Sample Size   14757.25         14718.82  12692.31
 ```python
 bp.diagnostics.autocorrelation_summary(posteriors = model.posteriors)
 ```
-```
+
+```text
         intercept  YearsExperience  variance
 Lag 0    1.000000         1.000000  1.000000
 Lag 1   -0.003427         0.003354  0.062828
@@ -68,9 +70,7 @@ Lag 30  -0.000465        -0.002819  0.000682
 bp.diagnostics.autocorrelation_plot(posteriors = model.posteriors)
 ```
 
-<p align="center">
-    <img src="images/autocorrelation_plot.png">
-</p>
+![](images/autocorrelation_plot.png)
 
 All diagnostics show a low correlation, indicating the chains 
 converged to the stationary distribution.
@@ -83,9 +83,7 @@ Asses posterior analysis:
 bp.analysis.trace_plot(posteriors = model.posteriors)
 ```
 
-<p align="center">
-    <img src="images/trace_plot.png">
-</p>
+![](images/trace_plot.png)
 
 Traces are good, incidating draws from the stationary distribution.
 
@@ -93,9 +91,7 @@ Traces are good, incidating draws from the stationary distribution.
 bp.analysis.residuals_plot(model = model)
 ```
 
-<p align="center">
-    <img src="images/residuals_plot.png">
-</p>
+![](images/residuals_plot.png)
 
 Also the residuals plot is good: no evidence for patterns, shapes or 
 outliers.
@@ -103,7 +99,8 @@ outliers.
 ```python
 bp.analysis.summary(posteriors = model.posteriors)
 ```
-```
+
+```text
 Number of chains:           3
 Sample size per chian:   5000
 
@@ -123,8 +120,8 @@ variance         2.049029e+07  2.779544e+07  3.309215e+07  3.986484e+07  5.83596
 ```
 
 The summary reports a statistical evidence for a positive effect of 
-years of experience: $1$ year increase in experience would result in
-$\sim 9.500$ increase in salary.  
+years of experience: `$1$` year increase in experience would result in
+`$\sim 9.500$` increase in salary.  
 Predict the salary distribution for a jobholder with 5 year of 
 experience, so the predictor is `YearsExperience = 5`:
 
@@ -147,9 +144,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-<p align="center">
-    <img src="images/predict_distribution.png">
-</p>
+![](images/predict_distribution.png)
 
 Comparing data to fitted model posteriors:
 
@@ -179,6 +174,4 @@ plt.tight_layout()
 plt.show()
 ```
 
-<p align="center">
-    <img src="images/data_vs_model.png">
-</p>
+![](images/data_vs_model.png)

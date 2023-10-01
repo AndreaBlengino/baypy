@@ -5,9 +5,9 @@ Determine the effect of car attributes on fuel consumption.
 [Dataset original source](https://archive.ics.uci.edu/dataset/9/auto+mpg)
 
 > The data concerns city-cycle fuel consumption in miles per gallon, to 
-  be predicted in terms of 3 multivalued discrete and 5 continuous 
-  attributes.  
-  Quinlan, 1993
+> be predicted in terms of 3 multivalued discrete and 5 continuous 
+> attributes.  
+> Quinlan, 1993
 
 ```python
 import pandas as pd
@@ -28,9 +28,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-<p align="center">
-    <img src="images/original_data.png">
-</p>
+![](images/original_data.png)
 
 The scatterplot shows that *horsepower*, *displacement* and *weight* 
 are strongly correlated among each other, meaning that they cannot be 
@@ -47,7 +45,7 @@ data['log mpg'] = np.log(data['mpg'])
 data['log weight'] = np.log(data['weight'])
 ```
 
-Set-up a linear regression model, considering *cylinders*, *log weight*,
+Set up a linear regression model, considering *cylinders*, *log weight*,
 *acceleration* and *model year* as the regressors and *log mpg* as the 
 response variable.  
 Using non-informative priors for regressors and variance:
@@ -86,7 +84,8 @@ Asses the model convergence diagnostics:
 ```python
 bp.diagnostics.effective_sample_size(posteriors = model.posteriors)
 ```
-```
+
+```text
                        intercept  cylinders  log weight  acceleration  model year  variance
 Effective Sample Size    2873.12    2754.12     2685.45       2510.45     2338.35   2818.65
 ```
@@ -94,7 +93,8 @@ Effective Sample Size    2873.12    2754.12     2685.45       2510.45     2338.3
 ```python
 bp.diagnostics.autocorrelation_summary(posteriors = model.posteriors)
 ```
-```
+
+```text
         intercept  cylinders  log weight  acceleration  model year  variance
 Lag 0    1.000000   1.000000    1.000000      1.000000    1.000000  1.000000
 Lag 1   -0.037663  -0.017715   -0.034716      0.032738   -0.012336  0.002950
@@ -107,9 +107,7 @@ Lag 30  -0.023641  -0.010533   -0.026705      0.005014    0.002749  0.021754
 bp.diagnostics.autocorrelation_plot(posteriors = model.posteriors)
 ```
 
-<p align="center">
-    <img src="images/autocorrelation_plot.png">
-</p>
+![](images/autocorrelation_plot.png)
 
 All diagnostics show a low correlation, indicating the chains 
 converged to the stationary distribution.
@@ -122,9 +120,7 @@ Asses posterior analysis:
 bp.analysis.trace_plot(posteriors = model.posteriors)
 ```
 
-<p align="center">
-    <img src="images/trace_plot.png">
-</p>
+![](images/trace_plot.png)
 
 Traces are good, incidating draws from the stationary distribution.
 
@@ -132,9 +128,7 @@ Traces are good, incidating draws from the stationary distribution.
 bp.analysis.residuals_plot(model = model)
 ```
 
-<p align="center">
-    <img src="images/residuals_plot.png">
-</p>
+![](images/residuals_plot.png)
 
 Also the residuals plot is good: no evidence for patterns, shapes or 
 outliers.
@@ -142,7 +136,8 @@ outliers.
 ```python
 bp.analysis.summary(posteriors = model.posteriors)
 ```
-```
+
+```text
 Number of chains:           3
 Sample size per chian:   1000
 
@@ -169,11 +164,11 @@ variance      0.011840  0.012967  0.013594  0.014286  0.015681
 
 The summary reports a statistical evidence for:
 
-- negative effect of *cylinders*: $1$ cylinder increase would 
-result in $e^{-0.016291} - 1 = -1.62\\%$ percent decrease in *mpg*
-- negative effect of *log weight*: $10\\%$ percent increase in *weight* 
-would result in $1.10^{-0.837066} - 1 = -7.67\\%$ percent decrease in 
+- negative effect of *cylinders*: `$1$` cylinder increase would 
+result in `$e^{-0.016291} - 1 = -1.62\%$` percent decrease in *mpg*
+- negative effect of *log weight*: `$10\%$` percent increase in *weight* 
+would result in `$1.10^{-0.837066} - 1 = -7.67\%$` percent decrease in 
 *mpg*
-- positive effect of *model year*: $1$ year increase would result in 
-$0.03$ points increase in *mpg*. This effect may represent the 
+- positive effect of *model year*: `$1$` year increase would result in 
+`$0.03$` points increase in *mpg*. This effect may represent the 
 efficiency enhancements made along the years to reduce fuel consumption  

@@ -30,13 +30,11 @@ plt.tight_layout()
 plt.show()
 ```
 
-<p align="center">
-    <img src="images/original_data.png">
-</p>
+![](images/original_data.png)
 
 The scatterplot shows no strong correlation among regressors.   
-There are two ouliers in *house price*, one under 80 and the other over 
-100, that do not follow the rest of distributions. For this reason, the
+There are two ouliers in *house price*, one under 8 and the other over 
+115, that do not follow the rest of distributions. For this reason, the
 outlier are removed.  
 *house price* and *MRT station distance* are not normally distributed: 
 data are skewed toward high values. For this reason, these columns are 
@@ -50,7 +48,7 @@ data['log house price'] = np.log(data['house price'])
 data['log MRT station distance'] = np.log(data['MRT station distance'])
 ```
 
-Set-up a linear regression model, considering *transaction date*, 
+Set up a linear regression model, considering *transaction date*, 
 *house age*, *log MRT station distance*, *stores number*, *latitude* and
 *longitude* as the regressors and *log house price* as the response 
 variable.  
@@ -92,7 +90,8 @@ Asses the model convergence diagnostics:
 ```python
 bp.diagnostics.effective_sample_size(posteriors = model.posteriors)
 ```
-```
+
+```text
                        intercept  transaction date  house age  log MRT station distance  stores number  latitude  longitude  variance
 Effective Sample Size    2767.17           2833.16    2548.86                   2877.61        2630.62   2770.24    2753.23   2778.72
 ```
@@ -100,7 +99,8 @@ Effective Sample Size    2767.17           2833.16    2548.86                   
 ```python
 bp.diagnostics.autocorrelation_summary(posteriors = model.posteriors)
 ```
-```
+
+```text
         intercept  transaction date  house age  log MRT station distance  stores number  latitude  longitude  variance
 Lag 0    1.000000          1.000000   1.000000                  1.000000       1.000000  1.000000   1.000000  1.000000
 Lag 1   -0.009739         -0.000259   0.000069                 -0.027052       0.001308  0.009574  -0.028492  0.034033
@@ -113,9 +113,7 @@ Lag 30  -0.000886          0.031398  -0.030163                 -0.027021       0
 bp.diagnostics.autocorrelation_plot(posteriors = model.posteriors)
 ```
 
-<p align="center">
-    <img src="images/autocorrelation_plot.png">
-</p>
+![](images/autocorrelation_plot.png)
 
 All diagnostics show a low correlation, indicating the chains 
 converged to the stationary distribution.
@@ -128,9 +126,7 @@ Asses posterior analysis:
 bp.analysis.trace_plot(posteriors = model.posteriors)
 ```
 
-<p align="center">
-    <img src="images/trace_plot.png">
-</p>
+![](images/trace_plot.png)
 
 Traces are good, incidating draws from the stationary distribution.
 
@@ -138,9 +134,7 @@ Traces are good, incidating draws from the stationary distribution.
 bp.analysis.residuals_plot(model = model)
 ```
 
-<p align="center">
-    <img src="images/residuals_plot.png">
-</p>
+![](images/residuals_plot.png)
 
 Also the residuals plot is good: no evidence for patterns, shapes or 
 outliers.
@@ -148,7 +142,8 @@ outliers.
 ```python
 bp.analysis.summary(posteriors = model.posteriors)
 ```
-```
+
+```text
 Number of chains:           3
 Sample size per chian:   1000
 
@@ -179,20 +174,21 @@ variance                     0.030052    0.032863    0.034565    0.036164    0.0
 
 The summary reports a statistical evidence for:
 
-- positive effect of *transaction date*: $1$ month increase would 
-result in $e^{\frac{0.165923}{12}} - 1 = 1.4\\%$ percent increase in 
+- positive effect of *transaction date*: `$1$` month increase would 
+result in `$e^{\frac{0.165923}{12}} - 1 = 1.4\%$` percent increase in 
 *house price*
-- negative effect of *house age*: $1$ year increase would result
-in $e^{-0.006024} - 1 = -0.6\\%$ percent decrease in *house price*
-- negative effect of *log MRT station distance*: $10\\%$ percent 
+- negative effect of *house age*: `$1$` year increase would result
+in `$e^{-0.006024} - 1 = -0.6\%$` percent decrease in *house price*
+- negative effect of *log MRT station distance*: `$10\%$` percent 
 increase in *MRT station distance* would result in 
-$1.10^{-0.166081} - 1 = -1.57\\%$ percent decrease in *house price*
-- positive effect of *stores number*: $1$ store increase would 
-result in $e^{0.014637} - 1 = 1.47\\%$ percent increase in *house price*
-- positive effect of *latitute*: $1'$ increase would result in 
-$e^{\frac{9.593946}{60}} - 1 = 17.3\\%$ percent increase *house price*
-- positive effect of *longitude*: $1'$ increase would result in 
-$e^{\frac{2.840717}{60}} - 1 = 4.85\\%$ percent increase in *house 
+`$1.10^{-0.166081} - 1 = -1.57\%$` percent decrease in *house price*
+- positive effect of *stores number*: `$1$` store increase would 
+result in `$e^{0.014637} - 1 = 1.47\%$` percent increase in 
+*house price*
+- positive effect of *latitute*: `$1'$` increase would result in 
+`$e^{\frac{9.593946}{60}} - 1 = 17.3\%$` percent increase *house price*
+- positive effect of *longitude*: `$1'$` increase would result in 
+`$e^{\frac{2.840717}{60}} - 1 = 4.85\%$` percent increase in *house 
 price*
 
 The combined effect of *latitude* and *longitude* suggest that the 

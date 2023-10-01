@@ -6,6 +6,8 @@ The recommended installation is through `pip`:
 $ pip install baypy
 ```
 
+baypy runs for python version 3.9+.
+
 ## Dependencies
 
 - [matplotlib](https://matplotlib.org) >= 3.7.2  

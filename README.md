@@ -23,10 +23,6 @@ through a Monte Carlo Markov chain sampling.
 
 See [usage examples](https://github.com/AndreaBlengino/baypy/tree/master/examples).
 
-## Python versions
-
-baypy runs for python version 3.9+.
-
 ## Contributing
 
 The baypy project welcomes your expertise and enthusiasm!  

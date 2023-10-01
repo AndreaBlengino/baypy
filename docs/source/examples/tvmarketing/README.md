@@ -27,13 +27,11 @@ ax_1.tick_params(bottom = False, top = False, left = False, right = False)
 plt.show()
 ```
 
-<p align="center">
-    <img src="images/data.png">
-</p>
+![](images/data.png)
 
 *Sales* do not follow a perfect linear relationship with respet to 
 *TV*, but let's try to fit a linear model anyway.  
-Set-up a linear regression model, considering *TV* as regressor and 
+Set up a linear regression model, considering *TV* as regressor and 
 *Sales* as the response variable.  
 Use non-informative priors for regressor and variance:
 
@@ -69,7 +67,8 @@ Asses the model convergence diagnostics:
 ```python
 bp.diagnostics.effective_sample_size(posteriors = model_1.posteriors)
 ```
-```
+
+```text
                        intercept       TV  variance
 Effective Sample Size    1371.51  1280.94   1428.17
 ```
@@ -77,7 +76,8 @@ Effective Sample Size    1371.51  1280.94   1428.17
 ```python
 bp.diagnostics.autocorrelaion_summary(posteriors = model_1.posteriors)
 ```
-```
+
+```text
         intercept        TV  variance
 Lag 0    1.000000  1.000000  1.000000
 Lag 1   -0.032025 -0.010411  0.000142
@@ -90,9 +90,7 @@ Lag 30  -0.028900 -0.023383  0.032368
 bp.diagnostics.autocorrelation_plot(posteriors = model_1.posteriors)
 ```
 
-<p align="center">
-    <img src="images/autocorrelation_plot_1.png">
-</p>
+![](images/autocorrelation_plot_1.png)
 
 All diagnostics show a low correlation, indicating the chains 
 converged to the stationary distribution.
@@ -105,17 +103,13 @@ Asses posterior analysis:
 bp.analysis.trace_plot(posteriors = model_1.posteriors)
 ```
 
-<p align="center">
-    <img src="images/trace_plot_1.png">
-</p>
+![](images/trace_plot_1.png)
 
 ```python
 bp.analysis.residuals_plot(model = model_1)
 ```
 
-<p align="center">
-    <img src="images/residuals_plot_1.png">
-</p>
+![](images/residuals_plot_1.png)
 
 Residuals form a shape and increase as the predicted variable increses. 
 This suggests that the model does not fit the data well.  
@@ -151,9 +145,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-<p align="center">
-    <img src="images/data_vs_model_1_log_scale.png">
-</p>
+![](images/data_vs_model_1_log_scale.png)
 
 The posterior distribution is rather broad and includes all the data 
 without identifying their true trend. Notice that some posteriors 
@@ -174,9 +166,7 @@ ax_3.set_ylabel('Sales')
 plt.show()
 ```
 
-<p align="center">
-    <img src="images/data_log_scale.png">
-</p>
+![](images/data_log_scale.png)
 
 The relationship is almost linear in the log-scale. Notice that most of
 the data are concentrated toward high values of *TV*.  
@@ -188,7 +178,7 @@ data['log TV'] = np.log(data['TV'])
 data['log Sales'] = np.log(data['Sales'])
 ```
 
-Set-up a linear regression model, considering *log TV* as regressor and 
+Set up a linear regression model, considering *log TV* as regressor and 
 *log Sales* as the response variable.   
 Use non-informative priors for regressor and variance:
 
@@ -219,7 +209,8 @@ Asses the model convergence diagnostics:
 ```python
 bp.diagnostics.effective_sample_size(posteriors = model_2.posteriors)
 ```
-```
+
+```text
                        intercept   log TV  variance
 Effective Sample Size    1373.29  1321.11   1428.17
 ```
@@ -227,7 +218,8 @@ Effective Sample Size    1373.29  1321.11   1428.17
 ```python
 bp.diagnostics.autocorrelation_summary(posteriors = model_2.posteriors)
 ```
-```
+
+```text
         intercept    log TV  variance
 Lag 0    1.000000  1.000000  1.000000
 Lag 1   -0.032124 -0.027163  0.000142
@@ -240,9 +232,7 @@ Lag 30  -0.028748 -0.030245  0.032368
 bp.diagnostics.autocorrelation_plot(posteriors = model_2.posteriors)
 ```
 
-<p align="center">
-    <img src="images/autocorrelation_plot_2.png">
-</p>
+![](images/autocorrelation_plot_2.png)
 
 All diagnostics show a low correlation, indicating the chains 
 converged to the stationary distribution.
@@ -255,17 +245,13 @@ Asses posterior analysis:
 bp.analysis.trace_plot(posteriors = model_2.posteriors)
 ```
 
-<p align="center">
-    <img src="images/trace_plot_2.png">
-</p>
+![](images/trace_plot_2.png)
 
 ```python
 bp.analysis.residuals_plot(model = model_2)
 ```
 
-<p align="center">
-    <img src="images/residuals_plot_2.png">
-</p>
+![](images/residuals_plot_2.png)
 
 Residuals are generally improved with respect to the original model.  
 Residuals appear to reflect an increasing dispersion as predicted 
@@ -276,7 +262,8 @@ pattern is partially caused by this data heterogeneity.
 ```python
 bp.analysis.summary(posteriors = model_2.posteriors)
 ```
-```
+
+```text
 Number of chains:           3
 Sample size per chian:    500
 
@@ -296,8 +283,8 @@ variance   0.036865  0.041719  0.044506  0.048087  0.054838
 ```
 
 The summary reports a statistical evidence for a positive effect of 
-*log TV*: $10\\%$ percent increase in *TV* would result in
-$1.10^{0.354768} - 1 = 3.44\\%$ percent increase in *Sales*.  
+*log TV*: `$10\%$` percent increase in *TV* would result in
+`$1.10^{0.354768} - 1 = 3.44\%$` percent increase in *Sales*.  
 Comparing data to fitted model posteriors:
 
 ```python
@@ -326,9 +313,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-<p align="center">
-    <img src="images/data_vs_model_2_log_scale.png">
-</p>
+![](images/data_vs_model_2_log_scale.png)
 
 ```python
 fig_5, ax_5 = plt.subplots()
@@ -348,9 +333,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-<p align="center">
-    <img src="images/data_vs_model_2.png">
-</p>
+![](images/data_vs_model_2.png)
 
 The alternative model's posteriors catch in a better way the trend of 
 the data and take into account data dispersion.  
@@ -359,16 +342,19 @@ For completeness, compare the two models using the *DIC*:
 ```python
 bp.analysis.compute_DIC(model = model_1)
 ```
-```
+
+```text
 Deviance at posterior means          1038.13
 Posterior mean deviance              1039.18
 Effective number of parameteres         1.05
 Deviace Information Criterion        1040.23
 ```
+
 ```python
 bp.analysis.compute_DIC(model = model_2)
 ```
-```
+
+```text
 Deviance at posterior means           -56.87
 Posterior mean deviance               -55.82
 Effective number of parameteres         1.05

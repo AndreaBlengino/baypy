@@ -13,7 +13,7 @@ import pandas as pd
 data = pd.read_csv(r'data/data.csv')
 ```
 
-Set-up a multiple linear regression model, considering *biking* and
+Set up a multiple linear regression model, considering *biking* and
 *smoking* as regressors and *heart disease* as the response variable. 
 Use non-informative priors for regressors and variance:
 
@@ -50,14 +50,16 @@ Asses the model convergence diagnostics:
 ```python
 bp.diagnostics.effective_sample_size(posteriors = model.posteriors)
 ```
-```
+
+```text
                        intercept   biking  smoking  variance
 Effective Sample Size    1389.56  1449.73  1362.26   1426.75
 ```
 ```python
 bp.diagnostics.autocorrelation_summary(posteriors = model.posteriors)
 ```
-```
+
+```text
         intercept    biking   smoking  variance
 Lag 0    1.000000  1.000000  1.000000  1.000000
 Lag 1   -0.025015 -0.021166  0.009275 -0.021082
@@ -70,9 +72,7 @@ Lag 30  -0.041058 -0.008922 -0.013752 -0.040056
 bp.diagnostics.autocorrelation_plot(posteriors = model.posteriors)
 ```
 
-<p align="center">
-    <img src="images/autocorrelation_plot.png">
-</p>
+![](images/autocorrelation_plot.png)
 
 All diagnostics show a low correlation, indicating the chains 
 converged to the stationary distribution.
@@ -85,9 +85,7 @@ Asses posterior analysis:
 bp.analysis.trace_plot(posteriors = model.posteriors)
 ```
 
-<p align="center">
-    <img src="images/trace_plot.png">
-</p>
+![](images/trace_plot.png)
 
 Traces are quite good, incidating draws from the stationary 
 distribution.
@@ -96,9 +94,7 @@ distribution.
 bp.analysis.residuals_plot(model = model)
 ```
 
-<p align="center">
-    <img src="images/residuals_plot.png">
-</p>
+![](images/residuals_plot.png)
 
 Also the residuals plot is good: no evidence for patterns, shapes or 
 outliers.
@@ -106,7 +102,8 @@ outliers.
 ```python
 bp.analysis.summary(posteriors = model.posteriors)
 ```
-```
+
+```text
 Number of chains:           3
 Sample size per chian:    500
 
@@ -129,7 +126,7 @@ variance    0.380265   0.408345   0.426025   0.446627   0.488800
 
 The summary reports a statistical evidence for:
 
-- negative effect of *biking*: $1$ point increase in *biking* 
-would result in $0.2$ points decrease in *heart disease*
-- positive effect of *smoking*: $1$ point increase in *smoking* 
-would result $0.2$ points increase in *heart disease*
+- negative effect of *biking*: `$1$` point increase in *biking* 
+would result in `$0.2$` points decrease in *heart disease*
+- positive effect of *smoking*: `$1$` point increase in *smoking* 
+would result `$0.18$` points increase in *heart disease*
