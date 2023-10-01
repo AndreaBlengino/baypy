@@ -5,6 +5,7 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/AndreaBlengino/baypy/blob/master/LICENSE)
 
 [![Tests](https://github.com/AndreaBlengino/baypy/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/AndreaBlengino/baypy/actions/workflows/tests.yml)
+[![Documentation Status](https://readthedocs.org/projects/baypy/badge/?version=latest)](https://baypy.readthedocs.io/en/latest/?badge=latest)
 [![codecov](https://codecov.io/gh/AndreaBlengino/baypy/graph/badge.svg?token=T7FMO9ACJW)](https://codecov.io/gh/AndreaBlengino/baypy)
 
 **baypy** is a python package for solving bayesian regression models 
