@@ -10,6 +10,13 @@
 **baypy** is a python package for solving bayesian regression models 
 through a Monte Carlo Markov chain sampling.
 
+## Reference
+
+- [Source code](https://github.com/AndreaBlengino/baypy/tree/master/baypy)  
+- [Issue tracker](https://github.com/AndreaBlengino/baypy/issues)  
+- [Documentation](https://baypy.readthedocs.io/en/latest/index.html)  
+- [PyPI](https://pypi.org/project/baypy)  
+
 ## Installation
 
 The recommended installation is through `pip`:

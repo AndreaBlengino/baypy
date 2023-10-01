@@ -21,6 +21,7 @@ baypy documentation
 
    Source Code <https://github.com/AndreaBlengino/baypy>
    PyPI <https://pypi.org/project/baypy>
+   Issue Tracker <https://github.com/AndreaBlengino/baypy/issues>
    license
 
 
