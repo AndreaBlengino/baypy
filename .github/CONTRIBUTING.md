@@ -44,4 +44,5 @@ REV: revert an earlier commit
 STY: style fix (whitespace, PEP8)
 TST: addition or modification of tests
 REL: related to releasing baypy
+MRG: merging commit
 ```
