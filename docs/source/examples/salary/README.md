@@ -36,7 +36,7 @@ each chain and discarding the first 50 burn-in draws:
 from baypy.regression import LinearRegression
 
 regression = bp.regression.LinearRegression(model = model)
-LinearRegression.sample(model = mode, n_iterations = 5000, 
+LinearRegression.sample(model = model, n_iterations = 5000, 
                         burn_in_iterations = 50, n_chains = 3, seed = 137)
 ```
 
