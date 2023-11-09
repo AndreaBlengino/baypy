@@ -28,10 +28,3 @@ baypy documentation
 
 
 .. mdinclude:: ../../README.md
-
-
-Indices and tables
-==================
-
-* :ref:`modindex`
-* :ref:`search`
