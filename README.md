@@ -1,3 +1,5 @@
+![](docs/source/logo.png)
+
 # Bayesian Monte Carlo Markov Chain Regression
 
 [![PyPi](https://img.shields.io/pypi/v/baypy)](https://pypi.org/project/baypy/)
