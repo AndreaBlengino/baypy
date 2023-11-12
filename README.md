@@ -1,4 +1,4 @@
-![](docs/source/logo.png)
+![](https://github.com/AndreaBlengino/baypy/blob/master/docs/source/_static/logo.png?raw=true)
 
 # Bayesian Monte Carlo Markov Chain Regression
 
