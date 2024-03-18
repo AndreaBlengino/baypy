@@ -56,7 +56,7 @@ def matrices_to_frame(matrices_dict: dict) -> pd.DataFrame:
     Returns
     -------
     pandas.DataFrame
-        Reorganized matrices frame. Matrices are organized in a ``pandas.DataFrame``, one for each columns. The
+        Reorganized matrices frame. Matrices are organized in a ``pandas.DataFrame``, one for each column. The
         length of the frame is ``M*N``.
 
     Raises
@@ -101,7 +101,7 @@ def dot_product(data: pd.DataFrame, regressors: dict) -> np.ndarray:
     Parameters
     ----------
     data : pandas.DataFrame
-        Dataframe to be used for the dot product. It cannot be empty. It must contain all ``regressors`` keys.
+        The dataframe to be used for the dot product. It cannot be empty. It must contain all ``regressors`` keys.
 
     regressors : dict
         Dictionary with regressors' values. It cannot be empty. All regressors and relative values must be a key-value

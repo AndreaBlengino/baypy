@@ -18,7 +18,7 @@ class LinearModel(Model):
     :py:attr:`baypy.model.linear_model.LinearModel.priors` : dict
         Priors for the regressors' and variance parameters.
     :py:attr:`baypy.model.linear_model.LinearModel.variable_names` : list
-        List of all model variables: the regressors :math:`X`, including the ``intercept`` and the ``variance``
+        The list of all model variables: the regressors :math:`X`, including the ``intercept`` and the ``variance``
         :math:`\sigma^2`.
     :py:attr:`baypy.model.linear_model.LinearModel.posteriors` : dict
         Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
@@ -123,7 +123,7 @@ class LinearModel(Model):
             - if a :py:attr:`priors`' value is not a ``dict``.
         ValueError
             - If :py:attr:`priors` is an empty ``dict``,
-            - if a :py:attr:`priors`' value is a empty ``dict``,
+            - if a :py:attr:`priors`' value is an empty ``dict``,
             - if a ``variance`` value is not positive,
             - if a ``shape`` value is not positive,
             - if a ``scale`` value is not positive.
@@ -143,7 +143,7 @@ class LinearModel(Model):
           .. math::
             \beta_j \sim N(\beta_j^0 , \Sigma_{\beta_j}^0)
 
-        - to variance :math:`\sigma^2` is assigned a inverse gamma distribution with hyperparameters ``shape``
+        - to variance :math:`\sigma^2` is assigned an inverse gamma distribution with hyperparameters ``shape``
           :math:`\kappa^0` and ``scale`` :math:`\theta^0`:
 
           .. math::
@@ -160,10 +160,14 @@ class LinearModel(Model):
             \mu = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3
 
         then the sampler would require priors for:
-            - parameter :math:`\beta_0` of variable ``intercept``, with ``mean`` :math:`\beta_0^0` and ``variance`` :math:`\Sigma_{\beta_0}^0`
-            - parameter :math:`\beta_1` of variable :math:`x_1`, with ``mean`` :math:`\beta_1^0` and ``variance`` :math:`\Sigma_{\beta_1}^0`
-            - parameter :math:`\beta_2` of variable :math:`x_2`, with ``mean`` :math:`\beta_2^0` and ``variance`` :math:`\Sigma_{\beta_2}^0`
-            - parameter :math:`\beta_3` of variable :math:`x_3`, with ``mean`` :math:`\beta_3^0` and ``variance`` :math:`\Sigma_{\beta_3}^0`
+            - parameter :math:`\beta_0` of variable ``intercept``, with ``mean`` :math:`\beta_0^0` and ``variance``
+              :math:`\Sigma_{\beta_0}^0`
+            - parameter :math:`\beta_1` of variable :math:`x_1`, with ``mean`` :math:`\beta_1^0` and ``variance``
+              :math:`\Sigma_{\beta_1}^0`
+            - parameter :math:`\beta_2` of variable :math:`x_2`, with ``mean`` :math:`\beta_2^0` and ``variance``
+              :math:`\Sigma_{\beta_2}^0`
+            - parameter :math:`\beta_3` of variable :math:`x_3`, with ``mean`` :math:`\beta_3^0` and ``variance``
+              :math:`\Sigma_{\beta_3}^0`
             - variable :math:`\sigma^2`, with ``shape`` :math:`\kappa^0` and ``scale`` :math:`\theta^0`
 
         >>> model = baypy.model.LinearModel()
@@ -215,7 +219,7 @@ class LinearModel(Model):
         Returns
         -------
         list
-            List of all model variables: the regressors :math:`X`, including the ``intercept`` and the ``variance``
+            The list of all model variables: the regressors :math:`X`, including the ``intercept`` and the ``variance``
             :math:`\sigma^2`.
         """
         assert super().variable_names is None
@@ -267,14 +271,14 @@ class LinearModel(Model):
         Returns
         -------
         pandas.DataFrame
-            Returns posterior samples. Posteriors are organized in a ``pandas.DataFrame``, one for each columns. The
+            Returns posterior samples. Posteriors are organized in a ``pandas.DataFrame``, one for each column. The
             length of the frame is the number of sampling iterations times the number of sampling chains.
 
         Raises
         ------
         ValueError
             If :py:attr:`posteriors` are not available because the method
-            :py:meth:`baypy.regression.LinearRegression.sample` is not been called yet.
+            :py:meth:`baypy.regression.LinearRegression.sample` has not been called yet.
         """
         assert super().posteriors_to_frame() is None
         if self.__posteriors is None:
