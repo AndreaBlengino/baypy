@@ -5,3 +5,4 @@
 .. currentmodule:: baypy.diagnostics.functions
 
 .. autofunction:: autocorrelation_summary
+   :no-index:

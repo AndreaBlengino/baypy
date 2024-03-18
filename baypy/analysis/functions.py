@@ -224,7 +224,7 @@ def residuals_plot(model: Model) -> None:
     Parameters
     ----------
     model : baypy.model.model.Model
-        Model with data, regressors, response variable and priors to be solved through Monte Carlo sampling.
+        The model with data, regressors, response variable and priors to be solved through Monte Carlo sampling.
 
     Raises
     ------
@@ -292,7 +292,7 @@ def compute_DIC(model: Model, print_summary: bool = True) -> dict:
     Parameters
     ----------
     model : baypy.model.model.Model
-        Model with data, regressors, response variable and priors to be solved through Monte Carlo sampling.
+        The model with data, regressors, response variable and priors to be solved through Monte Carlo sampling.
     print_summary : bool, optional
         If ``True`` prints the deviance summary report. Default is ``True``.
 

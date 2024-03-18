@@ -5,7 +5,7 @@ from baypy.utils import flatten_matrix
 
 
 def sample_sigma2(y: pd.Series, X: np.ndarray, beta: np.ndarray, k_1: float, theta_0: float) -> float:
-    r"""Draws a sample for the variance from a inverse-gamma conditional posterior distribution at each regression
+    r"""Draws a sample for the variance from an inverse-gamma conditional posterior distribution at each regression
     iteration.
 
     Parameters
@@ -33,7 +33,7 @@ def sample_sigma2(y: pd.Series, X: np.ndarray, beta: np.ndarray, k_1: float, the
 
     Notes
     -----
-    The variance is drawn from a inverse-gamma distribution. The conditional posterior distribution is:
+    The variance is drawn from an inverse-gamma distribution. The conditional posterior distribution is:
 
     .. math::
         H \left( \sigma^2 \left\vert B, y \right. \right) \sim
@@ -102,7 +102,7 @@ def sample_beta(Xt_X: np.ndarray, Xt_y: np.ndarray, sigma2: float, Sigma_0_inv: 
         M = \left( \Sigma_0^{-1} + \frac{1}{\sigma^2} X^T X \right)^{-1} \left( \Sigma_0^{-1} B_0 + \frac{1}{\sigma^2}
         X^T y \right)
 
-    and :math:`V` is a symmetric matrix with a number of rows and colums equal to the number of regressors:
+    and :math:`V` is a symmetric matrix with a number of rows and columns equal to the number of regressors:
 
     .. math::
         V = \left( \Sigma_0^{-1} + \frac{1}{\sigma^2} X^T X \right)^{-1} .

@@ -32,7 +32,7 @@ class LinearRegression(Regression):
         Parameters
         ----------
         model : baypy.model.model.Model
-            Model with data, regressors, response variable and priors to be solved through Monte Carlo sampling.
+            The model with data, regressors, response variable and priors to be solved through Monte Carlo sampling.
         n_iterations : int
             Number of total sampling iteration for each chain. It must be a strictly positive integer.
         burn_in_iterations : int

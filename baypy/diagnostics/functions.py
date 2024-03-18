@@ -114,7 +114,7 @@ def autocorrelation_summary(posteriors: dict, lags: list = None, print_summary: 
         with a number of rows equal to the number of iterations and a number of columns equal to the number of Markov
         chains.
     lags : list, optional
-        List of the lags to which compute the auto-correlation. It cannot be a empty ``list``. It must contain only
+        List of the lags to which compute the auto-correlation. It cannot be an empty ``list``. It must contain only
         positive integers. The default is ``[0, 1, 5, 10, 30]``.
     print_summary : bool, optional
         If ``True`` prints the autocorrelation summary report. Default is ``True``.
@@ -122,8 +122,8 @@ def autocorrelation_summary(posteriors: dict, lags: list = None, print_summary: 
     Returns
     -------
     pd.DataFrame
-        DataFrame with a number of row equal to the number of element in ``lags`` and a number of columns equal to the
-        number of model variables. Lags are reported in dataframe index.
+        The dataframe with a number of row equal to the number of element in ``lags`` and a number of columns equal to
+        the number of model variables. Lags are reported in dataframe index.
 
     Raises
     ------
@@ -212,8 +212,8 @@ def effective_sample_size(posteriors: dict, print_summary: bool = True) -> pd.Da
     Returns
     -------
     pd.DataFrame
-        DataFrame with a single row and a number of columns equal to the number of model variables. The unique index of
-        the dataframe is ``Effective Sample Size``.
+        The dataframe with a single row and a number of columns equal to the number of model variables. The unique index
+        of the dataframe is ``Effective Sample Size``.
 
     Raises
     ------

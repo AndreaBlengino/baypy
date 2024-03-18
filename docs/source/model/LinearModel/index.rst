@@ -3,11 +3,10 @@ LinearModel
 
 
 .. currentmodule:: baypy.model
-.. autoclass:: baypy.model.linear_model.LinearModel
+.. autoclass:: LinearModel
    :members:
    :undoc-members:
    :show-inheritance:
-   :no-index:
 
 
 .. toctree::

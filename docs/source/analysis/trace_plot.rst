@@ -5,3 +5,4 @@
 .. currentmodule:: baypy.analysis.functions
 
 .. autofunction:: trace_plot
+   :no-index:
