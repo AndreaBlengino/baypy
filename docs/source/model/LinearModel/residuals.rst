@@ -5,3 +5,4 @@
 .. currentmodule:: baypy.model.linear_model
 
 .. automethod:: LinearModel.residuals
+   :no-index:

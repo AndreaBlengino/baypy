@@ -64,9 +64,9 @@ class LinearModel(Model):
         Raises
         ------
         TypeError
-            If ``data`` is not an instance of ``pandas.DataFrame``.
+            If :py:attr:`data` is not an instance of ``pandas.DataFrame``.
         ValueError
-            If ``data`` is an empty ``pandas.DataFrame``.
+            If :py:attr:`data` is an empty ``pandas.DataFrame``.
         """
         assert super().data is None
         return self.__data
@@ -85,12 +85,12 @@ class LinearModel(Model):
         Returns
         -------
         string
-            Name of the response variable :math:`y`. In must be one of the columns of ``data``.
+            Name of the response variable :math:`y`. In must be one of the columns of :py:attr:`data`.
 
         Raises
         ------
         TypeError
-            If ``response_variable`` is not a ``str``.
+            If :py:attr:`response_variable` is not a ``str``.
         """
         assert super().response_variable is None
         return self.__response_variable
@@ -119,16 +119,16 @@ class LinearModel(Model):
         Raises
         ------
         TypeError
-            - If ``priors`` is not a ``dict``,
-            - if a ``priors``' value is not a ``dict``.
+            - If :py:attr:`priors` is not a ``dict``,
+            - if a :py:attr:`priors`' value is not a ``dict``.
         ValueError
-            - If ``priors`` is an empty ``dict``,
-            - if a ``priors``' value is a empty ``dict``,
+            - If :py:attr:`priors` is an empty ``dict``,
+            - if a :py:attr:`priors`' value is a empty ``dict``,
             - if a ``variance`` value is not positive,
             - if a ``shape`` value is not positive,
             - if a ``scale`` value is not positive.
         KeyError
-            - If ``priors`` does not contain both ``intercept`` and ``variance`` keys,
+            - If :py:attr:`priors` does not contain both ``intercept`` and ``variance`` keys,
             - if a prior's hyperparameters are not:
                 + ``mean`` and ``variance`` for a regression parameter :math:`\beta_j` or
                 + ``shape`` and ``scale`` for ``variance`` :math:`\sigma^2`.
@@ -239,10 +239,10 @@ class LinearModel(Model):
         Raises
         ------
         TypeError
-            - If ``posteriors`` is not a ``dict``,
+            - If :py:attr:`posteriors` is not a ``dict``,
             - if a posterior sample is not a ``numpy.ndarray``.
         KeyError
-            If ``posteriors`` does not contain both ``intercept`` and ``variance`` keys.
+            If :py:attr:`posteriors` does not contain both ``intercept`` and ``variance`` keys.
         ValueError
             If a posterior sample is an empty ``numpy.ndarray``.
         """
@@ -261,8 +261,8 @@ class LinearModel(Model):
 
 
     def posteriors_to_frame(self) -> pd.DataFrame:
-        """Organizes the ``posteriors`` in a ``pandas.DataFrame``. Each posterior is a frame column. The length of the
-        frame is the number of sampling iterations times the number of sampling chains.
+        """Organizes the :py:attr:`posteriors` in a ``pandas.DataFrame``. Each posterior is a frame column. The length
+        of the frame is the number of sampling iterations times the number of sampling chains.
 
         Returns
         -------
@@ -273,8 +273,8 @@ class LinearModel(Model):
         Raises
         ------
         ValueError
-            If ``posteriors`` are not available because the method ``baypy.regression.LinearRegression.sample`` is not
-            been called yet.
+            If :py:attr:`posteriors` are not available because the method
+            :py:meth:`baypy.regression.LinearRegression.sample` is not been called yet.
         """
         assert super().posteriors_to_frame() is None
         if self.__posteriors is None:
@@ -289,14 +289,14 @@ class LinearModel(Model):
         Returns
         -------
         pandas.DataFrame
-            Returns a copy of ``data`` with 3 more columns: ``intercept``, ``predicted`` and ``residuals``.
+            Returns a copy of :py:attr:`data` with 3 more columns: ``intercept``, ``predicted`` and ``residuals``.
 
         Raises
         ------
         ValueError
-            - If ``model.data`` is ``None`` because the property ``baypy.model.LinearModel.data`` has not been set
-            - if ``model.response_variable`` is not a column of ``model.data``,
-            - If a ``model.posteriors`` is ``None`` because the sampling has not been done yet.
+            - If :py:attr:`data` is ``None`` because the property :py:attr:`data` has not been set,
+            - if :py:attr:`response_variable` is not a column of :py:attr:`data`,
+            - If a :py:attr:`posteriors` is ``None`` because the sampling has not been done yet.
 
         Notes
         -----
@@ -307,7 +307,7 @@ class LinearModel(Model):
             \hat{y_i} = \beta_0 + \sum_{j = 1}^{m} \beta_j x_{i,j}
 
         while residuals are the difference between the observed values and the predicted values of the
-        ``response_variable``:
+        :py:attr:`response_variable`:
 
         .. math::
             \epsilon_i = y_i - \hat{y_i}
@@ -379,14 +379,14 @@ class LinearModel(Model):
 
 
     def likelihood(self, data: pd.DataFrame) -> np.ndarray:
-        r"""Computes the likelihood of observations ``model.response_variable`` given a model ``'mean'`` and
+        r"""Computes the likelihood of observations :py:attr:`response_variable` given a model ``'mean'`` and
         ``'variance'``.
 
         Parameters
         ----------
         data: pandas.DataFrame
             Data to use for likelihood computation. It cannot be empty. It must contain columns
-            ``model.response_variable``, ``'mean'`` and ``'variance'``.
+            :py:attr:`response_variable`, ``'mean'`` and ``'variance'``.
 
         Returns
         -------
@@ -400,7 +400,7 @@ class LinearModel(Model):
             If ``data`` is not an instance of ``pandas.DataFrame``.
         ValueError
             - If ``data`` is an empty ``pandas.DataFrame``,
-            - if ``model.response_variable`` is not a column of ``data``,
+            - if :py:attr:`response_variable` is not a column of ``data``,
             - if ``'mean'`` is not a column of ``data``,
             - if ``'variance'`` is not a column of ``data``.
 
@@ -425,14 +425,14 @@ class LinearModel(Model):
 
 
     def log_likelihood(self, data: pd.DataFrame) -> np.ndarray:
-        r"""Computes the log likelihood of observations ``model.response_variable`` given a model ``'mean'`` and
+        r"""Computes the log likelihood of observations :py:attr:`response_variable` given a model ``'mean'`` and
         ``'variance'``.
 
         Parameters
         ----------
         data: pandas.DataFrame
             Data to use for log likelihood computation. It cannot be empty. It must contain columns
-            ``model.response_variable``, ``'mean'`` and ``'variance'``.
+            :py:attr:`response_variable`, ``'mean'`` and ``'variance'``.
 
         Returns
         -------
@@ -446,7 +446,7 @@ class LinearModel(Model):
             If ``data`` is not an instance of ``pandas.DataFrame``.
         ValueError
             - If ``data`` is an empty ``pandas.DataFrame``,
-            - if ``model.response_variable`` is not a column of ``data``,
+            - if :py:attr:`response_variable` is not a column of ``data``,
             - if ``'mean'`` is not a column of ``data``,
             - if ``'variance'`` is not a column of ``data``.
 

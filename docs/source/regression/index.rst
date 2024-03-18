@@ -2,12 +2,11 @@ regression
 ==========
 
 
-.. currentmodule:: baypy.regression
-.. autoclass:: baypy.regression.linear_regression.LinearRegression
+.. currentmodule:: baypy.regression.linear_regression
+.. autoclass:: LinearRegression
    :members:
    :undoc-members:
    :show-inheritance:
-   :no-index:
 
 
 .. toctree::

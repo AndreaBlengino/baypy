@@ -5,3 +5,4 @@
 .. currentmodule:: baypy.analysis.functions
 
 .. autofunction:: compute_DIC
+   :no-index:
