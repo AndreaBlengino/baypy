@@ -107,8 +107,8 @@ class LinearModel(Model):
         r"""Priors for the regressors' and variance parameters.
         Each prior is a key-value pair, where the value is a ``dict`` with:
 
-            - hyperparameter names as keys
-            - hyperparameter values as values.
+        - hyperparameter names as keys
+        - hyperparameter values as values.
 
         Returns
         -------
@@ -137,17 +137,17 @@ class LinearModel(Model):
         -----
         To each random variables is assigned a prior distribution:
 
-            - to each regressor parameter :math:`\beta_j` is assigned a normal prior distribution with hyperparameters
-              ``mean`` :math:`\beta_j^0` and ``variance`` :math:`\Sigma_{\beta_j}^0`:
+        - to each regressor parameter :math:`\beta_j` is assigned a normal prior distribution with hyperparameters
+          ``mean`` :math:`\beta_j^0` and ``variance`` :math:`\Sigma_{\beta_j}^0`:
 
-              .. math::
-                \beta_j \sim N(\beta_j^0 , \Sigma_{\beta_j}^0)
+          .. math::
+            \beta_j \sim N(\beta_j^0 , \Sigma_{\beta_j}^0)
 
-            - to variance :math:`\sigma^2` is assigned a inverse gamma distribution with hyperparameters ``shape``
-              :math:`\kappa^0` and ``scale`` :math:`\theta^0`:
+        - to variance :math:`\sigma^2` is assigned a inverse gamma distribution with hyperparameters ``shape``
+          :math:`\kappa^0` and ``scale`` :math:`\theta^0`:
 
-              .. math::
-                \sigma^2 \sim \text{Inv-}\Gamma(\kappa^0, \theta^0)
+          .. math::
+            \sigma^2 \sim \text{Inv-}\Gamma(\kappa^0, \theta^0)
 
         Examples
         --------
