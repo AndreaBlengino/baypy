@@ -19,22 +19,24 @@ def autocorrelation_plot(posteriors: dict, max_lags: int = 30) -> None:
     max_lags : int, optional
         Maximum number of lags to which compute the auto-correlation. The default is ``30``.
 
-    Raises
-    ------
-    TypeError
-        - If ``posteriors`` is not a ``dict``,
-        - if a posterior sample is not a ``numpy.ndarray``,
-        - if ``max_lags`` is not a ``int``.
-    KeyError
-        If ``posteriors`` does not contain ``intercept`` key.
-    ValueError
-        - If a posterior sample is an empty ``numpy.ndarray``,
-        - if ``max_lags`` is less or equal to ``0``.
+    .. admonition:: Raises
+       :class: warning
 
-    See Also
-    --------
-    :py:func:`baypy.diagnostics.functions.autocorrelation_summary`
-    :py:func:`baypy.diagnostics.functions.effective_sample_size`
+       TypeError
+           - If ``posteriors`` is not a ``dict``,
+           - if a posterior sample is not a ``numpy.ndarray``,
+           - if ``max_lags`` is not a ``int``.
+       KeyError
+           If ``posteriors`` does not contain ``intercept`` key.
+       ValueError
+           - If a posterior sample is an empty ``numpy.ndarray``,
+           - if ``max_lags`` is less or equal to ``0``.
+
+    .. admonition:: See Also
+       :class: seealso
+
+       :py:func:`baypy.diagnostics.functions.autocorrelation_summary`
+       :py:func:`baypy.diagnostics.functions.effective_sample_size`
     """
     if not isinstance(posteriors, dict):
         raise TypeError("Parameter 'posteriors' must be a dictionary")
@@ -125,30 +127,33 @@ def autocorrelation_summary(posteriors: dict, lags: list = None, print_summary: 
         The dataframe with a number of row equal to the number of element in ``lags`` and a number of columns equal to
         the number of model variables. Lags are reported in dataframe index.
 
-    Raises
-    ------
-    TypeError
-        - If ``posteriors`` is not a ``dict``,
-        - if a posterior sample is not a ``numpy.ndarray``,
-        - if ``lags`` is not a ``list``,
-        - if ``lags`` does not contain only ``int``,
-        - if ``print_summary`` is not a ``bool``.
-    KeyError
-        If ``posteriors`` does not contain ``intercept`` key.
-    ValueError
-        - If a posterior sample is an empty ``numpy.ndarray``,
-        - if ``lags`` is an empty ``list``,
-        - if a value in ``lags`` is a negative ``int``.
+    .. admonition:: Raises
+       :class: warning
 
-    See Also
-    --------
-    :py:func:`baypy.diagnostics.functions.autocorrelation_plot`
-    :py:func:`baypy.diagnostics.functions.effective_sample_size`
+       TypeError
+           - If ``posteriors`` is not a ``dict``,
+           - if a posterior sample is not a ``numpy.ndarray``,
+           - if ``lags`` is not a ``list``,
+           - if ``lags`` does not contain only ``int``,
+           - if ``print_summary`` is not a ``bool``.
+       KeyError
+           If ``posteriors`` does not contain ``intercept`` key.
+       ValueError
+           - If a posterior sample is an empty ``numpy.ndarray``,
+           - if ``lags`` is an empty ``list``,
+           - if a value in ``lags`` is a negative ``int``.
 
-    Notes
-    -----
-    The reported auto-correlation for each variable is a mean of auto-correlations for the chains of that variable, for
-    each chain.
+    .. admonition:: Notes
+       :class: tip
+
+       The reported auto-correlation for each variable is a mean of auto-correlations for the chains of that variable, for
+       each chain.
+
+    .. admonition:: See Also
+       :class: seealso
+
+       :py:func:`baypy.diagnostics.functions.autocorrelation_plot`
+       :py:func:`baypy.diagnostics.functions.effective_sample_size`
     """
     if not isinstance(posteriors, dict):
         raise TypeError("Parameter 'posteriors' must be a dictionary")
@@ -215,27 +220,30 @@ def effective_sample_size(posteriors: dict, print_summary: bool = True) -> pd.Da
         The dataframe with a single row and a number of columns equal to the number of model variables. The unique index
         of the dataframe is ``Effective Sample Size``.
 
-    Raises
-    ------
-    TypeError
-        - If ``posteriors`` is not a ``dict``,
-        - if a posterior sample is not a ``numpy.ndarray``,
-        - if ``print_summary`` is not a ``bool``.
-    KeyError
-        If ``posteriors`` does not contain ``intercept`` key.
-    ValueError
-        If a posterior sample is an empty ``numpy.ndarray``.
+    .. admonition:: Raises
+       :class: warning
 
-    See Also
-    --------
-    :py:func:`baypy.diagnostics.functions.autocorrelation_plot`
-    :py:func:`baypy.diagnostics.functions.autocorrelation_summary`
+       TypeError
+           - If ``posteriors`` is not a ``dict``,
+           - if a posterior sample is not a ``numpy.ndarray``,
+           - if ``print_summary`` is not a ``bool``.
+       KeyError
+           If ``posteriors`` does not contain ``intercept`` key.
+       ValueError
+           If a posterior sample is an empty ``numpy.ndarray``.
 
-    Notes
-    -----
-    The effective number of sample could be theoretically equal to the number of iterations in case of no
-    auto-correlation of the Markov chain. The greater the auto-correlation of the Markov chain, the smaller the
-    effective sample size of the posterior.
+    .. admonition:: Notes
+       :class: tip
+
+       The effective number of sample could be theoretically equal to the number of iterations in case of no
+       auto-correlation of the Markov chain. The greater the auto-correlation of the Markov chain, the smaller the
+       effective sample size of the posterior.
+
+    .. admonition:: See Also
+       :class: seealso
+
+       :py:func:`baypy.diagnostics.functions.autocorrelation_plot`
+       :py:func:`baypy.diagnostics.functions.autocorrelation_summary`
     """
     if not isinstance(posteriors, dict):
         raise TypeError("Parameter 'posteriors' must be a dictionary")

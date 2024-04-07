@@ -15,23 +15,25 @@ def flatten_matrix(matrix: np.ndarray) -> np.ndarray:
     numpy.ndarray
         Flatten array with ``M*N`` elements.
 
-    Raises
-    ------
-    TypeError
-        If ``matrix`` is not a ``numpy.ndarray``.
-    ValueError
-        If ``matrix`` is an empty ``numpy.ndarray``.
+    .. admonition:: Raises
+       :class: warning
 
-    Examples
-    --------
-    >>> import numpy
-    >>> a = numpy.array([[1, 2], [3, 4], [5, 6]])
-    >>> a
-    >>> array([[1, 2],
-    ...        [3, 4],
-    ...        [5, 6]])
-    >>> flatten_matrix(a)
-    >>> array([1, 2, 3, 4, 5, 6])
+       TypeError
+           If ``matrix`` is not a ``numpy.ndarray``.
+       ValueError
+           If ``matrix`` is an empty ``numpy.ndarray``.
+
+    .. admonition:: Examples
+       :class: important
+
+       >>> import numpy
+       >>> a = numpy.array([[1, 2], [3, 4], [5, 6]])
+       >>> a
+       >>> array([[1, 2],
+       ...        [3, 4],
+       ...        [5, 6]])
+       >>> flatten_matrix(a)
+       >>> array([1, 2, 3, 4, 5, 6])
     """
     if not isinstance(matrix, np.ndarray):
         raise TypeError("Parameter 'matrix' must be an instance of 'numpy.ndarray'")
@@ -59,28 +61,30 @@ def matrices_to_frame(matrices_dict: dict) -> pd.DataFrame:
         Reorganized matrices frame. Matrices are organized in a ``pandas.DataFrame``, one for each column. The
         length of the frame is ``M*N``.
 
-    Raises
-    ------
-    TypeError
-        - If ``matrices_dict`` is not a ``dict``,
-        - if a ``matrices_dict`` value is not a ``numpy.ndarray``.
-    ValueError
-        If a ``matrices_dict`` value is an empty ``numpy.ndarray``.
+    .. admonition:: Raises
+       :class: warning
 
-    Examples
-    --------
-    >>> import numpy
-    >>> a = numpy.array([[1, 2], [3, 4], [5, 6]])
-    >>> b = numpy.array([[7, 8], [9, 10], [11, 12]])
-    >>> d = {'a': a, 'b': b}
-    >>> matrices_to_frame(d)
-    >>>    a   b
-    >>> 0  1   7
-    >>> 1  2   8
-    >>> 2  3   9
-    >>> 3  4  10
-    >>> 4  5  11
-    >>> 5  6  12
+       TypeError
+           - If ``matrices_dict`` is not a ``dict``,
+           - if a ``matrices_dict`` value is not a ``numpy.ndarray``.
+       ValueError
+           If a ``matrices_dict`` value is an empty ``numpy.ndarray``.
+
+    .. admonition:: Examples
+       :class: important
+
+       >>> import numpy
+       >>> a = numpy.array([[1, 2], [3, 4], [5, 6]])
+       >>> b = numpy.array([[7, 8], [9, 10], [11, 12]])
+       >>> d = {'a': a, 'b': b}
+       >>> matrices_to_frame(d)
+       >>>    a   b
+       >>> 0  1   7
+       >>> 1  2   8
+       >>> 2  3   9
+       >>> 3  4  10
+       >>> 4  5  11
+       >>> 5  6  12
     """
     if not isinstance(matrices_dict, dict):
         raise TypeError(f"Parameter 'matrices_dict' must be a dictionary")
@@ -113,25 +117,27 @@ def dot_product(data: pd.DataFrame, regressors: dict) -> np.ndarray:
         Array of computed dot product. Each element is the dot product of a ``data`` row with respect to each
         ``regressors``. It has the same length of ``data``.
 
-    Raises
-    ------
-    TypeError
-        - If ``data`` is not a ``pandas.DataFrame``,
-        - if ``regressors`` is not a ``dict``,
-        - if a ``regressors`` value is not a ``int`` or a ``float``.
-    KeyError
-        If a ``regressors`` key is not a column of ``data``.
-    ValueError
-        - If ``data`` is an empty ``pandas.DataFrame``,
-        - if ``regressors`` is an empty ``dict``.
+    .. admonition:: Raises
+       :class: warning
 
-    Examples
-    --------
-    >>> import pandas as pd
-    >>> data = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6]})
-    >>> regressors = {'a': 2, 'b': -1}
-    >>> dot_product(data = data, regressors = regressors)
-    >>> array([-2, -1,  0])
+       TypeError
+           - If ``data`` is not a ``pandas.DataFrame``,
+           - if ``regressors`` is not a ``dict``,
+           - if a ``regressors`` value is not a ``int`` or a ``float``.
+       KeyError
+           If a ``regressors`` key is not a column of ``data``.
+       ValueError
+           - If ``data`` is an empty ``pandas.DataFrame``,
+           - if ``regressors`` is an empty ``dict``.
+
+    .. admonition:: Examples
+       :class: important
+
+       >>> import pandas as pd
+       >>> data = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6]})
+       >>> regressors = {'a': 2, 'b': -1}
+       >>> dot_product(data = data, regressors = regressors)
+       >>> array([-2, -1,  0])
     """
     if not isinstance(data, pd.DataFrame):
         raise TypeError("Parameter 'data' must be an instance of 'pandas.DataFrame'")

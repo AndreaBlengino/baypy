@@ -16,9 +16,10 @@ class LinearRegression(Regression):
         Samples a sequence of observations from the full posterior distribution of regressors' parameters
         :math:`\beta_j` and ``variance`` :math:`\sigma^2`.
 
-    See Also
-    --------
-    :py:class:`baypy.model.linear_model.LinearModel`
+    .. admonition:: See Also
+       :class: seealso
+
+       :py:class:`baypy.model.linear_model.LinearModel`
     """
 
 
@@ -42,39 +43,41 @@ class LinearRegression(Regression):
         seed : int, optional
             Random seed to use for reproducibility of the sampling.
 
-        Raises
-        ------
-        TypeError
-            - If ``model`` is not a ``baypy.model.model.Model``,
-            - if ``n_iterations`` is not a ``int``,
-            - if ``burn_in_iterations`` is not a ``int``,
-            - if ``n_chains`` is not a ``int``,
-            - if ``seed`` is not a ``int``.
-        ValueError
-            - If ``model.data`` is ``None``,
-            - if ``model.response_variable`` is ``None``,
-            - if ``model.response_variable`` is not a column of ``model.data``
-            - if ``model.priors`` is ``None``,
-            - if a ``model.priors`` key is not a column of ``model.data``,
-            - If ``n_iterations`` is equal to or less than ``0``,
-            - if ``burn_in_iterations`` is less than ``0``,
-            - if ``n_chains`` is equal to or less than ``0``,
-            - if ``seed`` is not between ``0`` and ``2**32 - 1``.
+        .. admonition:: Raises
+           :class: warning
 
-        Notes
-        -----
-        The linear regression model of the response variable :math:`y` with respect to regressors :math:`X` is:
+           TypeError
+               - If ``model`` is not a ``baypy.model.model.Model``,
+               - if ``n_iterations`` is not a ``int``,
+               - if ``burn_in_iterations`` is not a ``int``,
+               - if ``n_chains`` is not a ``int``,
+               - if ``seed`` is not a ``int``.
+           ValueError
+               - If ``model.data`` is ``None``,
+               - if ``model.response_variable`` is ``None``,
+               - if ``model.response_variable`` is not a column of ``model.data``
+               - if ``model.priors`` is ``None``,
+               - if a ``model.priors`` key is not a column of ``model.data``,
+               - If ``n_iterations`` is equal to or less than ``0``,
+               - if ``burn_in_iterations`` is less than ``0``,
+               - if ``n_chains`` is equal to or less than ``0``,
+               - if ``seed`` is not between ``0`` and ``2**32 - 1``.
 
-        .. math::
-            y \sim N(\mu, \sigma^2)
-        .. math::
-            \mu = \beta_0 + B X = \beta_0 + \sum_{j = 1}^m \beta_j x_j
+        .. admonition:: Notes
+           :class: tip
 
-        and the likelihood is:
+           The linear regression model of the response variable :math:`y` with respect to regressors :math:`X` is:
 
-        .. math::
-            p \left( y \left\vert B,\sigma^2 \right. \right) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp{- \frac{\left(y -
-            \mu \right)^2}{2 \sigma^2}} .
+           .. math::
+               y \sim N(\mu, \sigma^2)
+           .. math::
+               \mu = \beta_0 + B X = \beta_0 + \sum_{j = 1}^m \beta_j x_j
+
+           and the likelihood is:
+
+           .. math::
+               p \left( y \left\vert B,\sigma^2 \right. \right) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp{- \frac{\left(y -
+               \mu \right)^2}{2 \sigma^2}} .
         """
         super(LinearRegression, LinearRegression).sample(model = model, n_iterations = n_iterations,
                                                          burn_in_iterations = burn_in_iterations, n_chains = n_chains,
