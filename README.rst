@@ -77,7 +77,7 @@ References
 
 - `Installation <https://baypy.readthedocs.io/en/latest/installation.html>`_
 - `PyPI <https://pypi.org/project/baypy>`_
-- `Documentation <https://baypy.readthedocs.io/en/latest/index.html>`_
+- `Documentation <https://baypy.readthedocs.io/en/latest/?badge=latest>`_
 - `Usage Examples <https://baypy.readthedocs.io/en/latest/examples/index.html>`_
 - `Issue tracker <https://github.com/AndreaBlengino/baypy/issues>`_
 - `Source code <https://github.com/AndreaBlengino/baypy/tree/master/baypy>`_
