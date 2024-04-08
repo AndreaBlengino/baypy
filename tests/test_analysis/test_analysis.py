@@ -138,8 +138,8 @@ class TestAnalysisComputeDIC:
         summary = bp.analysis.compute_DIC(model = model)
 
         assert isinstance(summary, dict)
-        assert list(summary.keys()) == ['deviance at posterior means', 'posterior mean deviance',
-                                        'effective number of parameters', 'DIC']
+        assert list(summary.keys()) == ['Deviance at posterior means', 'Posterior mean deviance',
+                                        'Effective number of parameters', 'Deviance Information Criterion']
         assert all([isinstance(value, float) for value in summary.values()])
 
 
