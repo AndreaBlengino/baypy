@@ -5,7 +5,7 @@ baypy documentation
 
 **Date**: |today|
 
-**Version**: |version|
+**Release**: |release|
 
 
 .. toctree::
@@ -21,9 +21,9 @@ baypy documentation
    :caption: References
 
    get_started
-   Source Code <https://github.com/AndreaBlengino/baypy>
    PyPI <https://pypi.org/project/baypy>
    Issue Tracker <https://github.com/AndreaBlengino/baypy/issues>
+   Source Code <https://github.com/AndreaBlengino/baypy>
    license
 
 
