@@ -2,7 +2,7 @@ LinearModel
 ===========
 
 
-.. currentmodule:: baypy.model
+.. currentmodule:: baypy.model.linear_model
 .. autoclass:: LinearModel
    :members:
    :undoc-members:

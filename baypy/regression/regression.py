@@ -1,10 +1,16 @@
 from abc import ABC, abstractmethod
 from baypy.model import Model
-import pandas as pd
 
 
 class Regression(ABC):
+    """:py:class:`Regression <baypy.regression.regression.Regression>` object. \n
+    Abstract base class for creating regression objects.
 
+    .. admonition:: See Also
+       :class: seealso
+
+       :py:class:`LinearRegression <baypy.regression.linear_regression.LinearRegression>`
+    """
 
     @staticmethod
     @abstractmethod

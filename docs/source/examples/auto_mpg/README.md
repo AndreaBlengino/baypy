@@ -1,8 +1,9 @@
 ### Model Set Up
 
-Determine the effect of car attributes on fuel consumption.  
 [Link to the dataset](https://github.com/AndreaBlengino/baypy/blob/master/docs/source/examples/auto_mpg/data/data.csv)  
-[Dataset original source](https://archive.ics.uci.edu/dataset/9/auto+mpg)
+[Dataset original source](https://archive.ics.uci.edu/dataset/9/auto+mpg)  
+[Complete example code](https://github.com/AndreaBlengino/baypy/blob/master/docs/source/examples/auto_mpg/auto_mpg.py)  
+Determine the effect of car attributes on fuel consumption.
 
 > The data concerns city-cycle fuel consumption in miles per gallon, to 
 > be predicted in terms of 3 multivalued discrete and 5 continuous 
@@ -65,6 +66,9 @@ model.priors = {'intercept': {'mean': 0, 'variance': 1e6},
                 'variance': {'shape': 1, 'scale': 1e-6}}
 ```
 
+See :py:class:`LinearModel <baypy.model.linear_model.LinearModel>` for 
+more information on this class and its attributes and methods.
+
 ### Sampling
 
 Run the regression sampling on 3 Markov chains, with 1000 iterations per 
@@ -76,6 +80,10 @@ from baypy.regression import LinearRegression
 LinearRegression.sample(model = model, n_iterations = 1000, 
                         burn_in_iterations = 50, n_chains = 3, seed = 137)
 ```
+
+See 
+:py:class:`LinearRegression <baypy.regression.linear_regression.LinearRegression>` 
+for more information on this class and its attributes and methods.
 
 ### Convergence Diagnostics
 
@@ -109,6 +117,12 @@ bp.diagnostics.autocorrelation_plot(posteriors = model.posteriors)
 
 ![](images/autocorrelation_plot.png)
 
+See 
+:py:func:`effective_sample_size <baypy.diagnostics.functions.effective_sample_size>`,
+:py:func:`autocorrelation_summary <baypy.diagnostics.functions.autocorrelation_summary>`
+and 
+:py:func:`autocorrelation_plot <baypy.diagnostics.functions.autocorrelation_plot>`
+for more details on diagnostics functions.  
 All diagnostics show a low correlation, indicating the chains 
 converged to the stationary distribution.
 
@@ -162,6 +176,10 @@ model year    0.028102  0.030384  0.031521  0.032740  0.034908
 variance      0.011840  0.012967  0.013594  0.014286  0.015681
 ```
 
+See :py:func:`trace_plot <baypy.analysis.functions.trace_plot>`,
+:py:func:`residuals_plot <baypy.analysis.functions.residuals_plot>` and
+:py:func:`summary <baypy.analysis.functions.summary>` for more details 
+on analysis functions.  
 The summary reports a statistical evidence for:
 
 - negative effect of *cylinders*: `$1$` cylinder increase would 

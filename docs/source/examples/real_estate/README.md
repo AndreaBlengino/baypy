@@ -1,10 +1,11 @@
 ### Model Set Up
 
+[Link to the dataset](https://github.com/AndreaBlengino/baypy/blob/master/docs/source/examples/real_estate/data/data.csv)  
+[Dataset original source](https://archive.ics.uci.edu/dataset/477/real+estate+valuation+data+set)  
+[Complete example code](https://github.com/AndreaBlengino/baypy/blob/master/docs/source/examples/real_estate/real_estate.py)  
 Determine the price of houses by their features.  
 The market historical data set of real estate valuation are collected 
-from Sindian Dist., New Taipei City, Taiwan.  
-[Link to the dataset](https://github.com/AndreaBlengino/baypy/blob/master/docs/source/examples/real_estate/data/data.csv)  
-[Dataset original source](https://archive.ics.uci.edu/dataset/477/real+estate+valuation+data+set)
+from Sindian Dist., New Taipei City, Taiwan.
 
 ```python
 import pandas as pd
@@ -71,6 +72,9 @@ model.priors = {'intercept': {'mean': 0, 'variance': 1e6},
                 'variance': {'shape': 1, 'scale': 1e-6}}
 ```
 
+See :py:class:`LinearModel <baypy.model.linear_model.LinearModel>` for 
+more information on this class and its attributes and methods.
+
 ### Sampling
 
 Run the regression sampling on 3 Markov chains, with 1000 iterations per 
@@ -82,6 +86,10 @@ from baypy.regression import LinearRegression
 LinearRegression.sample(model = model, n_iterations = 1000, 
                         burn_in_iterations = 50, n_chains = 3, seed = 137)
 ```
+
+See 
+:py:class:`LinearRegression <baypy.regression.linear_regression.LinearRegression>` 
+for more information on this class and its attributes and methods.
 
 ### Convergence Diagnostics
 
@@ -115,6 +123,12 @@ bp.diagnostics.autocorrelation_plot(posteriors = model.posteriors)
 
 ![](images/autocorrelation_plot.png)
 
+See 
+:py:func:`effective_sample_size <baypy.diagnostics.functions.effective_sample_size>`,
+:py:func:`autocorrelation_summary <baypy.diagnostics.functions.autocorrelation_summary>`
+and 
+:py:func:`autocorrelation_plot <baypy.diagnostics.functions.autocorrelation_plot>`
+for more details on diagnostics functions.  
 All diagnostics show a low correlation, indicating the chains 
 converged to the stationary distribution.
 
@@ -172,6 +186,10 @@ longitude                    1.262242    2.303130    2.840166    3.366287    4.4
 variance                     0.030052    0.032863    0.034565    0.036164    0.039478
 ```
 
+See :py:func:`trace_plot <baypy.analysis.functions.trace_plot>`,
+:py:func:`residuals_plot <baypy.analysis.functions.residuals_plot>` and
+:py:func:`summary <baypy.analysis.functions.summary>` for more details 
+on analysis functions.  
 The summary reports a statistical evidence for:
 
 - positive effect of *transaction date*: `$1$` month increase would 

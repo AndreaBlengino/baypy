@@ -1,11 +1,12 @@
 ### Model Set Up
 
-Determine the effect that the independent variables *biking* and 
-*smoking* have on the dependent variable *heart disease* using a 
-multiple linear regression model.  
 [Link to the dataset](https://github.com/AndreaBlengino/baypy/blob/master/docs/source/examples/heart/data/data.csv)  
 Unfortunately, [the database original source](https://www.scribbr.com/statistics/multiple-linear-regression/)
-does not report the units on each variable.
+does not report the units on each variable.  
+[Complete example code](https://github.com/AndreaBlengino/baypy/blob/master/docs/source/examples/heart/heart.py)  
+Determine the effect that the independent variables *biking* and 
+*smoking* have on the dependent variable *heart disease* using a 
+multiple linear regression model.
 
 ```python
 import pandas as pd
@@ -31,6 +32,9 @@ model.priors = {'intercept': {'mean': 0, 'variance': 1e6},
                 'variance': {'shape': 1, 'scale': 1e-9}}
 ```
 
+See :py:class:`LinearModel <baypy.model.linear_model.LinearModel>` for 
+more information on this class and its attributes and methods.
+
 ### Sampling
 
 Run the regression sampling on 3 Markov chains, with 500 iterations per 
@@ -42,6 +46,10 @@ from baypy.regression import LinearRegression
 LinearRegression.sample(model = model, n_iterations = 500, 
                         burn_in_iterations = 50, n_chains = 3, seed = 137)
 ```
+
+See 
+:py:class:`LinearRegression <baypy.regression.linear_regression.LinearRegression>` 
+for more information on this class and its attributes and methods.
 
 ### Convergence Diagnostics
 
@@ -74,6 +82,12 @@ bp.diagnostics.autocorrelation_plot(posteriors = model.posteriors)
 
 ![](images/autocorrelation_plot.png)
 
+See 
+:py:func:`effective_sample_size <baypy.diagnostics.functions.effective_sample_size>`,
+:py:func:`autocorrelation_summary <baypy.diagnostics.functions.autocorrelation_summary>`
+and 
+:py:func:`autocorrelation_plot <baypy.diagnostics.functions.autocorrelation_plot>`
+for more details on diagnostics functions.  
 All diagnostics show a low correlation, indicating the chains 
 converged to the stationary distribution.
 
@@ -124,6 +138,10 @@ smoking     0.171140   0.175893   0.178261   0.180621   0.185169
 variance    0.380265   0.408345   0.426025   0.446627   0.488800
 ```
 
+See :py:func:`trace_plot <baypy.analysis.functions.trace_plot>`,
+:py:func:`residuals_plot <baypy.analysis.functions.residuals_plot>` and
+:py:func:`summary <baypy.analysis.functions.summary>` for more details 
+on analysis functions.  
 The summary reports a statistical evidence for:
 
 - negative effect of *biking*: `$1$` point increase in *biking* 

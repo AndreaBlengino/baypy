@@ -5,36 +5,38 @@ from ..utils import flatten_matrix
 
 
 def autocorrelation_plot(posteriors: dict, max_lags: int = 30) -> None:
-    """Plots the auto-correlation for each Markov chain for each regression variable.
+    """It plots the auto-correlation for each Markov chain for each regression variable. \n
     The plot shows the auto-correlation trend from lag ``0`` (when auto-correlation is always ``1``) up to ``max_lags``.
     The plot layout has number of rows equal to the number of regression variables and a number of columns equal to the
     number of chains.
 
     Parameters
     ----------
-    posteriors : dict
-        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
-        with a number of rows equal to the number of iterations and a number of columns equal to the number of Markov
-        chains.
-    max_lags : int, optional
+    ``posteriors`` : :py:class:`dict`
+        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a
+        :py:class:`numpy.ndarray` with a number of rows equal to the number of iterations and a number of columns equal
+        to the number of Markov chains.
+    ``max_lags`` : :py:class:`int`, optional
         Maximum number of lags to which compute the auto-correlation. The default is ``30``.
 
-    Raises
-    ------
-    TypeError
-        - If ``posteriors`` is not a ``dict``,
-        - if a posterior sample is not a ``numpy.ndarray``,
-        - if ``max_lags`` is not a ``int``.
-    KeyError
-        If ``posteriors`` does not contain ``intercept`` key.
-    ValueError
-        - If a posterior sample is an empty ``numpy.ndarray``,
-        - if ``max_lags`` is less or equal to ``0``.
+    .. admonition:: Raises
+       :class: warning
 
-    See Also
-    --------
-    :py:func:`baypy.diagnostics.functions.autocorrelation_summary`
-    :py:func:`baypy.diagnostics.functions.effective_sample_size`
+       ``TypeError``
+           - If ``posteriors`` is not a :py:class:`dict`,
+           - if a posterior sample is not a :py:class:`numpy.ndarray`,
+           - if ``max_lags`` is not an :py:class:`int`.
+       ``KeyError``
+           If ``posteriors`` does not contain ``'intercept'`` key.
+       ``ValueError``
+           - If a posterior sample is an empty :py:class:`numpy.ndarray`,
+           - if ``max_lags`` is less or equal to ``0``.
+
+    .. admonition:: See Also
+       :class: seealso
+
+       :py:func:`autocorrelation_summary <baypy.diagnostics.functions.autocorrelation_summary>` \n
+       :py:func:`effective_sample_size <baypy.diagnostics.functions.effective_sample_size>`
     """
     if not isinstance(posteriors, dict):
         raise TypeError("Parameter 'posteriors' must be a dictionary")
@@ -58,7 +60,7 @@ def autocorrelation_plot(posteriors: dict, max_lags: int = 30) -> None:
     n_variables = len(variable_names)
     n_iterations, n_chains = posteriors['intercept'].shape
 
-    fig, ax = plt.subplots(nrows = n_variables,
+    _, ax = plt.subplots(nrows = n_variables,
                            ncols = n_chains,
                            figsize = (min(1.5*n_chains + 3, 10), min(1.5*n_variables + 2, 10)),
                            sharex = 'all',
@@ -104,51 +106,54 @@ def autocorrelation_plot(posteriors: dict, max_lags: int = 30) -> None:
 
 
 def autocorrelation_summary(posteriors: dict, lags: list = None, print_summary: bool = True) -> pd.DataFrame:
-    """Prints the auto-correlation summary for each regression variable.
+    """It prints the auto-correlation summary for each regression variable. \n
     The summary reports the auto-correlation values at the lags listed in ``lags``.
 
     Parameters
     ----------
-    posteriors : dict
-        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
-        with a number of rows equal to the number of iterations and a number of columns equal to the number of Markov
-        chains.
-    lags : list, optional
-        List of the lags to which compute the auto-correlation. It cannot be an empty ``list``. It must contain only
-        positive integers. The default is ``[0, 1, 5, 10, 30]``.
-    print_summary : bool, optional
+    ``posteriors`` : :py:class:`dict`
+        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a
+        :py:class:`numpy.ndarray` with a number of rows equal to the number of iterations and a number of columns equal
+        to the number of Markov chains.
+    ``lags`` : :py:class:`list`, optional
+        List of the lags to which compute the auto-correlation. It cannot be an empty :py:class:`list`. It must contain
+        only positive integers. The default is ``[0, 1, 5, 10, 30]``.
+    ``print_summary`` : :py:class:`bool`, optional
         If ``True`` prints the autocorrelation summary report. Default is ``True``.
 
     Returns
     -------
-    pd.DataFrame
+    :py:class:`pandas.DataFrame`
         The dataframe with a number of row equal to the number of element in ``lags`` and a number of columns equal to
         the number of model variables. Lags are reported in dataframe index.
 
-    Raises
-    ------
-    TypeError
-        - If ``posteriors`` is not a ``dict``,
-        - if a posterior sample is not a ``numpy.ndarray``,
-        - if ``lags`` is not a ``list``,
-        - if ``lags`` does not contain only ``int``,
-        - if ``print_summary`` is not a ``bool``.
-    KeyError
-        If ``posteriors`` does not contain ``intercept`` key.
-    ValueError
-        - If a posterior sample is an empty ``numpy.ndarray``,
-        - if ``lags`` is an empty ``list``,
-        - if a value in ``lags`` is a negative ``int``.
+    .. admonition:: Raises
+       :class: warning
 
-    See Also
-    --------
-    :py:func:`baypy.diagnostics.functions.autocorrelation_plot`
-    :py:func:`baypy.diagnostics.functions.effective_sample_size`
+       ``TypeError``
+           - If ``posteriors`` is not a :py:class:`dict`,
+           - if a posterior sample is not a :py:class:`numpy.ndarray`,
+           - if ``lags`` is not a :py:class:`list`,
+           - if ``lags`` does not contain only :py:class:`int`,
+           - if ``print_summary`` is not a :py:class:`bool`.
+       ``KeyError``
+           If ``posteriors`` does not contain ``'intercept'`` key.
+       ``ValueError``
+           - If a posterior sample is an empty :py:class:`numpy.ndarray`,
+           - if ``lags`` is an empty :py:class:`list`,
+           - if a value in ``lags`` is a negative :py:class:`int`.
 
-    Notes
-    -----
-    The reported auto-correlation for each variable is a mean of auto-correlations for the chains of that variable, for
-    each chain.
+    .. admonition:: Notes
+       :class: tip
+
+       The reported auto-correlation for each variable is a mean of auto-correlations for the chains of that variable,
+       for each chain.
+
+    .. admonition:: See Also
+       :class: seealso
+
+       :py:func:`autocorrelation_plot <baypy.diagnostics.functions.autocorrelation_plot>` \n
+       :py:func:`effective_sample_size <baypy.diagnostics.functions.effective_sample_size>`
     """
     if not isinstance(posteriors, dict):
         raise TypeError("Parameter 'posteriors' must be a dictionary")
@@ -198,44 +203,47 @@ def autocorrelation_summary(posteriors: dict, lags: list = None, print_summary: 
 
 
 def effective_sample_size(posteriors: dict, print_summary: bool = True) -> pd.DataFrame:
-    """Computes and prints the effective number of sample for each posterior.
+    """It computes and prints the effective number of sample for each posterior.
 
     Parameters
     ----------
-    posteriors : dict
-        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
-        with a number of rows equals to the number of iterations and a number of columns equal to the number of Markov
-        chains.
-    print_summary : bool, optional
+    ``posteriors`` : :py:class:`dict`
+        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a
+        :py:class:`numpy.ndarray` with a number of rows equals to the number of iterations and a number of columns equal
+        to the number of Markov chains.
+    ``print_summary`` : :py:class:`bool`, optional
         If ``True`` prints the effective sample size summary report. Default is ``True``.
 
     Returns
     -------
-    pd.DataFrame
+    :py:class:`pandas.DataFrame`
         The dataframe with a single row and a number of columns equal to the number of model variables. The unique index
-        of the dataframe is ``Effective Sample Size``.
+        of the dataframe is ``'Effective Sample Size'``.
 
-    Raises
-    ------
-    TypeError
-        - If ``posteriors`` is not a ``dict``,
-        - if a posterior sample is not a ``numpy.ndarray``,
-        - if ``print_summary`` is not a ``bool``.
-    KeyError
-        If ``posteriors`` does not contain ``intercept`` key.
-    ValueError
-        If a posterior sample is an empty ``numpy.ndarray``.
+    .. admonition:: Raises
+       :class: warning
 
-    See Also
-    --------
-    :py:func:`baypy.diagnostics.functions.autocorrelation_plot`
-    :py:func:`baypy.diagnostics.functions.autocorrelation_summary`
+       ``TypeError``
+           - If ``posteriors`` is not a :py:class:`dict`,
+           - if a posterior sample is not a :py:class:`numpy.ndarray`,
+           - if ``print_summary`` is not a :py:class:`bool`.
+       ``KeyError``
+           If ``posteriors`` does not contain ``'intercept'`` key.
+       ``ValueError``
+           If a posterior sample is an empty :py:class:`numpy.ndarray`.
 
-    Notes
-    -----
-    The effective number of sample could be theoretically equal to the number of iterations in case of no
-    auto-correlation of the Markov chain. The greater the auto-correlation of the Markov chain, the smaller the
-    effective sample size of the posterior.
+    .. admonition:: Notes
+       :class: tip
+
+       The effective number of sample could be theoretically equal to the number of iterations in case of no
+       auto-correlation of the Markov chain. The greater the auto-correlation of the Markov chain, the smaller the
+       effective sample size of the posterior.
+
+    .. admonition:: See Also
+       :class: seealso
+
+       :py:func:`autocorrelation_plot <baypy.diagnostics.functions.autocorrelation_plot>` \n
+       :py:func:`autocorrelation_summary <baypy.diagnostics.functions.autocorrelation_summary>`
     """
     if not isinstance(posteriors, dict):
         raise TypeError("Parameter 'posteriors' must be a dictionary")

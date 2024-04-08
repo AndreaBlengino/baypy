@@ -3,78 +3,80 @@ from baypy.regression.functions import sample_beta
 from baypy.model import Model
 from .regression import Regression
 import numpy as np
-import pandas as pd
 from scipy.stats import norm, invgamma
 
 
 class LinearRegression(Regression):
-    r"""baypy.regression.linear_regression.LinearRegression object.
+    r""":py:class:`LinearRegression <baypy.regression.linear_regression.LinearRegression>` object.
 
     Methods
     -------
-    :meth:`baypy.regression.linear_regression.LinearRegression.sample()`
-        Samples a sequence of observations from the full posterior distribution of regressors' parameters
+    :meth:`sample`
+        It samples a sequence of observations from the full posterior distribution of regressors' parameters
         :math:`\beta_j` and ``variance`` :math:`\sigma^2`.
 
-    See Also
-    --------
-    :py:class:`baypy.model.linear_model.LinearModel`
+    .. admonition:: See Also
+       :class: seealso
+
+       :py:class:`LinearModel <baypy.model.linear_model.LinearModel>`
     """
 
 
     @staticmethod
     def sample(model: Model, n_iterations: int, burn_in_iterations: int, n_chains: int, seed: int = None) -> None:
-        r"""Samples a sequence of observations from the full posterior distribution of regressors' parameters
+        r"""It samples a sequence of observations from the full posterior distribution of regressors' parameters
         :math:`\beta_j` and ``variance`` :math:`\sigma^2`.
         First ``burn_in_iterations`` are discarded since they may not accurately represent the desired distribution.
         For each variable, it generates ``n_chain`` Markov chains.
 
         Parameters
         ----------
-        model : baypy.model.model.Model
+        ``model`` : :py:class:`Model <baypy.model.model.Model>`
             The model with data, regressors, response variable and priors to be solved through Monte Carlo sampling.
-        n_iterations : int
+        ``n_iterations`` : :py:class:`int`
             Number of total sampling iteration for each chain. It must be a strictly positive integer.
-        burn_in_iterations : int
+        ``burn_in_iterations`` : :py:class:`int`
             Number of burn-in iteration for each chain. It must be a positive integer or ``0``.
-        n_chains : int
+        ``n_chains`` : :py:class:`int`
             Number of chains. It must be a strictly positive integer.
-        seed : int, optional
+        ``seed`` : :py:class:`int`, optional
             Random seed to use for reproducibility of the sampling.
 
-        Raises
-        ------
-        TypeError
-            - If ``model`` is not a ``baypy.model.model.Model``,
-            - if ``n_iterations`` is not a ``int``,
-            - if ``burn_in_iterations`` is not a ``int``,
-            - if ``n_chains`` is not a ``int``,
-            - if ``seed`` is not a ``int``.
-        ValueError
-            - If ``model.data`` is ``None``,
-            - if ``model.response_variable`` is ``None``,
-            - if ``model.response_variable`` is not a column of ``model.data``
-            - if ``model.priors`` is ``None``,
-            - if a ``model.priors`` key is not a column of ``model.data``,
-            - If ``n_iterations`` is equal to or less than ``0``,
-            - if ``burn_in_iterations`` is less than ``0``,
-            - if ``n_chains`` is equal to or less than ``0``,
-            - if ``seed`` is not between ``0`` and ``2**32 - 1``.
+        .. admonition:: Raises
+           :class: warning
 
-        Notes
-        -----
-        The linear regression model of the response variable :math:`y` with respect to regressors :math:`X` is:
+           ``TypeError``
+               - If ``model`` is not a :py:class:`Model <baypy.model.model.Model>`,
+               - if ``n_iterations`` is not an :py:class:`int`,
+               - if ``burn_in_iterations`` is not an :py:class:`int`,
+               - if ``n_chains`` is not an :py:class:`int`,
+               - if ``seed`` is not an :py:class:`int`.
+           ``ValueError``
+               - If ``model.data`` is :py:obj:`None`,
+               - if ``model.response_variable`` is :py:obj:`None`,
+               - if ``model.response_variable`` is not a column of ``model.data``
+               - if ``model.priors`` is :py:obj:`None`,
+               - if a ``model.priors`` key is not a column of ``model.data``,
+               - If ``n_iterations`` is equal to or less than ``0``,
+               - if ``burn_in_iterations`` is less than ``0``,
+               - if ``n_chains`` is equal to or less than ``0``,
+               - if ``seed`` is not between ``0`` and ``2**32 - 1``.
 
-        .. math::
-            y \sim N(\mu, \sigma^2)
-        .. math::
-            \mu = \beta_0 + B X = \beta_0 + \sum_{j = 1}^m \beta_j x_j
+        .. admonition:: Notes
+           :class: tip
 
-        and the likelihood is:
+           The linear regression model of the response variable :math:`y` with respect to regressors :math:`X` is:
 
-        .. math::
-            p \left( y \left\vert B,\sigma^2 \right. \right) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp{- \frac{\left(y -
-            \mu \right)^2}{2 \sigma^2}} .
+           .. math::
+               y \sim N(\mu, \sigma^2)
+           .. math::
+               \mu = \beta_0 + B X = \beta_0 + \sum_{j = 1}^m \beta_j x_j
+
+           and the likelihood is:
+
+           .. math::
+               p \left( y \left\vert B,\sigma^2 \right. \right) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp{- \frac{\left(y -
+               \mu \right)^2}{2 \sigma^2}} .
         """
         super(LinearRegression, LinearRegression).sample(model = model, n_iterations = n_iterations,
                                                          burn_in_iterations = burn_in_iterations, n_chains = n_chains,
@@ -116,10 +118,10 @@ class LinearRegression(Regression):
                  for regressor in regressor_names] for _ in range(n_chains)]
         sigma2 = [invgamma.rvs(a = k_0, scale = theta_0) for _ in range(n_chains)]
 
-        for i in range(burn_in_iterations + n_iterations + 1):
+        for _ in range(burn_in_iterations + n_iterations + 1):
             for k in range(n_chains):
-                [posteriors[regressor][k].append(beta[k][j])
-                 for j, regressor in enumerate(regressor_names, 0)]
+                for j, regressor in enumerate(regressor_names, 0):
+                    posteriors[regressor][k].append(beta[k][j])
                 posteriors['variance'][k].append(sigma2[k])
 
             beta = [sample_beta(Xt_X = Xt_X,

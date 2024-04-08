@@ -2,7 +2,7 @@ LinearRegression
 ================
 
 
-.. currentmodule:: baypy.regression
+.. currentmodule:: baypy.regression.linear_regression
 .. autoclass:: LinearRegression
    :members:
    :undoc-members:
