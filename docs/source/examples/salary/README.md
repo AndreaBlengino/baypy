@@ -1,9 +1,10 @@
 ### Model Set Up
 
-Determine the effect of the years of experience on salary of jobholders 
-using a simple linear regression model.  
 [Link to the dataset](https://github.com/AndreaBlengino/baypy/blob/master/docs/source/examples/salary/data/data.csv)  
-[Dataset original source](https://www.kaggle.com/datasets/rsadiq/salary)
+[Dataset original source](https://www.kaggle.com/datasets/rsadiq/salary)  
+[Complete example code](https://github.com/AndreaBlengino/baypy/blob/master/docs/source/examples/salary/salary.py)  
+Determine the effect of the years of experience on salary of jobholders 
+using a simple linear regression model.
 
 ```python
 import pandas as pd
@@ -27,6 +28,9 @@ model.priors = {'intercept': {'mean': 0, 'variance': 1e12},
                 'variance': {'shape': 1, 'scale': 1e-12}}
 ```
 
+See :py:class:`LinearModel <baypy.model.linear_model.LinearModel>` for 
+more information on this class and its attributes and methods.
+
 ### Sampling
 
 Run the regression sampling on 3 Markov chains, with 5000 iterations per 
@@ -39,6 +43,10 @@ regression = bp.regression.LinearRegression(model = model)
 LinearRegression.sample(model = model, n_iterations = 5000, 
                         burn_in_iterations = 50, n_chains = 3, seed = 137)
 ```
+
+See 
+:py:class:`LinearRegression <baypy.regression.linear_regression.LinearRegression>` 
+for more information on this class and its attributes and methods.
 
 ### Convergence Diagnostics
 
@@ -72,6 +80,12 @@ bp.diagnostics.autocorrelation_plot(posteriors = model.posteriors)
 
 ![](images/autocorrelation_plot.png)
 
+See 
+:py:func:`effective_sample_size <baypy.diagnostics.functions.effective_sample_size>`,
+:py:func:`autocorrelation_summary <baypy.diagnostics.functions.autocorrelation_summary>`
+and 
+:py:func:`autocorrelation_plot <baypy.diagnostics.functions.autocorrelation_plot>`
+for more details on diagnostics functions.  
 All diagnostics show a low correlation, indicating the chains 
 converged to the stationary distribution.
 
@@ -119,6 +133,10 @@ YearsExperience  8.696984e+03  9.198969e+03  9.447750e+03  9.703882e+03  1.02242
 variance         2.049029e+07  2.779544e+07  3.309215e+07  3.986484e+07  5.835968e+07
 ```
 
+See :py:func:`trace_plot <baypy.analysis.functions.trace_plot>`,
+:py:func:`residuals_plot <baypy.analysis.functions.residuals_plot>` and
+:py:func:`summary <baypy.analysis.functions.summary>` for more details 
+on analysis functions.  
 The summary reports a statistical evidence for a positive effect of 
 years of experience: `$1$` year increase in experience would result in
 `$\sim 9.500$` increase in salary.  
@@ -146,6 +164,9 @@ plt.show()
 
 ![](images/predict_distribution.png)
 
+See 
+:py:meth:`LinearModel.predict_distribution <baypy.model.linear_model.LinearModel.predict_distribution>`
+for more information on this method.  
 Comparing data to fitted model posteriors:
 
 ```python

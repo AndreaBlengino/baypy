@@ -1,10 +1,11 @@
 ### Model Set Up
 
-Build a linear regression model for predicting *Sales* using *TV* as a
-predictor.  
 [Link to the dataset](https://github.com/AndreaBlengino/baypy/blob/master/docs/source/examples/tvmarketing/data/data.csv)  
 Unfortunately, [the database original source](https://www.kaggle.com/datasets/devzohaib/tvmarketingcsv?select=tvmarketing.csv)
-does not report the units on each variable.
+does not report the units on each variable.  
+[Complete example code](https://github.com/AndreaBlengino/baypy/blob/master/docs/source/examples/tvmarketing/tvmarketing.py)  
+Build a linear regression model for predicting *Sales* using *TV* as a
+predictor.
 
 ```python
 import pandas as pd
@@ -48,6 +49,9 @@ model_1.priors = {'intercept': {'mean': 0, 'variance': 1e6},
                   'variance': {'shape': 1, 'scale': 1e-6}}
 ```
 
+See :py:class:`LinearModel <baypy.model.linear_model.LinearModel>` for 
+more information on this class and its attributes and methods.
+
 ### Sampling
 
 Run the regression sampling on 3 Markov chains, with 500 iterations per 
@@ -59,6 +63,10 @@ from baypy.regression import LinearRegression
 LinearRegression.sample(model = model_1, n_iterations = 500, 
                         burn_in_iterations = 50, n_chains = 3, seed = 137)
 ```
+
+See 
+:py:class:`LinearRegression <baypy.regression.linear_regression.LinearRegression>` 
+for more information on this class and its attributes and methods.
 
 ### Convergence Diagnostics
 
@@ -92,6 +100,12 @@ bp.diagnostics.autocorrelation_plot(posteriors = model_1.posteriors)
 
 ![](images/autocorrelation_plot_1.png)
 
+See 
+:py:func:`effective_sample_size <baypy.diagnostics.functions.effective_sample_size>`,
+:py:func:`autocorrelation_summary <baypy.diagnostics.functions.autocorrelation_summary>`
+and 
+:py:func:`autocorrelation_plot <baypy.diagnostics.functions.autocorrelation_plot>`
+for more details on diagnostics functions.  
 All diagnostics show a low correlation, indicating the chains 
 converged to the stationary distribution.
 
@@ -111,6 +125,9 @@ bp.analysis.residuals_plot(model = model_1)
 
 ![](images/residuals_plot_1.png)
 
+See :py:func:`trace_plot <baypy.analysis.functions.trace_plot>` and
+:py:func:`residuals_plot <baypy.analysis.functions.residuals_plot>` for 
+more details on analysis functions.  
 Residuals form a shape and increase as the predicted variable increses. 
 This suggests that the model does not fit the data well.  
 This is consistent with previous exploration of the data: there is no 
@@ -282,6 +299,8 @@ log TV     0.325689  0.344946  0.354906  0.364422  0.386279
 variance   0.036865  0.041719  0.044506  0.048087  0.054838
 ```
 
+See :py:func:`summary <baypy.analysis.functions.summary>` for more 
+details on this analysis function.  
 The summary reports a statistical evidence for a positive effect of 
 *log TV*: `$10\%$` percent increase in *TV* would result in
 `$1.10^{0.354768} - 1 = 3.44\%$` percent increase in *Sales*.  
@@ -361,5 +380,7 @@ Effective number of parameters          1.05
 Deviance Information Criterion        -54.77
 ```
 
+See :py:func:`compute_DIC <baypy.analysis.functions.compute_DIC>` for 
+more details on this analysis function.  
 *DIC* is lower for the alternative model, indicating a preference for 
 the alternative model in log-scale.
