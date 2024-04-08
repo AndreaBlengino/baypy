@@ -3,7 +3,6 @@ from baypy.regression.functions import sample_beta
 from baypy.model import Model
 from .regression import Regression
 import numpy as np
-import pandas as pd
 from scipy.stats import norm, invgamma
 
 
@@ -119,10 +118,9 @@ class LinearRegression(Regression):
                  for regressor in regressor_names] for _ in range(n_chains)]
         sigma2 = [invgamma.rvs(a = k_0, scale = theta_0) for _ in range(n_chains)]
 
-        for i in range(burn_in_iterations + n_iterations + 1):
+        for _ in range(burn_in_iterations + n_iterations + 1):
             for k in range(n_chains):
-                [posteriors[regressor][k].append(beta[k][j])
-                 for j, regressor in enumerate(regressor_names, 0)]
+                [posteriors[regressor][k].append(beta[k][j]) for j, regressor in enumerate(regressor_names, 0)]
                 posteriors['variance'][k].append(sigma2[k])
 
             beta = [sample_beta(Xt_X = Xt_X,

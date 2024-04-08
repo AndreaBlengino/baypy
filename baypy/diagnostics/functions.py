@@ -60,7 +60,7 @@ def autocorrelation_plot(posteriors: dict, max_lags: int = 30) -> None:
     n_variables = len(variable_names)
     n_iterations, n_chains = posteriors['intercept'].shape
 
-    fig, ax = plt.subplots(nrows = n_variables,
+    _, ax = plt.subplots(nrows = n_variables,
                            ncols = n_chains,
                            figsize = (min(1.5*n_chains + 3, 10), min(1.5*n_variables + 2, 10)),
                            sharex = 'all',

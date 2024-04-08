@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from baypy.model import Model
-import pandas as pd
 
 
 class Regression(ABC):

@@ -2,8 +2,8 @@ import matplotlib.pyplot as plt
 from ..model import Model
 import numpy as np
 import pandas as pd
-from scipy.stats import gaussian_kde, norm
-from ..utils import flatten_matrix, matrices_to_frame
+from scipy.stats import gaussian_kde
+from ..utils import flatten_matrix
 
 
 def trace_plot(posteriors: dict) -> None:
@@ -199,7 +199,7 @@ def summary(posteriors: dict, alpha: float = 0.05, quantiles: list = None, print
         print()
         print(general_summary.to_string())
         print()
-        print(f'Quantiles for each variable:')
+        print('Quantiles for each variable:')
         print()
         print(quantiles_summary.to_string())
 
@@ -267,7 +267,7 @@ def residuals_plot(model: Model) -> None:
     if model.posteriors is None:
         raise ValueError("Posteriors not available, run 'baypy.regression.Regression.sample' to generate posteriors")
 
-    for posterior, posterior_samples in model.posteriors.items():
+    for posterior in model.posteriors.keys():
         if (posterior not in ['intercept', 'variance']) and (posterior not in model.data.columns):
             raise ValueError(f"Column '{posterior}' not found in 'model.data'")
 
@@ -279,7 +279,7 @@ def residuals_plot(model: Model) -> None:
 
     data = model.residuals()
 
-    fig, ax = plt.subplots()
+    _, ax = plt.subplots()
 
     ax.plot(data['predicted'], data['residuals'], marker = 'o', linestyle = '', alpha = 0.5)
 
