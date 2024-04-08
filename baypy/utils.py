@@ -39,7 +39,7 @@ def flatten_matrix(matrix: np.ndarray) -> np.ndarray:
         raise TypeError("Parameter 'matrix' must be an instance of 'numpy.ndarray'")
 
     if matrix.size == 0:
-        raise ValueError(f"Parameter 'matrix' is empty")
+        raise ValueError("Parameter 'matrix' is empty")
 
     return np.asarray(matrix).reshape(-1)
 
@@ -87,7 +87,7 @@ def matrices_to_frame(matrices_dict: dict) -> pd.DataFrame:
        >>> 5  6  12
     """
     if not isinstance(matrices_dict, dict):
-        raise TypeError(f"Parameter 'matrices_dict' must be a dictionary")
+        raise TypeError("Parameter 'matrices_dict' must be a dictionary")
 
     for matrix_name, matrix in matrices_dict.items():
         if not isinstance(matrix, np.ndarray):

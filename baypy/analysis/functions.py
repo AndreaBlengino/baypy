@@ -394,7 +394,7 @@ def compute_DIC(model: Model, print_summary: bool = True) -> dict:
     if not isinstance(print_summary, bool):
         raise TypeError("Parameter 'print_summary' must be a boolean")
 
-    for posterior, posterior_samples in model.posteriors.items():
+    for posterior, _ in model.posteriors.items():
         if (posterior not in ['intercept', 'variance']) and (posterior not in model.data.columns):
             raise ValueError(f"Column '{posterior}' not found in 'model.data'")
 

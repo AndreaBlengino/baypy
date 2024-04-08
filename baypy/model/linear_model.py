@@ -70,7 +70,6 @@ class LinearModel(Model):
            ``ValueError``
                If :py:attr:`data` is an empty :py:class:`pandas.DataFrame`.
         """
-        assert super().data is None
         return self.__data
 
 
@@ -95,7 +94,6 @@ class LinearModel(Model):
            ``TypeError``
                If :py:attr:`response_variable` is not a :py:class:`str`.
         """
-        assert super().response_variable is None
         return self.__response_variable
 
 
@@ -183,7 +181,6 @@ class LinearModel(Model):
            ...                 'x_3': {'mean': 0, 'variance': 1e6},
            ...                 'variance': {'shape': 1, 'scale': 1e-6}}
         """
-        assert super().priors is None
         return self.__priors
 
 
@@ -228,7 +225,6 @@ class LinearModel(Model):
             The list of all model variables: the regressors :math:`X`, including the ``'intercept'`` and the
             ``'variance'`` :math:`\sigma^2`.
         """
-        assert super().variable_names is None
         return self.__variable_names
 
 
@@ -257,7 +253,6 @@ class LinearModel(Model):
            ``ValueError``
                If a posterior sample is an empty :py:class:`numpy.ndarray`.
         """
-        assert super().posteriors is None
         return self.__posteriors
 
 
@@ -289,7 +284,6 @@ class LinearModel(Model):
                :py:meth:`LinearRegression.sample <baypy.regression.linear_regression.LinearRegression.sample>` has not
                been called yet.
         """
-        assert super().posteriors_to_frame() is None
         if self.__posteriors is None:
             raise ValueError("Posteriors not available, run 'baypy.regression.LinearRegression.sample' to generate "
                              "posteriors")
@@ -327,8 +321,6 @@ class LinearModel(Model):
            .. math::
                \epsilon_i = y_i - \hat{y_i}
         """
-        assert super().residuals() is None
-
         if self.__data is None:
             raise ValueError("Data not available, set data with 'baypy.model.LinearModel.data")
 

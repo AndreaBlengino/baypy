@@ -120,7 +120,8 @@ class LinearRegression(Regression):
 
         for _ in range(burn_in_iterations + n_iterations + 1):
             for k in range(n_chains):
-                [posteriors[regressor][k].append(beta[k][j]) for j, regressor in enumerate(regressor_names, 0)]
+                for j, regressor in enumerate(regressor_names, 0):
+                    posteriors[regressor][k].append(beta[k][j])
                 posteriors['variance'][k].append(sigma2[k])
 
             beta = [sample_beta(Xt_X = Xt_X,
