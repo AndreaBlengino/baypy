@@ -4,7 +4,14 @@ import pandas as pd
 
 
 class Model(ABC):
+    """:py:class:`Model <baypy.model.model.Model>` object. \n
+    Abstract base class for creating model objects.
 
+    .. admonition:: See Also
+       :class: seealso
+
+       :py:class:`LinearModel <baypy.model.linear_model.LinearModel>`
+    """
 
     @property
     @abstractmethod
