@@ -5,26 +5,27 @@ from baypy.utils import flatten_matrix
 
 
 def sample_sigma2(y: pd.Series, X: np.ndarray, beta: np.ndarray, k_1: float, theta_0: float) -> float:
-    r"""Draws a sample for the variance from an inverse-gamma conditional posterior distribution at each regression
+    r"""It draws a sample for the variance from an inverse-gamma conditional posterior distribution at each regression
     iteration.
 
     Parameters
     ----------
-    y : pd.Series
+    ``y`` : :py:class:`pandas.Series`
         Vector of the response variable :math:`y`. It has a number of rows equal to the number of observed data.
-    X : numpy.ndarray
+    ``X`` : :py:class:`numpy.ndarray`
         Regressors matrix :math:`X`. It has a number of rows equal to the number of observed data and a number of
         columns equal to the number of regressors.
-    beta : numpy.ndarray
-        Regressors' parameters array of the model. It is sampled by the function ``sample_beta`` at each iteration.
-    k_1 : float
-        Sum of the variance prior ``shape`` and the number of observed data.
-    theta_0 : float
-        Variance prior ``scale``.
+    ``beta`` : :py:class:`numpy.ndarray`
+        Regressors' parameters array of the model. It is sampled by the function
+        :py:func:`sample_beta <baypy.regression.functions.sample_beta>` at each iteration.
+    ``k_1`` : :py:class:`float`
+        Sum of the variance prior ``'shape'`` and the number of observed data.
+    ``theta_0`` : :py:class:`float`
+        Variance prior ``'scale'``.
 
     Returns
     -------
-    numpy.ndarray
+    :py:class:`numpy.ndarray`
         Sampled variance :math:`\sigma^2`.
 
     .. admonition:: Notes
@@ -49,7 +50,7 @@ def sample_sigma2(y: pd.Series, X: np.ndarray, beta: np.ndarray, k_1: float, the
     .. admonition:: See Also
        :class: seealso
 
-       :py:func:`baypy.regression.functions.sample_beta`
+       :py:func:`sample_beta <baypy.regression.functions.sample_beta>`
     """
     y_X_beta = y - flatten_matrix(np.dot(X, beta))
     theta_1 = theta_0 + np.dot(y_X_beta.transpose(), y_X_beta)
@@ -59,30 +60,31 @@ def sample_sigma2(y: pd.Series, X: np.ndarray, beta: np.ndarray, k_1: float, the
 
 def sample_beta(Xt_X: np.ndarray, Xt_y: np.ndarray, sigma2: float, Sigma_0_inv: np.ndarray,
                 Sigma_0_inv_Beta_0: np.ndarray) -> np.ndarray:
-    r"""Draws a sample for each regressor parameter from a normal conditional posterior distribution at each regression
-    iteration.
+    r"""it draws a sample for each regressor parameter from a normal conditional posterior distribution at each
+    regression iteration.
 
     Parameters
     ----------
-    Xt_X : numpy.ndarray
-       Dot product of transposed regressors with themselves: :math:`X^T X`. It is a symmetric matrix with a
-       number of rows and columns equal to the number of regressors.
-    Xt_y : numpy.ndarray
-        Dot product of transposed regressors with the response variable: :math:`X^T y`. It is a one-dimensional
-        array with a number of rows equal to the number of regressors.
-    sigma2 : float
-        Variance of the model. It is sampled by the function ``sample_sigma2`` at each iteration.
-    Sigma_0_inv : numpy.ndarray
+    ``Xt_X`` : :py:class:`numpy.ndarray`
+       Dot product of transposed regressors with themselves: :math:`X^T X`. It is a symmetric matrix with a number of
+       rows and columns equal to the number of regressors.
+    ``Xt_y`` : :py:class:`numpy.ndarray`
+        Dot product of transposed regressors with the response variable: :math:`X^T y`. It is a one-dimensional array
+        with a number of rows equal to the number of regressors.
+    ``sigma2`` : :py:class:`float`
+        Variance of the model. It is sampled by the function
+        :py:func:`sample_sigma2 <baypy.regression.functions.sample_sigma2>` at each iteration.
+    ``Sigma_0_inv`` : :py:class:`numpy.ndarray`
         Regressors' parameters variance priors matrix. It is a symmetric matrix with a number of rows and columns equal
         to the number of regressors. It is the inverse of a matrix which has regressors' parameters' prior variances
         on the diagonal and ``0`` everywhere else.
-    Sigma_0_inv_Beta_0 : numpy.ndarray
+    ``Sigma_0_inv_Beta_0`` : :py:class:`numpy.ndarray`
         Dot product of ``Sigma_0_inv`` with a one-dimensional vector which has regressors' parameters' prior means on
         rows.
 
     Returns
     -------
-    numpy.ndarray
+    :py:class:`numpy.ndarray`
         Array of the sampled regressors' parameters :math:`B`. It has a number of element equal to the number of
         regressors.
 
@@ -131,7 +133,7 @@ def sample_beta(Xt_X: np.ndarray, Xt_y: np.ndarray, sigma2: float, Sigma_0_inv: 
     .. admonition:: See Also
        :class: seealso
 
-       :py:func:`baypy.regression.functions.sample_sigma2`
+       :py:func:`sample_sigma2 <baypy.regression.functions.sample_sigma2>`
     """
     V = np.linalg.inv(Sigma_0_inv + Xt_X/sigma2)
     M = np.dot(V, Sigma_0_inv_Beta_0 + Xt_y/sigma2)

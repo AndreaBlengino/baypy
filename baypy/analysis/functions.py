@@ -7,33 +7,33 @@ from ..utils import flatten_matrix, matrices_to_frame
 
 
 def trace_plot(posteriors: dict) -> None:
-    """Plots the traces and the probability density for each posterior.
+    """it plots the traces and the probability density for each posterior. \n
     The plot shows the traces for each Markov chain, for each regression variable and the relative posterior density.
     The plot layout has number of rows equal to the number of regression variables and two columns: traces on the left
     and densities on the right.
 
     Parameters
     ----------
-    posteriors : dict
-        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
-        with a number of rows equal to the number of iterations and a number of columns equal to the number of Markov
-        chains.
+    ``posteriors`` : :py:class:`dict`
+        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a
+        :py:class:`numpy.ndarray` with a number of rows equal to the number of iterations and a number of columns equal
+        to the number of Markov chains.
 
     .. admonition:: Raises
        :class: warning
 
-       TypeError
-           - If ``posteriors`` is not a ``dict``,
-           - if a posterior sample is not a ``numpy.ndarray``.
-       KeyError
-           If ``posteriors`` does not contain ``intercept`` key.
-       ValueError
-           If a posterior sample is an empty ``numpy.ndarray``.
+       ``TypeError``
+           - If ``posteriors`` is not a :py:class:`dict`,
+           - if a posterior sample is not a :py:class:`numpy.ndarray`.
+       ``KeyError``
+           If ``posteriors`` does not contain ``'intercept'`` key.
+       ``ValueError``
+           If a posterior sample is an empty :py:class:`numpy.ndarray`.
 
     .. admonition:: See Also
        :class: seealso
 
-       :py:class:`baypy.regression.linear_regression.LinearRegression`
+       :py:class:`LinearRegression <baypy.regression.linear_regression.LinearRegression>`
     """
     if not isinstance(posteriors, dict):
         raise TypeError("Parameter 'posteriors' must be a dictionary")
@@ -85,54 +85,54 @@ def _compute_kde(posterior: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
 
 
 def summary(posteriors: dict, alpha: float = 0.05, quantiles: list = None, print_summary: bool = True) -> dict:
-    """Prints a statistical summary for each posterior.
+    """It prints a statistical summary for each posterior.
 
     Parameters
     ----------
-    posteriors : dict
-        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
-        with a number of rows equal to the number of iterations and a number of columns equal to the number of Markov
-        chains.
-    alpha : float
+    ``posteriors`` : :py:class:`dict`
+        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a
+        :py:class:`numpy.ndarray` with a number of rows equal to the number of iterations and a number of columns equal
+        to the number of Markov chains.
+    ``alpha`` : :py:class:`float`, optional
         Significance level. It is used to compute the Highest Posterior Density (HPD) interval. It must be between ``0``
-        and ``1``.
-    quantiles : list, optional
+        and ``1``. Default is ``0.05``.
+    ``quantiles`` : :py:class:`list`, optional
         List of the quantiles to compute, for each posterior. It cannot be empty. It must contain only float between
         ``0`` and ``1``. Default is ``[0.025, 0.25, 0.5, 0.75, 0.975]``.
-    print_summary : bool, optional
+    ``print_summary`` : :py:class:`bool`, optional
         If ``True`` prints the statistical posterior summary report. Default is ``True``.
 
     Returns
     -------
-    dict
+    :py:class:`dict`
         Dictionary with statistical summary of posteriors. It contains:
-            - key ``n_chain``, the number of Markov chains,
-            - key ``n_iterations``, the number of regression iterations,
-            - key ``summary``, the statistical summary of the posteriors, as a pandas.DataFrame,
-            - key ``quantiles``, quantiles summary of the posteriors, as a pandas.DataFrame.
+            - key ``'n_chain'``, the number of Markov chains,
+            - key ``'n_iterations'``, the number of regression iterations,
+            - key ``'summary'``, the statistical summary of the posteriors, as a :py:class:`pandas.DataFrame`,
+            - key ``'quantiles'``, quantiles summary of the posteriors, as a :py:class:`pandas.DataFrame`.
 
     .. admonition:: Raises
        :class: warning
 
-       TypeError
-           - If ``posteriors`` is not a ``dict``,
-           - if a posterior sample is not a ``numpy.ndarray``,
-           - if ``alpha`` is not a ``float``,
-           - if ``quantiles`` is not a ``list``,
-           - if a ``quantiles`` value is not a ``float``,
-           - if ``print_summary`` is not a ``bool``.
-       KeyError
-           If ``posteriors`` does not contain ``intercept`` key.
-       ValueError
-           - If a posterior sample is an empty ``numpy.ndarray``,
+       ``TypeError``
+           - If ``posteriors`` is not a :py:class:`dict`,
+           - if a posterior sample is not a :py:class:`numpy.ndarray`,
+           - if ``alpha`` is not a :py:class:`float`,
+           - if ``quantiles`` is not a :py:class:`list`,
+           - if a ``quantiles`` value is not a :py:class:`float`,
+           - if ``print_summary`` is not a :py:class:`bool`.
+       ``KeyError``
+           If ``posteriors`` does not contain ``'intercept'`` key.
+       ``ValueError``
+           - If a posterior sample is an empty :py:class:`numpy.ndarray`,
            - if ``alpha`` is not between ``0`` and ``1``,
-           - if ``quantiles`` is an empty ``list``,
+           - if ``quantiles`` is an empty :py:class:`list`,
            - if a ``quantiles`` value is not between ``0`` and ``1``.
 
     .. admonition:: See Also
        :class: seealso
 
-       :py:class:`baypy.regression.linear_regression.LinearRegression`
+       :py:class:`LinearRegression <baypy.regression.linear_regression.LinearRegression>`
     """
     if not isinstance(posteriors, dict):
         raise TypeError("Parameter 'posteriors' must be a dictionary")
@@ -223,22 +223,22 @@ def _compute_hpd_interval(x: np.ndarray, alpha: float) -> tuple[float, float]:
 
 
 def residuals_plot(model: Model) -> None:
-    r"""Plots the residuals :math:`\epsilon` with respect to predicted values :math:`\hat{y}`.
+    r"""It plots the residuals :math:`\epsilon` with respect to predicted values :math:`\hat{y}`.
 
     Parameters
     ----------
-    model : baypy.model.model.Model
+    ``model`` : :py:class:`Model <baypy.model.model.Model>`
         The model with data, regressors, response variable and priors to be solved through Monte Carlo sampling.
 
     .. admonition:: Raises
        :class: warning
 
-       TypeError
-           If ``model`` is not a ``baypy.model.model.Model``.
-       ValueError
-           - If a ``model.posteriors`` is ``None`` because the sampling has not been done yet,
+       ``TypeError``
+           If ``model`` is not a :py:class:`Model <baypy.model.model.Model>`.
+       ``ValueError``
+           - If a ``model.posteriors`` is :py:obj:`None` because the sampling has not been done yet,
            - if a posterior key is not a column of ``model.data``,
-           - if ``model.data`` is an empty ``pandas.DataFrame``,
+           - if ``model.data`` is an empty :py:class:`pandas.DataFrame`,
            - if ``model.response_variable`` is not a column of ``model.data``.
 
     .. admonition:: Notes
@@ -259,7 +259,7 @@ def residuals_plot(model: Model) -> None:
     .. admonition:: See Also
        :class: seealso
 
-       :py:class:`baypy.regression.linear_regression.LinearRegression`
+       :py:class:`LinearRegression <baypy.regression.linear_regression.LinearRegression>`
     """
     if not isinstance(model, Model):
         raise TypeError(f"Parameter 'model' must be an instance of '{Model.__module__}.{Model.__name__}'")
@@ -294,18 +294,18 @@ def residuals_plot(model: Model) -> None:
 
 
 def compute_DIC(model: Model, print_summary: bool = True) -> dict:
-    r"""Computes and prints the Deviance Information Criterion (DIC) for the fitted model.
+    r"""It computes and prints the Deviance Information Criterion (DIC) for the fitted model.
 
     Parameters
     ----------
-    model : baypy.model.model.Model
+    ``model`` : :py:class:`Model <baypy.model.model.Model>`
         The model with data, regressors, response variable and priors to be solved through Monte Carlo sampling.
-    print_summary : bool, optional
+    ``print_summary`` : :py:class:`bool`, optional
         If ``True`` prints the deviance summary report. Default is ``True``.
 
     Returns
     -------
-    dict
+    :py:class:`dict`
         Dictionary with deviance summary. It contains:
             - key ``deviance at posterior means``,
             - key ``posterior mean deviance``,
@@ -315,13 +315,13 @@ def compute_DIC(model: Model, print_summary: bool = True) -> dict:
     .. admonition:: Raises
        :class: warning
 
-       TypeError
-           - If ``model`` is not a ``baypy.model.model.Model``,
-           - if ``print_summary`` is not a ``bool``.
-       ValueError
-           - If a ``model.posteriors`` is ``None`` because the sampling has not been done yet,
+       ``TypeError``
+           - If ``model`` is not a :py:class:`Model <baypy.model.model.Model>`,
+           - if ``print_summary`` is not a :py:class:`bool`.
+       ``ValueError``
+           - If a ``model.posteriors`` is :py:obj:`None` because the sampling has not been done yet,
            - if a posterior key is not a column of ``model.data``,
-           - if ``model.data`` is an empty ``pandas.DataFrame``,
+           - if ``model.data`` is an empty :py:class:`pandas.DataFrame`,
            - if ``model.response_variable`` is not a column of ``model.data``.
 
     .. admonition:: Notes
@@ -330,8 +330,8 @@ def compute_DIC(model: Model, print_summary: bool = True) -> dict:
        The DIC measures posterior predictive error by penalizing the fit of a model (deviance) by its complexity,
        determined by the effective number of parameters.
        Comparing some alternative models, the smaller the DIC of a model, the *better* the model.
-       Consider a linear regression of the response variable :math:`y` with respect to regressors :math:`X`, according to
-       the following model:
+       Consider a linear regression of the response variable :math:`y` with respect to regressors :math:`X`, according
+       to the following model:
 
        .. math::
            y \sim N(\mu, \sigma^2)
@@ -383,7 +383,7 @@ def compute_DIC(model: Model, print_summary: bool = True) -> dict:
     .. admonition:: See Also
        :class: seealso
 
-       :py:class:`baypy.regression.linear_regression.LinearRegression`
+       :py:class:`LinearRegression <baypy.regression.linear_regression.LinearRegression>`
     """
     if not isinstance(model, Model):
         raise TypeError(f"Parameter 'model' must be an instance of '{Model.__module__}.{Model.__name__}'")

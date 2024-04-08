@@ -8,55 +8,55 @@ from scipy.stats import norm, invgamma
 
 
 class LinearRegression(Regression):
-    r"""baypy.regression.linear_regression.LinearRegression object.
+    r""":py:class:`LinearRegression <baypy.regression.linear_regression.LinearRegression>` object.
 
     Methods
     -------
-    :meth:`baypy.regression.linear_regression.LinearRegression.sample()`
-        Samples a sequence of observations from the full posterior distribution of regressors' parameters
+    :meth:`sample`
+        It samples a sequence of observations from the full posterior distribution of regressors' parameters
         :math:`\beta_j` and ``variance`` :math:`\sigma^2`.
 
     .. admonition:: See Also
        :class: seealso
 
-       :py:class:`baypy.model.linear_model.LinearModel`
+       :py:class:`LinearModel <baypy.model.linear_model.LinearModel>`
     """
 
 
     @staticmethod
     def sample(model: Model, n_iterations: int, burn_in_iterations: int, n_chains: int, seed: int = None) -> None:
-        r"""Samples a sequence of observations from the full posterior distribution of regressors' parameters
+        r"""It samples a sequence of observations from the full posterior distribution of regressors' parameters
         :math:`\beta_j` and ``variance`` :math:`\sigma^2`.
         First ``burn_in_iterations`` are discarded since they may not accurately represent the desired distribution.
         For each variable, it generates ``n_chain`` Markov chains.
 
         Parameters
         ----------
-        model : baypy.model.model.Model
+        ``model`` : :py:class:`Model <baypy.model.model.Model>`
             The model with data, regressors, response variable and priors to be solved through Monte Carlo sampling.
-        n_iterations : int
+        ``n_iterations`` : :py:class:`int`
             Number of total sampling iteration for each chain. It must be a strictly positive integer.
-        burn_in_iterations : int
+        ``burn_in_iterations`` : :py:class:`int`
             Number of burn-in iteration for each chain. It must be a positive integer or ``0``.
-        n_chains : int
+        ``n_chains`` : :py:class:`int`
             Number of chains. It must be a strictly positive integer.
-        seed : int, optional
+        ``seed`` : :py:class:`int`, optional
             Random seed to use for reproducibility of the sampling.
 
         .. admonition:: Raises
            :class: warning
 
-           TypeError
-               - If ``model`` is not a ``baypy.model.model.Model``,
-               - if ``n_iterations`` is not a ``int``,
-               - if ``burn_in_iterations`` is not a ``int``,
-               - if ``n_chains`` is not a ``int``,
-               - if ``seed`` is not a ``int``.
-           ValueError
-               - If ``model.data`` is ``None``,
-               - if ``model.response_variable`` is ``None``,
+           ``TypeError``
+               - If ``model`` is not a :py:class:`Model <baypy.model.model.Model>`,
+               - if ``n_iterations`` is not an :py:class:`int`,
+               - if ``burn_in_iterations`` is not an :py:class:`int`,
+               - if ``n_chains`` is not an :py:class:`int`,
+               - if ``seed`` is not an :py:class:`int`.
+           ``ValueError``
+               - If ``model.data`` is :py:obj:`None`,
+               - if ``model.response_variable`` is :py:obj:`None`,
                - if ``model.response_variable`` is not a column of ``model.data``
-               - if ``model.priors`` is ``None``,
+               - if ``model.priors`` is :py:obj:`None`,
                - if a ``model.priors`` key is not a column of ``model.data``,
                - If ``n_iterations`` is equal to or less than ``0``,
                - if ``burn_in_iterations`` is less than ``0``,

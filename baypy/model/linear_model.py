@@ -6,37 +6,38 @@ from ..utils import flatten_matrix, matrices_to_frame, dot_product
 
 
 class LinearModel(Model):
-    r"""baypy.model.model.LinearModel object.
+    r""":py:class:`LinearModel <baypy.model.linear_model.LinearModel>` object.
 
     Attributes
     ----------
-    :py:attr:`baypy.model.linear_model.LinearModel.data` : pandas.DataFrame
-        Data for the linear regression model, is a ``pandas.DataFrame`` containing all regressor variables
+    :py:attr:`data` : :py:class:`pandas.DataFrame`
+        Data for the linear regression model, is a :py:class:`pandas.DataFrame` containing all regressor variables
         :math:`X` and the response variable :math:`y`.
-    :py:attr:`baypy.model.linear_model.LinearModel.response_variable` : string
+    :py:attr:`response_variable` : :py:class:`str`
         Response variable :math:`y` of the linear model.
-    :py:attr:`baypy.model.linear_model.LinearModel.priors` : dict
+    :py:attr:`priors` : :py:class:`dict`
         Priors for the regressors' and variance parameters.
-    :py:attr:`baypy.model.linear_model.LinearModel.variable_names` : list
-        The list of all model variables: the regressors :math:`X`, including the ``intercept`` and the ``variance``
+    :py:attr:`variable_names` : :py:class:`list`
+        The list of all model variables: the regressors :math:`X`, including the ``'intercept'`` and the ``'variance'``
         :math:`\sigma^2`.
-    :py:attr:`baypy.model.linear_model.LinearModel.posteriors` : dict
-        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
-        with a number of rows equals to the number of iterations and a number of columns equal to the number of Markov
-        chains.
+    :py:attr:`posteriors` : :py:class:`dict`
+        Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a
+        :py:class:`numpy.ndarray` with a number of rows equals to the number of iterations and a number of columns equal
+        to the number of Markov chains.
 
     Methods
     -------
-    :py:meth:`baypy.model.linear_model.LinearModel.posteriors_to_frame()`
-        Organizes the ``posteriors`` in a ``pandas.DataFrame``.
-    :py:meth:`baypy.model.linear_model.LinearModel.residuals`
-        Compute the residuals :math:`\epsilon` with respect to predicted values :math:`\hat{y}`.
-    :py:meth:`baypy.model.linear_model.LinearModel.predict_distribution`
-        Predicts a posterior distribution for an unobserved values.
-    :py:meth:`baypy.model.linear_model.LinearModel.likelihood`
-        Computes the likelihood of observations ``model.response_variable`` given a model ``'mean'`` and ``'variance'``.
-    :py:meth:`baypy.model.linear_model.LinearModel.log_likelihood`
-        Computes the log likelihood of observations ``model.response_variable`` given a model ``'mean'`` and
+    :py:meth:`posteriors_to_frame`
+        It organizes the ``posteriors`` in a :py:class:`pandas.DataFrame`.
+    :py:meth:`residuals`
+        It computes the residuals :math:`\epsilon` with respect to predicted values :math:`\hat{y}`.
+    :py:meth:`predict_distribution`
+        It predicts a posterior distribution for an unobserved values.
+    :py:meth:`likelihood`
+        It computes the likelihood of observations :py:attr:`response_variable` given a model ``'mean'`` and
+        ``'variance'``.
+    :py:meth:`log_likelihood`
+        It computes the log likelihood of observations :py:attr:`response_variable` given a model ``'mean'`` and
         ``'variance'``.
     """
 
@@ -52,22 +53,22 @@ class LinearModel(Model):
 
     @property
     def data(self) -> pd.DataFrame:
-        r"""Data for the linear regression model, is a ``pandas.DataFrame`` containing all regressor variables
+        r"""Data for the linear regression model, is a :py:class:`pandas.DataFrame` containing all regressor variables
         :math:`X` and the response variable :math:`y`.
 
         Returns
         -------
-        pandas.DataFrame
+        :py:class:`pandas.DataFrame`
             Observed data of the model. It cannot be empty. It must contain regressor variables :math:`X` and the
-            response variable :math:`y`.
+            :py:attr:`response_variable` :math:`y`.
 
         .. admonition:: Raises
            :class: warning
 
-           TypeError
-               If :py:attr:`data` is not an instance of ``pandas.DataFrame``.
-           ValueError
-               If :py:attr:`data` is an empty ``pandas.DataFrame``.
+           ``TypeError``
+               If :py:attr:`data` is not an instance of :py:class:`pandas.DataFrame`.
+           ``ValueError``
+               If :py:attr:`data` is an empty :py:class:`pandas.DataFrame`.
         """
         assert super().data is None
         return self.__data
@@ -85,14 +86,14 @@ class LinearModel(Model):
 
         Returns
         -------
-        string
+        :py:class:`str`
             Name of the response variable :math:`y`. In must be one of the columns of :py:attr:`data`.
 
         .. admonition:: Raises
            :class: warning
 
-           TypeError
-               If :py:attr:`response_variable` is not a ``str``.
+           ``TypeError``
+               If :py:attr:`response_variable` is not a :py:class:`str`.
         """
         assert super().response_variable is None
         return self.__response_variable
@@ -107,34 +108,34 @@ class LinearModel(Model):
     @property
     def priors(self) -> dict:
         r"""Priors for the regressors' and variance parameters.
-        Each prior is a key-value pair, where the value is a ``dict`` with:
+        Each prior is a key-value pair, where the value is a :py:class:`dict` with:
 
         - hyperparameter names as keys
         - hyperparameter values as values.
 
         Returns
         -------
-        dict
-            Priors for each random variable. It must contain an ``intercept`` and a ``variance`` keys. Each value must
-            be a ``dict`` with hyperparameter names as key and hyperparameter values as values.
+        :py:class:`dict`
+            Priors for each random variable. It must contain an ``'intercept'`` and a ``'variance'`` keys. Each value
+            must be a :py:class:`dict` with hyperparameter names as key and hyperparameter values as values.
 
         .. admonition:: Raises
            :class: warning
 
-           TypeError
-               - If :py:attr:`priors` is not a ``dict``,
-               - if a :py:attr:`priors`' value is not a ``dict``.
-           ValueError
-               - If :py:attr:`priors` is an empty ``dict``,
-               - if a :py:attr:`priors`' value is an empty ``dict``,
-               - if a ``variance`` value is not positive,
-               - if a ``shape`` value is not positive,
-               - if a ``scale`` value is not positive.
-           KeyError
-               - If :py:attr:`priors` does not contain both ``intercept`` and ``variance`` keys,
+           ``TypeError``
+               - If :py:attr:`priors` is not a :py:class:`dict`,
+               - if a :py:attr:`priors`' value is not a :py:class:`dict`.
+           ``ValueError``
+               - If :py:attr:`priors` is an empty :py:class:`dict`,
+               - if a :py:attr:`priors`' value is an empty :py:class:`dict`,
+               - if a ``'variance'`` value is not positive,
+               - if a ``'shape'`` value is not positive,
+               - if a ``'scale'`` value is not positive.
+           ``KeyError``
+               - If :py:attr:`priors` does not contain both ``'intercept'`` and ``'variance'`` keys,
                - if a prior's hyperparameters are not:
-                   + ``mean`` and ``variance`` for a regression parameter :math:`\beta_j` or
-                   + ``shape`` and ``scale`` for ``variance`` :math:`\sigma^2`.
+                   + ``'mean'`` and ``'variance'`` for a regression parameter :math:`\beta_j` or
+                   + ``'shape'`` and ``'scale'`` for ``variance`` :math:`\sigma^2`.
 
         .. admonition:: Notes
            :class: tip
@@ -142,13 +143,13 @@ class LinearModel(Model):
            To each random variables is assigned a prior distribution:
 
            - to each regressor parameter :math:`\beta_j` is assigned a normal prior distribution with hyperparameters
-             ``mean`` :math:`\beta_j^0` and ``variance`` :math:`\Sigma_{\beta_j}^0`:
+             ``'mean'`` :math:`\beta_j^0` and ``'variance'`` :math:`\Sigma_{\beta_j}^0`:
 
              .. math::
                \beta_j \sim N(\beta_j^0 , \Sigma_{\beta_j}^0)
 
-           - to variance :math:`\sigma^2` is assigned an inverse gamma distribution with hyperparameters ``shape``
-             :math:`\kappa^0` and ``scale`` :math:`\theta^0`:
+           - to variance :math:`\sigma^2` is assigned an inverse gamma distribution with hyperparameters ``'shape'``
+             :math:`\kappa^0` and ``'scale'`` :math:`\theta^0`:
 
              .. math::
                \sigma^2 \sim \text{Inv-}\Gamma(\kappa^0, \theta^0)
@@ -156,7 +157,7 @@ class LinearModel(Model):
         .. admonition:: Examples
            :class: important
 
-           Consider a linear regression of the response variable :math:`y` with respect to regressors :math:`x_1`,
+           Consider a linear regression of the :py:attr:`response_variable` :math:`y` with respect to regressors :math:`x_1`,
            :math:`x_2` and :math:`x_3`, according to the following model:
 
            .. math::
@@ -165,22 +166,22 @@ class LinearModel(Model):
                \mu = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3
 
            then the sampler would require priors for:
-               - parameter :math:`\beta_0` of variable ``intercept``, with ``mean`` :math:`\beta_0^0` and ``variance``
-                 :math:`\Sigma_{\beta_0}^0`
-               - parameter :math:`\beta_1` of variable :math:`x_1`, with ``mean`` :math:`\beta_1^0` and ``variance``
+               - parameter :math:`\beta_0` of variable ``'intercept'``, with ``'mean'`` :math:`\beta_0^0` and
+                 ``'variance'`` :math:`\Sigma_{\beta_0}^0`
+               - parameter :math:`\beta_1` of variable :math:`x_1`, with ``'mean'`` :math:`\beta_1^0` and ``'variance'``
                  :math:`\Sigma_{\beta_1}^0`
-               - parameter :math:`\beta_2` of variable :math:`x_2`, with ``mean`` :math:`\beta_2^0` and ``variance``
+               - parameter :math:`\beta_2` of variable :math:`x_2`, with ``'mean'`` :math:`\beta_2^0` and ``'variance'``
                  :math:`\Sigma_{\beta_2}^0`
-               - parameter :math:`\beta_3` of variable :math:`x_3`, with ``mean`` :math:`\beta_3^0` and ``variance``
+               - parameter :math:`\beta_3` of variable :math:`x_3`, with ``'mean'`` :math:`\beta_3^0` and ``'variance'``
                  :math:`\Sigma_{\beta_3}^0`
-               - variable :math:`\sigma^2`, with ``shape`` :math:`\kappa^0` and ``scale`` :math:`\theta^0`
+               - variable :math:`\sigma^2`, with ``'shape'`` :math:`\kappa^0` and ``'scale'`` :math:`\theta^0`
 
            >>> model = baypy.model.LinearModel()
-           >>> model.set_priors({'intercept': {'mean': 0, 'variance': 1e6},
-           ...                   'x_1': {'mean': 0, 'variance': 1e6},
-           ...                   'x_2': {'mean': 0, 'variance': 1e6},
-           ...                   'x_3': {'mean': 0, 'variance': 1e6},
-           ...                   'variance': {'shape': 1, 'scale': 1e-6}})
+           >>> model.priors = {'intercept': {'mean': 0, 'variance': 1e6},
+           ...                 'x_1': {'mean': 0, 'variance': 1e6},
+           ...                 'x_2': {'mean': 0, 'variance': 1e6},
+           ...                 'x_3': {'mean': 0, 'variance': 1e6},
+           ...                 'variance': {'shape': 1, 'scale': 1e-6}}
         """
         assert super().priors is None
         return self.__priors
@@ -223,9 +224,9 @@ class LinearModel(Model):
 
         Returns
         -------
-        list
-            The list of all model variables: the regressors :math:`X`, including the ``intercept`` and the ``variance``
-            :math:`\sigma^2`.
+        :py:class:`list`
+            The list of all model variables: the regressors :math:`X`, including the ``'intercept'`` and the
+            ``'variance'`` :math:`\sigma^2`.
         """
         assert super().variable_names is None
         return self.__variable_names
@@ -234,27 +235,27 @@ class LinearModel(Model):
     @property
     def posteriors(self) -> dict:
         r"""Posteriors of the regressors' and variance parameters.
-        Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
+        Posteriors and relative samples are key-value pairs. Each sample is a :py:class:`numpy.ndarray`
         with a number of rows equals to the number of iterations and a number of columns equal to the number of Markov
         chains.
 
         Returns
         -------
-        dict
-            Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a ``numpy.ndarray``
-            with a number of rows equals to the number of iterations and a number of columns equal to the number of
-            Markov chains.
+        :py:class:`dict`
+            Posterior samples. Posteriors and relative samples are key-value pairs. Each sample is a
+            :py:class:`numpy.ndarray` with a number of rows equals to the number of iterations and a number of columns
+            equal to the number of Markov chains.
 
         .. admonition:: Raises
            :class: warning
 
-           TypeError
-               - If :py:attr:`posteriors` is not a ``dict``,
-               - if a posterior sample is not a ``numpy.ndarray``.
-           KeyError
-               If :py:attr:`posteriors` does not contain both ``intercept`` and ``variance`` keys.
-           ValueError
-               If a posterior sample is an empty ``numpy.ndarray``.
+           ``TypeError``
+               - If :py:attr:`posteriors` is not a :py:class:`dict`,
+               - if a posterior sample is not a :py:class:`numpy.ndarray`.
+           ``KeyError``
+               If :py:attr:`posteriors` does not contain both ``'intercept'`` and ``'variance'`` keys.
+           ``ValueError``
+               If a posterior sample is an empty :py:class:`numpy.ndarray`.
         """
         assert super().posteriors is None
         return self.__posteriors
@@ -271,21 +272,22 @@ class LinearModel(Model):
 
 
     def posteriors_to_frame(self) -> pd.DataFrame:
-        """Organizes the :py:attr:`posteriors` in a ``pandas.DataFrame``. Each posterior is a frame column. The length
-        of the frame is the number of sampling iterations times the number of sampling chains.
+        """It organizes the :py:attr:`posteriors` in a :py:class:`pandas.DataFrame`. Each posterior is a frame column.
+        The length of the frame is the number of sampling iterations times the number of sampling chains.
 
         Returns
         -------
-        pandas.DataFrame
-            Returns posterior samples. Posteriors are organized in a ``pandas.DataFrame``, one for each column. The
-            length of the frame is the number of sampling iterations times the number of sampling chains.
+        :py:class:`pandas.DataFrame`
+            Returns posterior samples. Posteriors are organized in a :py:class:`pandas.DataFrame`, one for each column.
+            The length of the frame is the number of sampling iterations times the number of sampling chains.
 
         .. admonition:: Raises
            :class: warning
 
-           ValueError
+           ``ValueError``
                If :py:attr:`posteriors` are not available because the method
-               :py:meth:`baypy.regression.LinearRegression.sample` has not been called yet.
+               :py:meth:`LinearRegression.sample <baypy.regression.linear_regression.LinearRegression.sample>` has not
+               been called yet.
         """
         assert super().posteriors_to_frame() is None
         if self.__posteriors is None:
@@ -295,20 +297,20 @@ class LinearModel(Model):
 
 
     def residuals(self) -> pd.DataFrame:
-        r"""Compute the residuals :math:`\epsilon` with respect to predicted values :math:`\hat{y}`.
+        r"""It compute the residuals :math:`\epsilon` with respect to predicted values :math:`\hat{y}`.
 
         Returns
         -------
-        pandas.DataFrame
-            Returns a copy of :py:attr:`data` with 3 more columns: ``intercept``, ``predicted`` and ``residuals``.
+        :py:class:`pandas.DataFrame`
+            Returns a copy of :py:attr:`data` with 3 more columns: ``'intercept'``, ``'predicted'`` and ``'residuals'``.
 
         .. admonition:: Raises
            :class: warning
 
-           ValueError
-               - If :py:attr:`data` is ``None`` because the property :py:attr:`data` has not been set,
+           ``ValueError``
+               - If :py:attr:`data` is :py:obj:`None` because the property :py:attr:`data` has not been set,
                - if :py:attr:`response_variable` is not a column of :py:attr:`data`,
-               - If a :py:attr:`posteriors` is ``None`` because the sampling has not been done yet.
+               - If a :py:attr:`posteriors` is :py:obj:`None` because the sampling has not been done yet.
 
         .. admonition:: Notes
            :class: tip
@@ -349,35 +351,35 @@ class LinearModel(Model):
 
 
     def predict_distribution(self, predictors: dict) -> np.ndarray:
-        """Predicts a posterior distribution for an unobserved values. For each posterior sample, it draws a sample from
-         the likelihood.
+        """It predicts a posterior distribution for an unobserved values. For each posterior sample, it draws a sample
+        from the likelihood.
 
         Parameters
         ----------
-        predictors : dict
+        ``predictors`` : :py:class:`dict`
             Values of predictors :math:`X` at which compute the posterior distribution. Each predictor has to be set as
             a key-value pair.
 
         Returns
         -------
-        numpy.ndarray
+        :py:class:`numpy.ndarray`
             Array of the predicted posterior distribution. It contains a number of element equal to the number of
             regression iterations times the number of model Markov chains.
 
         .. admonition:: Raises
            :class: warning
 
-           TypeError
-               If ``predictors`` is not a ``dict``.
-           KeyError
-               If a ``predictors`` key is not a key of ``posteriors``.
-           ValueError
-               If ``predictors`` is an empty ``dict``.
+           ``TypeError``
+               If ``predictors`` is not a :py:class:`dict`.
+           ``KeyError``
+               If a ``predictors`` key is not a key of :py:attr:`posteriors`.
+           ``ValueError``
+               If ``predictors`` is an empty :py:class:`dict`.
 
         .. admonition:: See Also
            :class: seealso
 
-           :py:class:`baypy.regression.linear_regression.LinearRegression`
+           :py:class:`LinearRegression <baypy.regression.linear_regression.LinearRegression>`
         """
         super().predict_distribution(predictors = predictors)
 
@@ -394,28 +396,28 @@ class LinearModel(Model):
 
 
     def likelihood(self, data: pd.DataFrame) -> np.ndarray:
-        r"""Computes the likelihood of observations :py:attr:`response_variable` given a model ``'mean'`` and
+        r"""It computes the likelihood of observations :py:attr:`response_variable` given a model ``'mean'`` and
         ``'variance'``.
 
         Parameters
         ----------
-        data: pandas.DataFrame
+        ``data``: :py:class:`pandas.DataFrame`
             Data to use for likelihood computation. It cannot be empty. It must contain columns
             :py:attr:`response_variable`, ``'mean'`` and ``'variance'``.
 
         Returns
         -------
-        numpy.ndarray
+        :py:class:`numpy.ndarray`
             Array of computed likelihood. It has the same length of ``data``. Each element is a likelihood computation
             of each row of ``data``.
 
         .. admonition:: Raises
            :class: warning
 
-           TypeError
-               If ``data`` is not an instance of ``pandas.DataFrame``.
-           ValueError
-               - If ``data`` is an empty ``pandas.DataFrame``,
+           ``TypeError``
+               If ``data`` is not an instance of :py:class:`pandas.DataFrame`.
+           ``ValueError``
+               - If ``data`` is an empty :py:class:`pandas.DataFrame`,
                - if :py:attr:`response_variable` is not a column of ``data``,
                - if ``'mean'`` is not a column of ``data``,
                - if ``'variance'`` is not a column of ``data``.
@@ -442,28 +444,28 @@ class LinearModel(Model):
 
 
     def log_likelihood(self, data: pd.DataFrame) -> np.ndarray:
-        r"""Computes the log likelihood of observations :py:attr:`response_variable` given a model ``'mean'`` and
+        r"""It computes the log likelihood of observations :py:attr:`response_variable` given a model ``'mean'`` and
         ``'variance'``.
 
         Parameters
         ----------
-        data: pandas.DataFrame
+        ``data``: :py:class:`pandas.DataFrame`
             Data to use for log likelihood computation. It cannot be empty. It must contain columns
             :py:attr:`response_variable`, ``'mean'`` and ``'variance'``.
 
         Returns
         -------
-        numpy.ndarray
+        :py:class:`numpy.ndarray`
             Array of computed log likelihood. It has the same length of ``data``. Each element is a log likelihood
             computation of each row of ``data``.
 
         .. admonition:: Raises
            :class: warning
 
-           TypeError
-               If ``data`` is not an instance of ``pandas.DataFrame``.
-           ValueError
-               - If ``data`` is an empty ``pandas.DataFrame``,
+           ``TypeError``
+               If ``data`` is not an instance of :py:class:`pandas.DataFrame`.
+           ``ValueError``
+               - If ``data`` is an empty :py:class:`pandas.DataFrame`,
                - if :py:attr:`response_variable` is not a column of ``data``,
                - if ``'mean'`` is not a column of ``data``,
                - if ``'variance'`` is not a column of ``data``.
