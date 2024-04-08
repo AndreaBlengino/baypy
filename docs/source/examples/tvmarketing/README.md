@@ -346,8 +346,8 @@ bp.analysis.compute_DIC(model = model_1)
 ```text
 Deviance at posterior means          1038.13
 Posterior mean deviance              1039.18
-Effective number of parameteres         1.05
-Deviace Information Criterion        1040.23
+Effective number of parameters          1.05
+Deviance Information Criterion       1040.23
 ```
 
 ```python
@@ -357,8 +357,8 @@ bp.analysis.compute_DIC(model = model_2)
 ```text
 Deviance at posterior means           -56.87
 Posterior mean deviance               -55.82
-Effective number of parameteres         1.05
-Deviace Information Criterion         -54.77
+Effective number of parameters          1.05
+Deviance Information Criterion        -54.77
 ```
 
 *DIC* is lower for the alternative model, indicating a preference for 

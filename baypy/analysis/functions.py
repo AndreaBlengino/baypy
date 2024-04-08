@@ -307,10 +307,10 @@ def compute_DIC(model: Model, print_summary: bool = True) -> dict:
     -------
     :py:class:`dict`
         Dictionary with deviance summary. It contains:
-            - key ``deviance at posterior means``,
-            - key ``posterior mean deviance``,
-            - key ``effective number of parameters``,
-            - key ``DIC``.
+            - key ``'Deviance at posterior means'``,
+            - key ``'Posterior mean deviance'``,
+            - key ``'Effective number of parameters'``,
+            - key ``'Deviance Information Criterion'``.
 
     .. admonition:: Raises
        :class: warning
@@ -412,13 +412,13 @@ def compute_DIC(model: Model, print_summary: bool = True) -> dict:
     if print_summary:
         print(f"Deviance at posterior means     {deviance_at_posterior_means:>12.2f}")
         print(f"Posterior mean deviance         {posterior_mean_deviance:>12.2f}")
-        print(f"Effective number of parameteres {effective_number_of_parameters:>12.2f}")
-        print(f"Deviace Information Criterion   {DIC:>12.2f}")
+        print(f"Effective number of parameters  {effective_number_of_parameters:>12.2f}")
+        print(f"Deviance Information Criterion  {DIC:>12.2f}")
 
-    return {'deviance at posterior means': deviance_at_posterior_means,
-            'posterior mean deviance': posterior_mean_deviance,
-            'effective number of parameters': effective_number_of_parameters,
-            'DIC': DIC}
+    return {'Deviance at posterior means': deviance_at_posterior_means,
+            'Posterior mean deviance': posterior_mean_deviance,
+            'Effective number of parameters': effective_number_of_parameters,
+            'Deviance Information Criterion': DIC}
 
 
 def _compute_deviance_at_posterior_means(model: Model) -> float:
