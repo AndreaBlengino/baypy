@@ -27,4 +27,4 @@ baypy documentation
    license
 
 
-.. mdinclude:: ../../README.md
+.. mdinclude:: ../../README.rst
