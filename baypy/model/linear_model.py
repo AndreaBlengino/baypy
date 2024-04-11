@@ -1,3 +1,4 @@
+from __future__ import annotations
 from .model import Model
 import pandas as pd
 import numpy as np
@@ -104,7 +105,7 @@ class LinearModel(Model):
 
 
     @property
-    def priors(self) -> dict:
+    def priors(self) -> dict[str, dict[str, float | int]]:
         r"""Priors for the regressors' and variance parameters.
         Each prior is a key-value pair, where the value is a :py:class:`dict` with:
 
@@ -185,7 +186,7 @@ class LinearModel(Model):
 
 
     @priors.setter
-    def priors(self, priors: dict) -> None:
+    def priors(self, priors: dict[str, dict[str, float | int]]) -> None:
         super(LinearModel, type(self)).priors.fset(self, priors)
 
         if 'variance' not in priors.keys():
@@ -216,7 +217,7 @@ class LinearModel(Model):
 
 
     @property
-    def variable_names(self) -> list:
+    def variable_names(self) -> list[str]:
         r"""Variables of the linear model.
 
         Returns
@@ -229,7 +230,7 @@ class LinearModel(Model):
 
 
     @property
-    def posteriors(self) -> dict:
+    def posteriors(self) -> dict[str, np.ndarray]:
         r"""Posteriors of the regressors' and variance parameters.
         Posteriors and relative samples are key-value pairs. Each sample is a :py:class:`numpy.ndarray`
         with a number of rows equals to the number of iterations and a number of columns equal to the number of Markov
@@ -257,7 +258,7 @@ class LinearModel(Model):
 
 
     @posteriors.setter
-    def posteriors(self, posteriors: dict) -> None:
+    def posteriors(self, posteriors: dict[str, np.ndarray]) -> None:
         super(LinearModel, type(self)).posteriors.fset(self, posteriors)
 
         if 'variance' not in posteriors.keys():
@@ -342,7 +343,7 @@ class LinearModel(Model):
         return data
 
 
-    def predict_distribution(self, predictors: dict) -> np.ndarray:
+    def predict_distribution(self, predictors: dict[str, float | int]) -> np.ndarray:
         """It predicts a posterior distribution for an unobserved values. For each posterior sample, it draws a sample
         from the likelihood.
 
@@ -496,7 +497,7 @@ class LinearModel(Model):
         return data
 
 
-    def _compute_model_parameters_at_observation(self, i: int):
+    def _compute_model_parameters_at_observation(self, i: int) -> pd.DataFrame:
 
         posterior_means = {posterior: posterior_samples[i, :].mean()
                            for posterior, posterior_samples in self.__posteriors.items() if posterior != 'variance'}

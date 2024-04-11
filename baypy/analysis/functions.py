@@ -1,3 +1,4 @@
+from __future__ import annotations
 import matplotlib.pyplot as plt
 from ..model import Model
 import numpy as np
@@ -6,7 +7,7 @@ from scipy.stats import gaussian_kde
 from ..utils import flatten_matrix
 
 
-def trace_plot(posteriors: dict) -> None:
+def trace_plot(posteriors: dict[str, np.ndarray]) -> None:
     """it plots the traces and the probability density for each posterior. \n
     The plot shows the traces for each Markov chain, for each regression variable and the relative posterior density.
     The plot layout has number of rows equal to the number of regression variables and two columns: traces on the left
@@ -84,7 +85,10 @@ def _compute_kde(posterior: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     return posterior_support, posterior_kde
 
 
-def summary(posteriors: dict, alpha: float = 0.05, quantiles: list = None, print_summary: bool = True) -> dict:
+def summary(posteriors: dict[str, np.ndarray],
+            alpha: float = 0.05,
+            quantiles: list[float] = None,
+            print_summary: bool = True) -> dict[str, int | str]:
     """It prints a statistical summary for each posterior.
 
     Parameters
@@ -293,7 +297,7 @@ def residuals_plot(model: Model) -> None:
     plt.show()
 
 
-def compute_DIC(model: Model, print_summary: bool = True) -> dict:
+def compute_DIC(model: Model, print_summary: bool = True) -> dict[str, float]:
     r"""It computes and prints the Deviance Information Criterion (DIC) for the fitted model.
 
     Parameters

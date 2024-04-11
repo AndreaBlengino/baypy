@@ -1,3 +1,4 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
 import numpy as np
 import pandas as pd
@@ -47,7 +48,7 @@ class Model(ABC):
 
     @priors.setter
     @abstractmethod
-    def priors(self, priors: dict) -> None:
+    def priors(self, priors: dict[str, dict[str, float | int]]) -> None:
         if not isinstance(priors, dict):
             raise TypeError("Parameter 'priors' must be a dictionary")
 
@@ -70,7 +71,7 @@ class Model(ABC):
 
     @posteriors.setter
     @abstractmethod
-    def posteriors(self, posteriors: dict) -> None:
+    def posteriors(self, posteriors: dict[str, np.ndarray]) -> None:
         if not isinstance(posteriors, dict):
             raise TypeError("Parameter 'posteriors' must be a dictionary")
 
@@ -94,7 +95,7 @@ class Model(ABC):
 
 
     @abstractmethod
-    def predict_distribution(self, predictors: dict) -> None:
+    def predict_distribution(self, predictors: dict[str, float | int]) -> None:
         if not isinstance(predictors, dict):
             raise TypeError("Parameter 'predictors' must be a dictionary")
 

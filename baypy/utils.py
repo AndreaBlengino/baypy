@@ -1,3 +1,4 @@
+from __future__ import annotations
 import numpy as np
 import pandas as pd
 
@@ -44,7 +45,7 @@ def flatten_matrix(matrix: np.ndarray) -> np.ndarray:
     return np.asarray(matrix).reshape(-1)
 
 
-def matrices_to_frame(matrices_dict: dict) -> pd.DataFrame:
+def matrices_to_frame(matrices_dict: dict[str, np.ndarray]) -> pd.DataFrame:
     """Organizes a dictionary of matrices in a ``pandas.DataFrame``. Each matrix becomes a frame column, with column
     name equal to the matrix' relative key in the dictionary. If the matrix has dimensions ``(M, N``), then the relative
     frame column has length ``M*N``.
@@ -99,7 +100,7 @@ def matrices_to_frame(matrices_dict: dict) -> pd.DataFrame:
     return pd.DataFrame({col: flatten_matrix(matrix) for col, matrix in matrices_dict.items()})
 
 
-def dot_product(data: pd.DataFrame, regressors: dict) -> np.ndarray:
+def dot_product(data: pd.DataFrame, regressors: dict[str, float | int]) -> np.ndarray:
     """Computes the dot product between columns of ``data`` and values of ``regressors``.
 
     Parameters
