@@ -12,7 +12,7 @@ class TestDiagnosticsAutocorrelationPlot:
 
 
     @mark.genuine
-    @given(p_data =  posteriors_data())
+    @given(p_data = posteriors_data())
     @settings(max_examples = 10, deadline = None)
     def test_method(self, p_data):
         bp.diagnostics.autocorrelation_plot(posteriors = p_data['posteriors'],

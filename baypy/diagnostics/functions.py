@@ -4,7 +4,7 @@ import pandas as pd
 from ..utils import flatten_matrix
 
 
-def autocorrelation_plot(posteriors: dict, max_lags: int = 30) -> None:
+def autocorrelation_plot(posteriors: dict[str, np.ndarray], max_lags: int = 30) -> None:
     """It plots the auto-correlation for each Markov chain for each regression variable. \n
     The plot shows the auto-correlation trend from lag ``0`` (when auto-correlation is always ``1``) up to ``max_lags``.
     The plot layout has number of rows equal to the number of regression variables and a number of columns equal to the
@@ -105,7 +105,8 @@ def autocorrelation_plot(posteriors: dict, max_lags: int = 30) -> None:
     plt.show()
 
 
-def autocorrelation_summary(posteriors: dict, lags: list = None, print_summary: bool = True) -> pd.DataFrame:
+def autocorrelation_summary(posteriors: dict[str, np.ndarray], lags: list[int] = None, print_summary: bool = True) \
+        -> pd.DataFrame:
     """It prints the auto-correlation summary for each regression variable. \n
     The summary reports the auto-correlation values at the lags listed in ``lags``.
 
@@ -202,7 +203,7 @@ def autocorrelation_summary(posteriors: dict, lags: list = None, print_summary: 
     return acorr_summary
 
 
-def effective_sample_size(posteriors: dict, print_summary: bool = True) -> pd.DataFrame:
+def effective_sample_size(posteriors: dict[str, np.ndarray], print_summary: bool = True) -> pd.DataFrame:
     """It computes and prints the effective number of sample for each posterior.
 
     Parameters
