@@ -292,7 +292,7 @@ class LinearModel(Model):
 
 
     def residuals(self) -> pd.DataFrame:
-        r"""It compute the residuals :math:`\epsilon` with respect to predicted values :math:`\hat{y}`.
+        r"""It computes the residuals :math:`\epsilon` with respect to predicted values :math:`\hat{y}`.
 
         Returns
         -------
