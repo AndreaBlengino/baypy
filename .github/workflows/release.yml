@@ -11,20 +11,26 @@ jobs:
       PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
     steps:
     - uses: actions/checkout@v3
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: 3.7
-    - name: Install release tooling
+        python-version: 3.9
+
+    - name: Install building tools
       run: |
-        pip install -r requirements/dev.txt
+        pip install build twine
+
     - name: Build package
       run: |
-        python setup.py sdist bdist_wheel
+        python -m build --sdist
+        python -m build --wheel
+
     - name: Publish to PyPI
       run: |
         twine check dist/*
         twine upload --repository pypi --username __token__ --password ${PYPI_TOKEN} dist/*
+
   test-install-job:
     needs: release-job
     runs-on: ubuntu-latest
@@ -33,8 +39,10 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '>=3.9 <=3.12'
+
     - name: Give PyPI a chance to update the index
       run: sleep 150
+
     - name: Install from PyPI
       run: |
         pip install baypy
