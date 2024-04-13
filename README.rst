@@ -13,7 +13,7 @@ through a Monte Carlo Markov chain sampling.
    :width: 100%
 
    * - PyPI
-     - |pypi_release| |supported_python_versions| |build|
+     - |pypi_release| |supported_python_versions| |build| |dependencies|
    * - Tests
      - |linux_tests| |macos_tests| |windows_tests| |test_coverage|
    * - Documentation
@@ -35,7 +35,11 @@ through a Monte Carlo Markov chain sampling.
    :target: https://github.com/AndreaBlengino/baypy/actions/workflows/release.yml
    :alt: Package Build
 
-.. |linux_tests| image:: https://img.shields.io/github/actions/workflow/status/AndreaBlengino/baypy/linux_test.yml.svg?logo=linux&label=Linux
+.. |dependencies| image:: https://dependency-dash.repo-helper.uk/github/AndreaBlengino/baypy/badge.svg
+   :target: https://dependency-dash.repo-helper.uk/github/AndreaBlengino/baypy
+   :alt: Dependencies Status
+
+.. |linux_tests| image:: https://img.shields.io/github/actions/workflow/status/AndreaBlengino/baypy/linux_test.yml.svg?logo=linux&logoColor=white&label=Linux
    :target: https://github.com/AndreaBlengino/baypy/actions/workflows/linux_test.yml
    :alt: Linux Tests
 
