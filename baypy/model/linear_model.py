@@ -1,4 +1,3 @@
-from __future__ import annotations
 from .model import Model
 import pandas as pd
 import numpy as np
