@@ -6,7 +6,7 @@ The recommended installation is through `pip`:
 $ pip install baypy
 ```
 
-`baypy` runs for Python versions 3.9+.
+`baypy` runs for Python versions 3.10+.
 
 ## Dependencies
 
