@@ -54,8 +54,7 @@ utils_dot_product_type_error_3 = [
         'data': pd.DataFrame(columns=['a', 'b'], index=[0]),
         'regressors': {'a': type_to_check}
     } for type_to_check in types_to_check
-    if not isinstance(type_to_check, int)
-    and not isinstance(type_to_check, float)
+    if not isinstance(type_to_check, float | int)
 ]
 
 

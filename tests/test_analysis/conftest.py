@@ -54,8 +54,7 @@ analysis_summary_type_error_3 = [
         'quantiles': [0.1, 0.9],
         'print_summary': False
     } for type_to_check in types_to_check
-    if not isinstance(type_to_check, float) and
-    not isinstance(type_to_check, bool)
+    if not isinstance(type_to_check, float | bool)
 ]
 
 analysis_summary_type_error_4 = [
