@@ -70,8 +70,8 @@ def trace_plot(posteriors: dict[str, np.ndarray]) -> None:
         ax_j_trace.plot(posteriors[variable], linewidth=0.5)
         ax_j_density.plot(*_compute_kde(posteriors[variable].flatten()))
 
-        ax_j_trace.set_title(f'Trace of {variable} parameter')
-        ax_j_density.set_title(f'Density of {variable} parameter')
+        ax_j_trace.set_title(f"Trace of {variable} parameter")
+        ax_j_density.set_title(f"Density of {variable} parameter")
         ax_j_trace.tick_params(
             bottom=False,
             top=False,
@@ -240,17 +240,17 @@ def summary(
     credibility_mass = f'{100*(1 - alpha)}%'.replace('.0%', '%')
 
     if print_summary:
-        print(f'Number of chains:      {n_chains:>6}')
-        print(f'Sample size per chian: {n_iterations:>6}')
+        print(f"Number of chains:      {n_chains:>6}")
+        print(f"Sample size per chian: {n_iterations:>6}")
         print()
         print(
-            f'Empirical mean, standard deviation, {credibility_mass} HPD '
-            f'interval for each variable:'
+            f"Empirical mean, standard deviation, {credibility_mass} HPD "
+            f"interval for each variable:"
         )
         print()
         print(general_summary.to_string())
         print()
-        print('Quantiles for each variable:')
+        print("Quantiles for each variable:")
         print()
         print(quantiles_summary.to_string())
 
@@ -531,10 +531,10 @@ def compute_DIC(model: Model, print_summary: bool = True) -> dict[str, float]:
         print(f"Deviance Information Criterion  {DIC:>12.2f}")
 
     return {
-        'Deviance at posterior means': deviance_at_posterior_means,
-        'Posterior mean deviance': posterior_mean_deviance,
-        'Effective number of parameters': effective_number_of_parameters,
-        'Deviance Information Criterion': DIC
+        "Deviance at posterior means": deviance_at_posterior_means,
+        "Posterior mean deviance": posterior_mean_deviance,
+        "Effective number of parameters": effective_number_of_parameters,
+        "Deviance Information Criterion": DIC
     }
 
 

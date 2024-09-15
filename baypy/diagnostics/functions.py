@@ -80,7 +80,7 @@ def autocorrelation_plot(
 
     if n_chains > 1:
         for k in range(n_chains):
-            ax[0, k].set_title(f'Chain {k + 1}')
+            ax[0, k].set_title(f"Chain {k + 1}")
             for j, variable in enumerate(variable_names, 0):
                 acorr = _compute_autocorrelation(
                     vector=flatten_matrix(posteriors[variable][:, k]),
@@ -225,7 +225,7 @@ def autocorrelation_summary(
     n_chains = posteriors['intercept'].shape[1]
     acorr_summary = pd.DataFrame(
         columns=list(posteriors.keys()),
-        index=[f'Lag {lag}' for lag in lags]
+        index=[f"Lag {lag}" for lag in lags]
     )
 
     for variable in acorr_summary.columns:
@@ -322,7 +322,7 @@ def effective_sample_size(
     n_chains = posteriors['intercept'].shape[1]
     ess_summary = pd.DataFrame(
         columns=list(posteriors.keys()),
-        index=['Effective Sample Size']
+        index=["Effective Sample Size"]
     )
 
     for variable in ess_summary.columns:
