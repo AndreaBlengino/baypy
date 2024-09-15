@@ -240,19 +240,20 @@ def summary(
     credibility_mass = f'{100*(1 - alpha)}%'.replace('.0%', '%')
 
     if print_summary:
-        print(f"Number of chains:      {n_chains:>6}")
-        print(f"Sample size per chian: {n_iterations:>6}")
-        print()
-        print(
+        summary_output = (
+            f"Number of chains:      {n_chains:>6}\n"
+            f"Sample size per chian: {n_iterations:>6}\n"
+            f"\n"
             f"Empirical mean, standard deviation, {credibility_mass} HPD "
-            f"interval for each variable:"
+            f"interval for each variable:\n"
+            f"\n"
+            f"{general_summary.to_string()}\n"
+            f"\n"
+            f"Quantiles for each variable:\n"
+            f"\n"
+            f"{quantiles_summary.to_string()}"
         )
-        print()
-        print(general_summary.to_string())
-        print()
-        print("Quantiles for each variable:")
-        print()
-        print(quantiles_summary.to_string())
+        print(summary_output)
 
     return {
         'n_chains': n_chains,
@@ -516,19 +517,16 @@ def compute_DIC(model: Model, print_summary: bool = True) -> dict[str, float]:
     DIC = effective_number_of_parameters + posterior_mean_deviance
 
     if print_summary:
-        print(
+        dic_output = (
             f"Deviance at posterior means     "
-            f"{deviance_at_posterior_means:>12.2f}"
-        )
-        print(
+            f"{deviance_at_posterior_means:>12.2f}\n"
             f"Posterior mean deviance         "
-            f"{posterior_mean_deviance:>12.2f}"
-        )
-        print(
+            f"{posterior_mean_deviance:>12.2f}\n"
             f"Effective number of parameters  "
-            f"{effective_number_of_parameters:>12.2f}"
+            f"{effective_number_of_parameters:>12.2f}\n"
+            f"Deviance Information Criterion  {DIC:>12.2f}"
         )
-        print(f"Deviance Information Criterion  {DIC:>12.2f}")
+        print(dic_output)
 
     return {
         "Deviance at posterior means": deviance_at_posterior_means,
