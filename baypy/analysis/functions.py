@@ -40,8 +40,12 @@ def trace_plot(posteriors: dict[str, np.ndarray]) -> None:
     if not isinstance(posteriors, dict):
         raise TypeError("Parameter 'posteriors' must be a dictionary")
 
-    if not all([isinstance(posterior_sample, np.ndarray)
-                for posterior_sample in posteriors.values()]):
+    if not all(
+        [
+            isinstance(posterior_sample, np.ndarray)
+            for posterior_sample in posteriors.values()
+        ]
+    ):
         raise TypeError(
             "All posteriors data must be an instance of 'numpy.ndarray'"
         )
@@ -163,8 +167,12 @@ def summary(
     if not isinstance(posteriors, dict):
         raise TypeError("Parameter 'posteriors' must be a dictionary")
 
-    if not all([isinstance(posterior_sample, np.ndarray)
-                for posterior_sample in posteriors.values()]):
+    if not all(
+        [
+            isinstance(posterior_sample, np.ndarray)
+            for posterior_sample in posteriors.values()
+        ]
+    ):
         raise TypeError(
             "All posteriors data must be an instance of 'numpy.ndarray'"
         )

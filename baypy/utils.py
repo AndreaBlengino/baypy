@@ -177,8 +177,12 @@ def dot_product(
         if regressor not in data.columns:
             raise KeyError(f"Column '{regressor}' not found in 'data'")
 
-    if not all([isinstance(regressor, float) or isinstance(regressor, int)
-                for regressor in regressors.values()]):
+    if not all(
+        [
+            isinstance(regressor, float | int)
+            for regressor in regressors.values()
+        ]
+    ):
         raise TypeError("All 'regressors' values must be integers or float.")
 
     data = data[regressors.keys()]
