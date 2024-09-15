@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from typing import Iterable
 from ..utils import flatten_matrix
 
 
@@ -128,7 +129,7 @@ def autocorrelation_plot(
 
 def autocorrelation_summary(
     posteriors: dict[str, np.ndarray],
-    lags: list[int] = None,
+    lags: Iterable[int] = None,
     print_summary: bool = True
 ) -> pd.DataFrame:
     """It prints the auto-correlation summary for each regression variable. \n
@@ -142,10 +143,10 @@ def autocorrelation_summary(
         Each sample is a :py:class:`numpy.ndarray` with a number of rows equal
         to the number of iterations and a number of columns equal to the number
         of Markov chains.
-    ``lags`` : :py:class:`list`, optional
+    ``lags`` : :py:class:`Iterable <typing.Iterable>`, optional
         List of the lags to which compute the auto-correlation. It cannot be an
-        empty :py:class:`list`. It must contain only positive integers. The
-        default is ``[0, 1, 5, 10, 30]``.
+        empty :py:class:`Iterable <typing.Iterable>`. It must contain only
+        positive integers. The default is ``[0, 1, 5, 10, 30]``.
     ``print_summary`` : :py:class:`bool`, optional
         If ``True`` prints the autocorrelation summary report. Default is
         ``True``.
@@ -163,14 +164,14 @@ def autocorrelation_summary(
        ``TypeError``
            - If ``posteriors`` is not a :py:class:`dict`,
            - if a posterior sample is not a :py:class:`numpy.ndarray`,
-           - if ``lags`` is not a :py:class:`list`,
+           - if ``lags`` is not an :py:class:`Iterable <typing.Iterable>`,
            - if ``lags`` does not contain only :py:class:`int`,
            - if ``print_summary`` is not a :py:class:`bool`.
        ``KeyError``
            If ``posteriors`` does not contain ``'intercept'`` key.
        ``ValueError``
            - If a posterior sample is an empty :py:class:`numpy.ndarray`,
-           - if ``lags`` is an empty :py:class:`list`,
+           - if ``lags`` is an empty :py:class:`Iterable <typing.Iterable>`,
            - if a value in ``lags`` is a negative :py:class:`int`.
 
     .. admonition:: Notes
@@ -209,10 +210,10 @@ def autocorrelation_summary(
             raise ValueError(f"Posterior '{posterior}' data is empty")
 
     if lags is not None:
-        if not isinstance(lags, list):
-            raise TypeError("Parameter 'lags' must be a list")
+        if not isinstance(lags, Iterable):
+            raise TypeError("Parameter 'lags' must be an iterable")
         if not lags:
-            raise ValueError("Parameter 'lags' cannot be an empty list")
+            raise ValueError("Parameter 'lags' cannot be an empty iterable")
         if not all([isinstance(lag, int) for lag in lags]):
             raise TypeError("Parameter 'lags' must contain only integers")
         if any([lag < 0 for lag in lags]):
