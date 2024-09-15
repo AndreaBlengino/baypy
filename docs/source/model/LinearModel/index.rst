@@ -13,12 +13,12 @@ LinearModel
    :hidden:
 
    data
-   response_variable
-   priors
-   variable_names
-   posteriors
-   posteriors_to_frame
-   residuals
-   predict_distribution
    likelihood
    log_likelihood
+   posteriors
+   posteriors_to_frame
+   predict_distribution
+   priors
+   residuals
+   response_variable
+   variable_names
