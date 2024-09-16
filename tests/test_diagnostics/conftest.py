@@ -1,6 +1,7 @@
 import numpy as np
 from pytest import fixture
 from tests.conftest import types_to_check
+from typing import Iterable
 
 
 diagnostics_autocorrelation_plot_type_error_1 = [
@@ -79,7 +80,7 @@ diagnostics_autocorrelation_summary_type_error_3 = [
         'lags': type_to_check,
         'print_summary': False
     } for type_to_check in types_to_check
-    if not isinstance(type_to_check, list) and type_to_check is not None
+    if not isinstance(type_to_check, Iterable) and type_to_check is not None
 ]
 
 diagnostics_autocorrelation_summary_type_error_4 = [
