@@ -2,7 +2,7 @@ diagnostics
 ===========
 
 
-.. automodule:: baypy.diagnostics.functions
+.. automodule:: baypy.diagnostics
    :members:
    :undoc-members:
    :show-inheritance:

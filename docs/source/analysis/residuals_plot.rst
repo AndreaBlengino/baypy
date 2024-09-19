@@ -2,7 +2,7 @@
 ===============
 
 
-.. currentmodule:: baypy.analysis.functions
+.. currentmodule:: baypy.analysis.residuals_plot
 
 .. autofunction:: residuals_plot
    :no-index:
