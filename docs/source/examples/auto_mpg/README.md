@@ -14,7 +14,7 @@ Determine the effect of car attributes on fuel consumption.
 import pandas as pd
 
 data = pd.read_csv(r'data/data.csv')
-data.dropna(inplace = True)
+data.dropna(inplace=True)
 ```
 
 Data exploration:
@@ -22,7 +22,7 @@ Data exploration:
 ```python
 import matplotlib.pyplot as plt
 
-pd.plotting.scatter_matrix(frame = data, figsize = (10, 10))
+pd.plotting.scatter_matrix(frame=data, figsize=(10, 10))
 
 plt.tight_layout()
 
@@ -58,12 +58,14 @@ import baypy as bp
 model = LinearModel()
 model.data = data
 model.response_variable = 'log mpg'
-model.priors = {'intercept': {'mean': 0, 'variance': 1e6},
-                'cylinders': {'mean': 0, 'variance': 1e6},
-                'log weight': {'mean': 0, 'variance': 1e6},
-                'acceleration': {'mean': 0, 'variance': 1e6},
-                'model year': {'mean': 0, 'variance': 1e6},
-                'variance': {'shape': 1, 'scale': 1e-6}}
+model.priors = {
+    'intercept': {'mean': 0, 'variance': 1e6},
+    'cylinders': {'mean': 0, 'variance': 1e6},
+    'log weight': {'mean': 0, 'variance': 1e6},
+    'acceleration': {'mean': 0, 'variance': 1e6},
+    'model year': {'mean': 0, 'variance': 1e6},
+    'variance': {'shape': 1, 'scale': 1e-6}
+}
 ```
 
 See :py:class:`LinearModel <baypy.model.linear_model.LinearModel>` for 
@@ -77,8 +79,13 @@ each chain and discarding the first 50 burn-in draws:
 ```python
 from baypy.regression import LinearRegression
 
-LinearRegression.sample(model = model, n_iterations = 1000, 
-                        burn_in_iterations = 50, n_chains = 3, seed = 137)
+LinearRegression.sample(
+    model=model,
+    n_iterations=1000, 
+    burn_in_iterations=50,
+    n_chains=3,
+    seed=137
+)
 ```
 
 See 
@@ -90,7 +97,7 @@ for more information on this class and its attributes and methods.
 Asses the model convergence diagnostics:
 
 ```python
-bp.diagnostics.effective_sample_size(posteriors = model.posteriors)
+bp.diagnostics.effective_sample_size(posteriors=model.posteriors)
 ```
 
 ```text
@@ -99,7 +106,7 @@ Effective Sample Size    2873.12    2754.12     2685.45       2510.45     2338.3
 ```
 
 ```python
-bp.diagnostics.autocorrelation_summary(posteriors = model.posteriors)
+bp.diagnostics.autocorrelation_summary(posteriors=model.posteriors)
 ```
 
 ```text
@@ -112,7 +119,7 @@ Lag 30  -0.023641  -0.010533   -0.026705      0.005014    0.002749  0.021754
 ```
 
 ```python
-bp.diagnostics.autocorrelation_plot(posteriors = model.posteriors)
+bp.diagnostics.autocorrelation_plot(posteriors=model.posteriors)
 ```
 
 ![](images/autocorrelation_plot.png)
@@ -131,24 +138,24 @@ converged to the stationary distribution.
 Asses posterior analysis:
 
 ```python
-bp.analysis.trace_plot(posteriors = model.posteriors)
+bp.analysis.trace_plot(posteriors=model.posteriors)
 ```
 
 ![](images/trace_plot.png)
 
-Traces are good, incidating draws from the stationary distribution.
+Traces are good, indicating draws from the stationary distribution.
 
 ```python
-bp.analysis.residuals_plot(model = model)
+bp.analysis.residuals_plot(model=model)
 ```
 
 ![](images/residuals_plot.png)
 
-Also the residuals plot is good: no evidence for patterns, shapes or 
+Also, the residuals plot is good: no evidence for patterns, shapes or 
 outliers.
 
 ```python
-bp.analysis.summary(posteriors = model.posteriors)
+bp.analysis.summary(posteriors=model.posteriors)
 ```
 
 ```text

@@ -23,9 +23,11 @@ import baypy as bp
 model = LinearModel()
 model.data = data
 model.response_variable = 'Salary'
-model.priors = {'intercept': {'mean': 0, 'variance': 1e12},
-                'YearsExperience': {'mean': 0, 'variance': 1e12},
-                'variance': {'shape': 1, 'scale': 1e-12}}
+model.priors = {
+    'intercept': {'mean': 0, 'variance': 1e12},
+    'YearsExperience': {'mean': 0, 'variance': 1e12},
+    'variance': {'shape': 1, 'scale': 1e-12}
+}
 ```
 
 See :py:class:`LinearModel <baypy.model.linear_model.LinearModel>` for 
@@ -39,9 +41,13 @@ each chain and discarding the first 50 burn-in draws:
 ```python
 from baypy.regression import LinearRegression
 
-regression = bp.regression.LinearRegression(model = model)
-LinearRegression.sample(model = model, n_iterations = 5000, 
-                        burn_in_iterations = 50, n_chains = 3, seed = 137)
+LinearRegression.sample(
+    model=model,
+    n_iterations=5000, 
+    burn_in_iterations=50,
+    n_chains=3,
+    seed=137
+)
 ```
 
 See 
@@ -53,7 +59,7 @@ for more information on this class and its attributes and methods.
 Asses the model convergence diagnostics:
 
 ```python
-bp.diagnostics.effective_sample_size(posteriors = model.posteriors)
+bp.diagnostics.effective_sample_size(posteriors=model.posteriors)
 ```
 
 ```text
@@ -62,7 +68,7 @@ Effective Sample Size   14757.25         14718.82  12692.31
 ```
 
 ```python
-bp.diagnostics.autocorrelation_summary(posteriors = model.posteriors)
+bp.diagnostics.autocorrelation_summary(posteriors=model.posteriors)
 ```
 
 ```text
@@ -75,7 +81,7 @@ Lag 30  -0.000465        -0.002819  0.000682
 ```
 
 ```python
-bp.diagnostics.autocorrelation_plot(posteriors = model.posteriors)
+bp.diagnostics.autocorrelation_plot(posteriors=model.posteriors)
 ```
 
 ![](images/autocorrelation_plot.png)
@@ -94,24 +100,24 @@ converged to the stationary distribution.
 Asses posterior analysis:
 
 ```python
-bp.analysis.trace_plot(posteriors = model.posteriors)
+bp.analysis.trace_plot(posteriors=model.posteriors)
 ```
 
 ![](images/trace_plot.png)
 
-Traces are good, incidating draws from the stationary distribution.
+Traces are good, indicating draws from the stationary distribution.
 
 ```python
-bp.analysis.residuals_plot(model = model)
+bp.analysis.residuals_plot(model=model)
 ```
 
 ![](images/residuals_plot.png)
 
-Also the residuals plot is good: no evidence for patterns, shapes or 
+Also, the residuals plot is good: no evidence for patterns, shapes or 
 outliers.
 
 ```python
-bp.analysis.summary(posteriors = model.posteriors)
+bp.analysis.summary(posteriors=model.posteriors)
 ```
 
 ```text
@@ -147,15 +153,21 @@ experience, so the predictor is `YearsExperience = 5`:
 import matplotlib.pyplot as plt
 import numpy as np
 
-distribution = model.predict_distribution(predictors = {'YearsExperience': 5})
+distribution = model.predict_distribution(predictors={'YearsExperience': 5})
 
 fig_2, ax_2 = plt.subplots()
 
-ax_2.hist(distribution, bins = int(np.sqrt(len(distribution))), color = 'blue', alpha = 0.5, density = True)
+ax_2.hist(
+    distribution,
+    bins=int(np.sqrt(len(distribution))),
+    color='blue',
+    alpha=0.5,
+    density=True
+)
 
 ax_2.set_xlabel('Salary')
 ax_2.set_ylabel('Probability Density')
-ax_2.tick_params(bottom = False, top = False, left = False, right = False)
+ax_2.tick_params(bottom=False, top=False, left=False, right=False)
 
 plt.tight_layout()
 
@@ -173,22 +185,43 @@ Comparing data to fitted model posteriors:
 posteriors_data = pd.DataFrame()
 for posterior, posterior_sample in model.posteriors.items():
     posteriors_data[posterior] = np.asarray(posterior_sample).reshape(-1)
-posteriors_data['error'] = np.random.normal(loc = 0, scale = np.sqrt(posteriors_data['variance']), size = len(posteriors_data))
+posteriors_data['error'] = np.random.normal(
+    loc=0,
+    scale=np.sqrt(posteriors_data['variance']),
+    size=len(posteriors_data)
+)
 
-years_experience = np.linspace(data['YearsExperience'].min(), data['YearsExperience'].max(), 50)
+years_experience = np.linspace(
+    data['YearsExperience'].min(),
+    data['YearsExperience'].max(),
+    50
+)
 
 
 fig_1, ax_1 = plt.subplots()
 
 for row in zip(*posteriors_data.to_dict('list').values()):
     salary = row[0] + row[1]*years_experience + row[3]
-    ax_1.plot(years_experience, salary, color = 'blue', linewidth = 1, alpha = 0.1)
-ax_1.plot(data['YearsExperience'].values, data['Salary'].values, marker = 'o', linestyle = '',
-          markerfacecolor = 'none', markeredgecolor = 'red', markeredgewidth = 1.2)
+    ax_1.plot(
+        years_experience,
+        salary,
+        color='blue',
+        linewidth=1,
+        alpha=0.1
+    )
+ax_1.plot(
+    data['YearsExperience'].values,
+    data['Salary'].values,
+    marker='o',
+    linestyle='',
+    markerfacecolor='none',
+    markeredgecolor='red',
+    markeredgewidth=1.2
+)
 
 ax_1.set_xlabel('YearsExperience')
 ax_1.set_ylabel('Salary')
-ax_1.tick_params(bottom = False, top = False, left = False, right = False)
+ax_1.tick_params(bottom=False, top=False, left=False, right=False)
 
 plt.tight_layout()
 

@@ -26,10 +26,12 @@ model = LinearModel()
 
 model.data = data
 model.response_variable = 'heart disease'
-model.priors = {'intercept': {'mean': 0, 'variance': 1e6},
-                'biking': {'mean': 0, 'variance': 1e9},
-                'smoking': {'mean': 0, 'variance': 1e9},
-                'variance': {'shape': 1, 'scale': 1e-9}}
+model.priors = {
+    'intercept': {'mean': 0, 'variance': 1e6},
+    'biking': {'mean': 0, 'variance': 1e9},
+    'smoking': {'mean': 0, 'variance': 1e9},
+    'variance': {'shape': 1, 'scale': 1e-9}
+}
 ```
 
 See :py:class:`LinearModel <baypy.model.linear_model.LinearModel>` for 
@@ -43,8 +45,13 @@ each chain and discarding the first 50 burn-in draws:
 ```python
 from baypy.regression import LinearRegression
 
-LinearRegression.sample(model = model, n_iterations = 500, 
-                        burn_in_iterations = 50, n_chains = 3, seed = 137)
+LinearRegression.sample(
+    model=model,
+    n_iterations=500, 
+    burn_in_iterations=50,
+    n_chains=3,
+    seed=137
+)
 ```
 
 See 
@@ -56,7 +63,7 @@ for more information on this class and its attributes and methods.
 Asses the model convergence diagnostics:
 
 ```python
-bp.diagnostics.effective_sample_size(posteriors = model.posteriors)
+bp.diagnostics.effective_sample_size(posteriors=model.posteriors)
 ```
 
 ```text
@@ -64,7 +71,7 @@ bp.diagnostics.effective_sample_size(posteriors = model.posteriors)
 Effective Sample Size    1389.56  1449.73  1362.26   1426.75
 ```
 ```python
-bp.diagnostics.autocorrelation_summary(posteriors = model.posteriors)
+bp.diagnostics.autocorrelation_summary(posteriors=model.posteriors)
 ```
 
 ```text
@@ -77,7 +84,7 @@ Lag 30  -0.041058 -0.008922 -0.013752 -0.040056
 ```
 
 ```python
-bp.diagnostics.autocorrelation_plot(posteriors = model.posteriors)
+bp.diagnostics.autocorrelation_plot(posteriors=model.posteriors)
 ```
 
 ![](images/autocorrelation_plot.png)
@@ -96,25 +103,25 @@ converged to the stationary distribution.
 Asses posterior analysis:
 
 ```python
-bp.analysis.trace_plot(posteriors = model.posteriors)
+bp.analysis.trace_plot(posteriors=model.posteriors)
 ```
 
 ![](images/trace_plot.png)
 
-Traces are quite good, incidating draws from the stationary 
+Traces are quite good, indicating draws from the stationary 
 distribution.
 
 ```python
-bp.analysis.residuals_plot(model = model)
+bp.analysis.residuals_plot(model=model)
 ```
 
 ![](images/residuals_plot.png)
 
-Also the residuals plot is good: no evidence for patterns, shapes or 
+Also, the residuals plot is good: no evidence for patterns, shapes or 
 outliers.
 
 ```python
-bp.analysis.summary(posteriors = model.posteriors)
+bp.analysis.summary(posteriors=model.posteriors)
 ```
 
 ```text
