@@ -25,6 +25,7 @@ baypy documentation
    Issue Tracker <https://github.com/AndreaBlengino/baypy/issues>
    Source Code <https://github.com/AndreaBlengino/baypy>
    license
+   release_notes/index
 
 
 .. mdinclude:: ../../README.rst
