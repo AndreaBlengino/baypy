@@ -14,9 +14,12 @@ sys.path.insert(0, os.path.abspath('../..'))
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'baypy'
-copyright = '2023-2024, Andrea Blengino'
+project_copyright = '2023-2024, Andrea Blengino'
 author = 'Andrea Blengino'
-release = subprocess.run(['git', 'describe', '--tags'], stdout = subprocess.PIPE).stdout.decode('utf-8')
+release = subprocess.run(
+    'git describe --tags'.split(),
+    stdout=subprocess.PIPE
+).stdout.decode('utf-8').strip().split('-')[0]
 
 
 # -- General configuration ---------------------------------------------------
@@ -27,9 +30,12 @@ extensions = ['sphinx.ext.autodoc', 'm2r2', 'sphinx.ext.intersphinx']
 templates_path = ['_templates']
 exclude_patterns = []
 
-intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
-                       'numpy': ('https://numpy.org/doc/stable/', None),
-                       'pandas': ('https://pandas.pydata.org/docs/', None)}
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+    'numpy': ('https://numpy.org/doc/stable/', None),
+    'pandas': ('https://pandas.pydata.org/docs/', None)
+}
+
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
