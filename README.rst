@@ -91,6 +91,7 @@ References
 - `Issue tracker <https://github.com/AndreaBlengino/baypy/issues>`_
 - `Source code <https://github.com/AndreaBlengino/baypy/tree/master/baypy>`_
 - `GNU General Public License v3.0 <https://github.com/AndreaBlengino/baypy/blob/master/LICENSE>`_
+- `Release Notes <https://baypy.readthedocs.io/en/latest/release_notes/index.html>`_
 
 
 Contributing
