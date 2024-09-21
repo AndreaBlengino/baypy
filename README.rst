@@ -12,8 +12,10 @@ through a Monte Carlo Markov chain sampling.
    :widths: auto
    :width: 100%
 
-   * - PyPI
-     - |pypi_release| |supported_python_versions| |build| |dependencies|
+   * - Release
+     - |pypi_release| |build|
+   * - Versioning
+     - |supported_python_versions| |semver| |dependencies|
    * - Tests
      - |linux_tests| |macos_tests| |windows_tests| |test_coverage|
    * - Documentation
@@ -27,13 +29,16 @@ through a Monte Carlo Markov chain sampling.
    :target: https://pypi.org/project/baypy/
    :alt: PyPI - Library Version
 
+.. |build| image:: https://img.shields.io/github/actions/workflow/status/AndreaBlengino/baypy/release.yml.svg?logo=github
+   :target: https://github.com/AndreaBlengino/baypy/actions/workflows/release.yml
+   :alt: Package Build
+
 .. |supported_python_versions| image:: https://img.shields.io/pypi/pyversions/baypy?logo=python&logoColor=gold
    :target: https://pypi.org/project/baypy/
    :alt: PyPI - Supported Python Versions
 
-.. |build| image:: https://img.shields.io/github/actions/workflow/status/AndreaBlengino/baypy/release.yml.svg?logo=github
-   :target: https://github.com/AndreaBlengino/baypy/actions/workflows/release.yml
-   :alt: Package Build
+.. |semver| image:: https://img.shields.io/badge/semver-2.0.0-blue.svg
+   :target: https://semver.org/
 
 .. |dependencies| image:: https://dependency-dash.repo-helper.uk/github/AndreaBlengino/baypy/badge.svg
    :target: https://dependency-dash.repo-helper.uk/github/AndreaBlengino/baypy
