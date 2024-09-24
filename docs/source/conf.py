@@ -25,7 +25,12 @@ release = subprocess.run(
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ['sphinx.ext.autodoc', 'm2r2', 'sphinx.ext.intersphinx']
+extensions = [
+    'sphinx.ext.autodoc',
+    'm2r2',
+    'sphinx.ext.intersphinx',
+    'sphinx_copybutton'
+]
 
 templates_path = ['_templates']
 exclude_patterns = []
@@ -45,3 +50,5 @@ html_static_path = ['_static']
 html_css_files = ['custom.css']
 add_module_names = False
 html_title = 'baypy'
+copybutton_prompt_text = r">>> |\.\.\. |\$ "
+copybutton_prompt_is_regexp = True
