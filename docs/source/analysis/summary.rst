@@ -2,7 +2,7 @@
 =======
 
 
-.. currentmodule:: baypy.analysis.functions
+.. currentmodule:: baypy.analysis.summary
 
 .. autofunction:: summary
    :no-index:

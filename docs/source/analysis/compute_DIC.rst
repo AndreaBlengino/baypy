@@ -2,7 +2,7 @@
 ============
 
 
-.. currentmodule:: baypy.analysis.functions
+.. currentmodule:: baypy.analysis.compute_DIC
 
 .. autofunction:: compute_DIC
    :no-index:

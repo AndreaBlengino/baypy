@@ -11,12 +11,16 @@ from Sindian Dist., New Taipei City, Taiwan.
 import pandas as pd
 
 data = pd.read_csv(r'data/data.csv')
-data.drop(columns = ['No'], inplace = True)
+data.drop(columns=['No'], inplace=True)
 data.columns = [' '.join(col.split(' ')[1:]) for col in data.columns]
-data.rename(columns = {'distance to the nearest MRT station': 'MRT station distance',
-                       'number of convenience stores': 'stores number',
-                       'house price of unit area': 'house price'},
-            inplace = True)
+data.rename(
+    columns={
+        'distance to the nearest MRT station': 'MRT station distance',
+        'number of convenience stores': 'stores number',
+        'house price of unit area': 'house price'
+    },
+    inplace=True
+)
 ```
 
 Data exploration:
@@ -24,7 +28,7 @@ Data exploration:
 ```python
 import matplotlib.pyplot as plt
 
-pd.plotting.scatter_matrix(frame = data, figsize = (10, 10))
+pd.plotting.scatter_matrix(frame=data, figsize=(10, 10))
 
 plt.tight_layout()
 
@@ -34,9 +38,9 @@ plt.show()
 ![](images/original_data.png)
 
 The scatterplot shows no strong correlation among regressors.   
-There are two ouliers in *house price*, one under 8 and the other over 
+There are two outliers in *house price*, one under 8 and the other over 
 115, that do not follow the rest of distributions. For this reason, the
-outlier are removed.  
+outliers are removed.  
 *house price* and *MRT station distance* are not normally distributed: 
 data are skewed toward high values. For this reason, these columns are 
 transformed to log-scale:
@@ -62,14 +66,16 @@ import baypy as bp
 model = LinearModel()
 model.data = data
 model.response_variable = 'log house price'
-model.priors = {'intercept': {'mean': 0, 'variance': 1e6},
-                'transaction date': {'mean': 0, 'variance': 1e6},
-                'house age': {'mean': 0, 'variance': 1e6},
-                'log MRT station distance': {'mean': 0, 'variance': 1e6},
-                'stores number': {'mean': 0, 'variance': 1e6},
-                'latitude': {'mean': 0, 'variance': 1e6},
-                'longitude': {'mean': 0, 'variance': 1e6},
-                'variance': {'shape': 1, 'scale': 1e-6}}
+model.priors = {
+    'intercept': {'mean': 0, 'variance': 1e6},
+    'transaction date': {'mean': 0, 'variance': 1e6},
+    'house age': {'mean': 0, 'variance': 1e6},
+    'log MRT station distance': {'mean': 0, 'variance': 1e6},
+    'stores number': {'mean': 0, 'variance': 1e6},
+    'latitude': {'mean': 0, 'variance': 1e6},
+    'longitude': {'mean': 0, 'variance': 1e6},
+    'variance': {'shape': 1, 'scale': 1e-6}
+}
 ```
 
 See :py:class:`LinearModel <baypy.model.linear_model.LinearModel>` for 
@@ -83,8 +89,13 @@ each chain and discarding the first 50 burn-in draws:
 ```python
 from baypy.regression import LinearRegression
 
-LinearRegression.sample(model = model, n_iterations = 1000, 
-                        burn_in_iterations = 50, n_chains = 3, seed = 137)
+LinearRegression.sample(
+    model=model,
+    n_iterations=1000, 
+    burn_in_iterations=50,
+    n_chains=3,
+    seed=137
+)
 ```
 
 See 
@@ -96,7 +107,7 @@ for more information on this class and its attributes and methods.
 Asses the model convergence diagnostics:
 
 ```python
-bp.diagnostics.effective_sample_size(posteriors = model.posteriors)
+bp.diagnostics.effective_sample_size(posteriors=model.posteriors)
 ```
 
 ```text
@@ -105,7 +116,7 @@ Effective Sample Size    2767.17           2833.16    2548.86                   
 ```
 
 ```python
-bp.diagnostics.autocorrelation_summary(posteriors = model.posteriors)
+bp.diagnostics.autocorrelation_summary(posteriors=model.posteriors)
 ```
 
 ```text
@@ -118,7 +129,7 @@ Lag 30  -0.000886          0.031398  -0.030163                 -0.027021       0
 ```
 
 ```python
-bp.diagnostics.autocorrelation_plot(posteriors = model.posteriors)
+bp.diagnostics.autocorrelation_plot(posteriors=model.posteriors)
 ```
 
 ![](images/autocorrelation_plot.png)
@@ -137,24 +148,24 @@ converged to the stationary distribution.
 Asses posterior analysis:
 
 ```python
-bp.analysis.trace_plot(posteriors = model.posteriors)
+bp.analysis.trace_plot(posteriors=model.posteriors)
 ```
 
 ![](images/trace_plot.png)
 
-Traces are good, incidating draws from the stationary distribution.
+Traces are good, indicating draws from the stationary distribution.
 
 ```python
-bp.analysis.residuals_plot(model = model)
+bp.analysis.residuals_plot(model=model)
 ```
 
 ![](images/residuals_plot.png)
 
-Also the residuals plot is good: no evidence for patterns, shapes or 
+Also, the residuals plot is good: no evidence for patterns, shapes or 
 outliers.
 
 ```python
-bp.analysis.summary(posteriors = model.posteriors)
+bp.analysis.summary(posteriors=model.posteriors)
 ```
 
 ```text
@@ -203,7 +214,7 @@ increase in *MRT station distance* would result in
 - positive effect of *stores number*: `$1$` store increase would 
 result in `$e^{0.014637} - 1 = 1.47\%$` percent increase in 
 *house price*
-- positive effect of *latitute*: `$1'$` increase would result in 
+- positive effect of *latitude*: `$1'$` increase would result in 
 `$e^{\frac{9.593946}{60}} - 1 = 17.3\%$` percent increase *house price*
 - positive effect of *longitude*: `$1'$` increase would result in 
 `$e^{\frac{2.840717}{60}} - 1 = 4.85\%$` percent increase in *house 
@@ -211,4 +222,4 @@ price*
 
 The combined effect of *latitude* and *longitude* suggest that the 
 north-east of New Taipei City is the most expensive area, while the
-south-west is the most cheap area.
+south-west is the cheapest area.

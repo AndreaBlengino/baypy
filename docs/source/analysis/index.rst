@@ -2,7 +2,7 @@ analysis
 ========
 
 
-.. automodule:: baypy.analysis.functions
+.. automodule:: baypy.analysis
    :members:
    :undoc-members:
    :show-inheritance:
@@ -11,7 +11,7 @@ analysis
 .. toctree::
    :hidden:
 
-   trace_plot
-   summary
-   residuals_plot
    compute_DIC
+   residuals_plot
+   summary
+   trace_plot

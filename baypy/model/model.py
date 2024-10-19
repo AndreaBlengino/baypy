@@ -1,4 +1,3 @@
-from __future__ import annotations
 from abc import ABC, abstractmethod
 import numpy as np
 import pandas as pd
@@ -18,21 +17,22 @@ class Model(ABC):
     @abstractmethod
     def data(self) -> None: ...
 
-
     @data.setter
     @abstractmethod
     def data(self, data: pd.DataFrame) -> None:
         if not isinstance(data, pd.DataFrame):
-            raise TypeError("Parameter 'data' must be an instance of 'pandas.DataFrame'")
+            raise TypeError(
+                "Parameter 'data' must be an instance of 'pandas.DataFrame'"
+            )
 
         if data.empty:
-            raise ValueError("Parameter 'data' cannot be an empty 'pandas.DataFrame'")
-
+            raise ValueError(
+                "Parameter 'data' cannot be an empty 'pandas.DataFrame'"
+            )
 
     @property
     @abstractmethod
     def response_variable(self) -> None: ...
-
 
     @response_variable.setter
     @abstractmethod
@@ -40,11 +40,9 @@ class Model(ABC):
         if not isinstance(response_variable, str):
             raise TypeError("Parameter 'response_variable' must be a string")
 
-
     @property
     @abstractmethod
     def priors(self) -> None: ...
-
 
     @priors.setter
     @abstractmethod
@@ -53,21 +51,20 @@ class Model(ABC):
             raise TypeError("Parameter 'priors' must be a dictionary")
 
         if len(priors) == 0:
-            raise ValueError("Parameter 'priors' cannot be an empty dictionary")
+            raise ValueError(
+                "Parameter 'priors' cannot be an empty dictionary"
+            )
 
         if 'intercept' not in priors.keys():
             raise KeyError("Parameter 'priors' must contain a 'intercept' key")
-
 
     @property
     @abstractmethod
     def variable_names(self) -> None: ...
 
-
     @property
     @abstractmethod
     def posteriors(self) -> None: ...
-
 
     @posteriors.setter
     @abstractmethod
@@ -75,24 +72,30 @@ class Model(ABC):
         if not isinstance(posteriors, dict):
             raise TypeError("Parameter 'posteriors' must be a dictionary")
 
-        if not all([isinstance(posterior_sample, np.ndarray) for posterior_sample in posteriors.values()]):
-            raise TypeError("All posteriors data must be an instance of 'numpy.ndarray'")
+        if not all(
+            [
+                isinstance(posterior_sample, np.ndarray)
+                for posterior_sample in posteriors.values()
+            ]
+        ):
+            raise TypeError(
+                "All posteriors data must be an instance of 'numpy.ndarray'"
+            )
 
         if 'intercept' not in posteriors.keys():
-            raise KeyError("Parameter 'posteriors' must contain a 'intercept' key")
+            raise KeyError(
+                "Parameter 'posteriors' must contain a 'intercept' key"
+            )
 
         for posterior, posterior_samples in posteriors.items():
             if posterior_samples.size == 0:
                 raise ValueError(f"Posterior '{posterior}' data is empty")
 
-
     @abstractmethod
     def posteriors_to_frame(self) -> None: ...
 
-
     @abstractmethod
     def residuals(self) -> None: ...
-
 
     @abstractmethod
     def predict_distribution(self, predictors: dict[str, float | int]) -> None:
@@ -100,30 +103,36 @@ class Model(ABC):
             raise TypeError("Parameter 'predictors' must be a dictionary")
 
         if len(predictors) == 0:
-            raise ValueError("Parameter 'predictors' cannot be an empty dictionary")
-
+            raise ValueError(
+                "Parameter 'predictors' cannot be an empty dictionary"
+            )
 
     @abstractmethod
     def likelihood(self, data: pd.DataFrame) -> None:
         if not isinstance(data, pd.DataFrame):
-            raise TypeError("Parameter 'data' must be an instance of 'pandas.DataFrame'")
+            raise TypeError(
+                "Parameter 'data' must be an instance of 'pandas.DataFrame'"
+            )
 
         if data.empty:
-            raise ValueError("Parameter 'data' cannot be an empty 'pandas.DataFrame'")
-
+            raise ValueError(
+                "Parameter 'data' cannot be an empty 'pandas.DataFrame'"
+            )
 
     @abstractmethod
     def log_likelihood(self, data: pd.DataFrame) -> None:
         if not isinstance(data, pd.DataFrame):
-            raise TypeError("Parameter 'data' must be an instance of 'pandas.DataFrame'")
+            raise TypeError(
+                "Parameter 'data' must be an instance of 'pandas.DataFrame'"
+            )
 
         if data.empty:
-            raise ValueError("Parameter 'data' cannot be an empty 'pandas.DataFrame'")
-
+            raise ValueError(
+                "Parameter 'data' cannot be an empty 'pandas.DataFrame'"
+            )
 
     @abstractmethod
     def _compute_model_parameters_at_posterior_means(self) -> None: ...
-
 
     @abstractmethod
     def _compute_model_parameters_at_observation(self, i: int) -> None: ...

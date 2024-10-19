@@ -7,15 +7,19 @@ import numpy as np
 
 
 data = pd.read_csv(r'data/data.csv')
-data.drop(columns = ['No'], inplace = True)
+data.drop(columns=['No'], inplace=True)
 data.columns = [' '.join(col.split(' ')[1:]) for col in data.columns]
-data.rename(columns = {'distance to the nearest MRT station': 'MRT station distance',
-                       'number of convenience stores': 'stores number',
-                       'house price of unit area': 'house price'},
-            inplace = True)
+data.rename(
+    columns={
+        'distance to the nearest MRT station': 'MRT station distance',
+        'number of convenience stores': 'stores number',
+        'house price of unit area': 'house price'
+    },
+    inplace=True
+)
 
 
-pd.plotting.scatter_matrix(frame = data, figsize = (10, 10))
+pd.plotting.scatter_matrix(frame=data, figsize=(10, 10))
 
 plt.tight_layout()
 
@@ -30,21 +34,29 @@ data['log MRT station distance'] = np.log(data['MRT station distance'])
 model = LinearModel()
 model.data = data
 model.response_variable = 'log house price'
-model.priors = {'intercept': {'mean': 0, 'variance': 1e6},
-                'transaction date': {'mean': 0, 'variance': 1e6},
-                'house age': {'mean': 0, 'variance': 1e6},
-                'log MRT station distance': {'mean': 0, 'variance': 1e6},
-                'stores number': {'mean': 0, 'variance': 1e6},
-                'latitude': {'mean': 0, 'variance': 1e6},
-                'longitude': {'mean': 0, 'variance': 1e6},
-                'variance': {'shape': 1, 'scale': 1e-6}}
+model.priors = {
+    'intercept': {'mean': 0, 'variance': 1e6},
+    'transaction date': {'mean': 0, 'variance': 1e6},
+    'house age': {'mean': 0, 'variance': 1e6},
+    'log MRT station distance': {'mean': 0, 'variance': 1e6},
+    'stores number': {'mean': 0, 'variance': 1e6},
+    'latitude': {'mean': 0, 'variance': 1e6},
+    'longitude': {'mean': 0, 'variance': 1e6},
+    'variance': {'shape': 1, 'scale': 1e-6}
+}
 
-LinearRegression.sample(model = model, n_iterations = 1000, burn_in_iterations = 50, n_chains = 3, seed = 137)
+LinearRegression.sample(
+    model=model,
+    n_iterations=1000,
+    burn_in_iterations=50,
+    n_chains=3,
+    seed=137
+)
 
-bp.diagnostics.effective_sample_size(posteriors = model.posteriors)
-bp.diagnostics.autocorrelation_summary(posteriors = model.posteriors)
-bp.diagnostics.autocorrelation_plot(posteriors = model.posteriors)
+bp.diagnostics.effective_sample_size(posteriors=model.posteriors)
+bp.diagnostics.autocorrelation_summary(posteriors=model.posteriors)
+bp.diagnostics.autocorrelation_plot(posteriors=model.posteriors)
 
-bp.analysis.trace_plot(posteriors = model.posteriors)
-bp.analysis.residuals_plot(model = model)
-bp.analysis.summary(posteriors = model.posteriors)
+bp.analysis.trace_plot(posteriors=model.posteriors)
+bp.analysis.residuals_plot(model=model)
+bp.analysis.summary(posteriors=model.posteriors)
