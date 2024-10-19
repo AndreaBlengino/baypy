@@ -15,7 +15,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: 3.9
+        python-version: 3.10
 
     - name: Install building tools
       run: |
@@ -38,7 +38,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '>=3.9 <=3.12'
+        python-version: '>=3.10 <=3.13'
 
     - name: Give PyPI a chance to update the index
       run: sleep 150
