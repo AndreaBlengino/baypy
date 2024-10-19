@@ -29,11 +29,11 @@ def flatten_matrix(matrix: np.ndarray) -> np.ndarray:
        >>> import numpy
        >>> a = numpy.array([[1, 2], [3, 4], [5, 6]])
        >>> a
-       >>> array([[1, 2],
-       ...        [3, 4],
-       ...        [5, 6]])
+       array([[1, 2],
+              [3, 4],
+              [5, 6]])
        >>> flatten_matrix(a)
-       >>> array([1, 2, 3, 4, 5, 6])
+       array([1, 2, 3, 4, 5, 6])
     """
     if not isinstance(matrix, np.ndarray):
         raise TypeError(
@@ -83,13 +83,13 @@ def matrices_to_frame(matrices_dict: dict[str, np.ndarray]) -> pd.DataFrame:
        >>> b = numpy.array([[7, 8], [9, 10], [11, 12]])
        >>> d = {'a': a, 'b': b}
        >>> matrices_to_frame(d)
-       >>>    a   b
-       >>> 0  1   7
-       >>> 1  2   8
-       >>> 2  3   9
-       >>> 3  4  10
-       >>> 4  5  11
-       >>> 5  6  12
+          a   b
+       0  1   7
+       1  2   8
+       2  3   9
+       3  4  10
+       4  5  11
+       5  6  12
     """
     if not isinstance(matrices_dict, dict):
         raise TypeError("Parameter 'matrices_dict' must be a dictionary")
@@ -153,7 +153,7 @@ def dot_product(
        >>> data = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6]})
        >>> regressors = {'a': 2, 'b': -1}
        >>> dot_product(data = data, regressors = regressors)
-       >>> array([-2, -1,  0])
+       array([-2, -1,  0])
     """
     if not isinstance(data, pd.DataFrame):
         raise TypeError(
