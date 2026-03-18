@@ -14,6 +14,7 @@ Documentation
 
 * Replace `m2r2 <https://pypi.org/project/m2r2/>`_ with `myst-parser <https://pypi.org/project/myst-parser/>`_
 * Update documentation dependencies
+* Fix broken link
 
 
 Release
