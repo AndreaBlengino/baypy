@@ -92,7 +92,7 @@ through a Monte Carlo Markov chain sampling.
 References
 ----------
 
-- `Installation <https://baypy.readthedocs.io/en/latest/installation.html>`_
+- `Installation <https://baypy.readthedocs.io/en/latest/get_started.html>`_
 - `PyPI <https://pypi.org/project/baypy>`_
 - `Documentation <https://baypy.readthedocs.io/en/latest/?badge=latest>`_
 - `Usage Examples <https://baypy.readthedocs.io/en/latest/examples/index.html>`_
