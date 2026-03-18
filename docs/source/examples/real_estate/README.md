@@ -78,7 +78,7 @@ model.priors = {
 }
 ```
 
-See :py:class:`LinearModel <baypy.model.linear_model.LinearModel>` for 
+See {py:class}`LinearModel <baypy.model.linear_model.LinearModel>` for 
 more information on this class and its attributes and methods.
 
 ### Sampling
@@ -99,7 +99,7 @@ LinearRegression.sample(
 ```
 
 See 
-:py:class:`LinearRegression <baypy.regression.linear_regression.LinearRegression>` 
+{py:class}`LinearRegression <baypy.regression.linear_regression.LinearRegression>` 
 for more information on this class and its attributes and methods.
 
 ### Convergence Diagnostics
@@ -135,10 +135,10 @@ bp.diagnostics.autocorrelation_plot(posteriors=model.posteriors)
 ![](images/autocorrelation_plot.png)
 
 See 
-:py:func:`effective_sample_size <baypy.diagnostics.functions.effective_sample_size>`,
-:py:func:`autocorrelation_summary <baypy.diagnostics.functions.autocorrelation_summary>`
+{py:func}`effective_sample_size <baypy.diagnostics.effective_sample_size>`,
+{py:func}`autocorrelation_summary <baypy.diagnostics.autocorrelation_summary>`
 and 
-:py:func:`autocorrelation_plot <baypy.diagnostics.functions.autocorrelation_plot>`
+{py:func}`autocorrelation_plot <baypy.diagnostics.autocorrelation_plot>`
 for more details on diagnostics functions.  
 All diagnostics show a low correlation, indicating the chains 
 converged to the stationary distribution.
@@ -197,27 +197,27 @@ longitude                    1.262242    2.303130    2.840166    3.366287    4.4
 variance                     0.030052    0.032863    0.034565    0.036164    0.039478
 ```
 
-See :py:func:`trace_plot <baypy.analysis.functions.trace_plot>`,
-:py:func:`residuals_plot <baypy.analysis.functions.residuals_plot>` and
-:py:func:`summary <baypy.analysis.functions.summary>` for more details 
+See {py:func}`trace_plot <baypy.analysis.trace_plot>`,
+{py:func}`residuals_plot <baypy.analysis.residuals_plot>` and
+{py:func}`summary <baypy.analysis.summary>` for more details 
 on analysis functions.  
 The summary reports a statistical evidence for:
 
-- positive effect of *transaction date*: `$1$` month increase would 
-result in `$e^{\frac{0.165923}{12}} - 1 = 1.4\%$` percent increase in 
+- positive effect of *transaction date*: $1$ month increase would 
+result in $e^{\frac{0.165923}{12}} - 1 = 1.4\%$ percent increase in 
 *house price*
-- negative effect of *house age*: `$1$` year increase would result
-in `$e^{-0.006024} - 1 = -0.6\%$` percent decrease in *house price*
-- negative effect of *log MRT station distance*: `$10\%$` percent 
+- negative effect of *house age*: $1$ year increase would result
+in $e^{-0.006024} - 1 = -0.6\%$ percent decrease in *house price*
+- negative effect of *log MRT station distance*: $10\%$ percent 
 increase in *MRT station distance* would result in 
-`$1.10^{-0.166081} - 1 = -1.57\%$` percent decrease in *house price*
-- positive effect of *stores number*: `$1$` store increase would 
-result in `$e^{0.014637} - 1 = 1.47\%$` percent increase in 
+$1.10^{-0.166081} - 1 = -1.57\%$ percent decrease in *house price*
+- positive effect of *stores number*: $1$ store increase would 
+result in $e^{0.014637} - 1 = 1.47\%$ percent increase in 
 *house price*
-- positive effect of *latitude*: `$1'$` increase would result in 
-`$e^{\frac{9.593946}{60}} - 1 = 17.3\%$` percent increase *house price*
-- positive effect of *longitude*: `$1'$` increase would result in 
-`$e^{\frac{2.840717}{60}} - 1 = 4.85\%$` percent increase in *house 
+- positive effect of *latitude*: $1'$ increase would result in 
+$e^{\frac{9.593946}{60}} - 1 = 17.3\%$ percent increase *house price*
+- positive effect of *longitude*: $1'$ increase would result in 
+$e^{\frac{2.840717}{60}} - 1 = 4.85\%$ percent increase in *house 
 price*
 
 The combined effect of *latitude* and *longitude* suggest that the 

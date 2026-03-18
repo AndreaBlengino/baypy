@@ -57,7 +57,7 @@ model_1.priors = {
 }
 ```
 
-See :py:class:`LinearModel <baypy.model.linear_model.LinearModel>` for 
+See {py:class}`LinearModel <baypy.model.linear_model.LinearModel>` for 
 more information on this class and its attributes and methods.
 
 ### Sampling
@@ -78,7 +78,7 @@ LinearRegression.sample(
 ```
 
 See 
-:py:class:`LinearRegression <baypy.regression.linear_regression.LinearRegression>` 
+{py:class}`LinearRegression <baypy.regression.linear_regression.LinearRegression>` 
 for more information on this class and its attributes and methods.
 
 ### Convergence Diagnostics
@@ -114,10 +114,10 @@ bp.diagnostics.autocorrelation_plot(posteriors=model_1.posteriors)
 ![](images/autocorrelation_plot_1.png)
 
 See 
-:py:func:`effective_sample_size <baypy.diagnostics.functions.effective_sample_size>`,
-:py:func:`autocorrelation_summary <baypy.diagnostics.functions.autocorrelation_summary>`
+{py:func}`effective_sample_size <baypy.diagnostics.effective_sample_size>`,
+{py:func}`autocorrelation_summary <baypy.diagnostics.autocorrelation_summary>`
 and 
-:py:func:`autocorrelation_plot <baypy.diagnostics.functions.autocorrelation_plot>`
+{py:func}`autocorrelation_plot <baypy.diagnostics.autocorrelation_plot>`
 for more details on diagnostics functions.  
 All diagnostics show a low correlation, indicating the chains 
 converged to the stationary distribution.
@@ -138,8 +138,8 @@ bp.analysis.residuals_plot(model=model_1)
 
 ![](images/residuals_plot_1.png)
 
-See :py:func:`trace_plot <baypy.analysis.functions.trace_plot>` and
-:py:func:`residuals_plot <baypy.analysis.functions.residuals_plot>` for 
+See {py:func}`trace_plot <baypy.analysis.trace_plot>` and
+{py:func}`residuals_plot <baypy.analysis.residuals_plot>` for 
 more details on analysis functions.  
 Residuals form a shape and increase as the predicted variable increases. 
 This suggests that the model does not fit the data well.  
@@ -336,11 +336,11 @@ log TV     0.325689  0.344946  0.354906  0.364422  0.386279
 variance   0.036865  0.041719  0.044506  0.048087  0.054838
 ```
 
-See :py:func:`summary <baypy.analysis.functions.summary>` for more 
+See {py:func}`summary <baypy.analysis.summary>` for more 
 details on this analysis function.  
 The summary reports a statistical evidence for a positive effect of 
-*log TV*: `$10\%$` percent increase in *TV* would result in
-`$1.10^{0.354768} - 1 = 3.44\%$` percent increase in *Sales*.  
+*log TV*: $10\%$ percent increase in *TV* would result in
+$1.10^{0.354768} - 1 = 3.44\%$ percent increase in *Sales*.  
 Comparing data to fitted model posteriors:
 
 ```python
@@ -441,7 +441,7 @@ Effective number of parameters          1.05
 Deviance Information Criterion        -54.77
 ```
 
-See :py:func:`compute_DIC <baypy.analysis.functions.compute_DIC>` for 
+See {py:func}`compute_DIC <baypy.analysis.compute_DIC>` for 
 more details on this analysis function.  
 *DIC* is lower for the alternative model, indicating a preference for 
 the alternative model in log-scale.
