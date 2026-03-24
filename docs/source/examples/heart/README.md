@@ -34,7 +34,7 @@ model.priors = {
 }
 ```
 
-See :py:class:`LinearModel <baypy.model.linear_model.LinearModel>` for 
+See {py:class}`LinearModel <baypy.model.linear_model.LinearModel>` for 
 more information on this class and its attributes and methods.
 
 ### Sampling
@@ -55,7 +55,7 @@ LinearRegression.sample(
 ```
 
 See 
-:py:class:`LinearRegression <baypy.regression.linear_regression.LinearRegression>` 
+{py:class}`LinearRegression <baypy.regression.linear_regression.LinearRegression>` 
 for more information on this class and its attributes and methods.
 
 ### Convergence Diagnostics
@@ -90,10 +90,10 @@ bp.diagnostics.autocorrelation_plot(posteriors=model.posteriors)
 ![](images/autocorrelation_plot.png)
 
 See 
-:py:func:`effective_sample_size <baypy.diagnostics.functions.effective_sample_size>`,
-:py:func:`autocorrelation_summary <baypy.diagnostics.functions.autocorrelation_summary>`
+{py:func}`effective_sample_size <baypy.diagnostics.effective_sample_size>`,
+{py:func}`autocorrelation_summary <baypy.diagnostics.autocorrelation_summary>`
 and 
-:py:func:`autocorrelation_plot <baypy.diagnostics.functions.autocorrelation_plot>`
+{py:func}`autocorrelation_plot <baypy.diagnostics.autocorrelation_plot>`
 for more details on diagnostics functions.  
 All diagnostics show a low correlation, indicating the chains 
 converged to the stationary distribution.
@@ -145,13 +145,13 @@ smoking     0.171140   0.175893   0.178261   0.180621   0.185169
 variance    0.380265   0.408345   0.426025   0.446627   0.488800
 ```
 
-See :py:func:`trace_plot <baypy.analysis.functions.trace_plot>`,
-:py:func:`residuals_plot <baypy.analysis.functions.residuals_plot>` and
-:py:func:`summary <baypy.analysis.functions.summary>` for more details 
+See {py:func}`trace_plot <baypy.analysis.trace_plot>`,
+{py:func}`residuals_plot <baypy.analysis.residuals_plot>` and
+{py:func}`summary <baypy.analysis.summary>` for more details 
 on analysis functions.  
 The summary reports a statistical evidence for:
 
-- negative effect of *biking*: `$1$` point increase in *biking* 
-would result in `$0.2$` points decrease in *heart disease*
-- positive effect of *smoking*: `$1$` point increase in *smoking* 
-would result `$0.18$` points increase in *heart disease*
+- negative effect of *biking*: $1$ point increase in *biking* 
+would result in $0.2$ points decrease in *heart disease*
+- positive effect of *smoking*: $1$ point increase in *smoking* 
+would result $0.18$ points increase in *heart disease*

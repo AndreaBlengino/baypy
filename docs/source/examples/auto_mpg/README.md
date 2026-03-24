@@ -68,7 +68,7 @@ model.priors = {
 }
 ```
 
-See :py:class:`LinearModel <baypy.model.linear_model.LinearModel>` for 
+See {py:class}`LinearModel <baypy.model.linear_model.LinearModel>` for 
 more information on this class and its attributes and methods.
 
 ### Sampling
@@ -89,7 +89,7 @@ LinearRegression.sample(
 ```
 
 See 
-:py:class:`LinearRegression <baypy.regression.linear_regression.LinearRegression>` 
+{py:class}`LinearRegression <baypy.regression.linear_regression.LinearRegression>` 
 for more information on this class and its attributes and methods.
 
 ### Convergence Diagnostics
@@ -125,10 +125,10 @@ bp.diagnostics.autocorrelation_plot(posteriors=model.posteriors)
 ![](images/autocorrelation_plot.png)
 
 See 
-:py:func:`effective_sample_size <baypy.diagnostics.functions.effective_sample_size>`,
-:py:func:`autocorrelation_summary <baypy.diagnostics.functions.autocorrelation_summary>`
+{py:func}`effective_sample_size <baypy.diagnostics.effective_sample_size>`,
+{py:func}`autocorrelation_summary <baypy.diagnostics.autocorrelation_summary>`
 and 
-:py:func:`autocorrelation_plot <baypy.diagnostics.functions.autocorrelation_plot>`
+{py:func}`autocorrelation_plot <baypy.diagnostics.autocorrelation_plot>`
 for more details on diagnostics functions.  
 All diagnostics show a low correlation, indicating the chains 
 converged to the stationary distribution.
@@ -183,17 +183,17 @@ model year    0.028102  0.030384  0.031521  0.032740  0.034908
 variance      0.011840  0.012967  0.013594  0.014286  0.015681
 ```
 
-See :py:func:`trace_plot <baypy.analysis.functions.trace_plot>`,
-:py:func:`residuals_plot <baypy.analysis.functions.residuals_plot>` and
-:py:func:`summary <baypy.analysis.functions.summary>` for more details 
+See {py:func}`trace_plot <baypy.analysis.trace_plot>`,
+{py:func}`residuals_plot <baypy.analysis.residuals_plot>` and
+{py:func}`summary <baypy.analysis.summary>` for more details 
 on analysis functions.  
 The summary reports a statistical evidence for:
 
-- negative effect of *cylinders*: `$1$` cylinder increase would 
-result in `$e^{-0.016291} - 1 = -1.62\%$` percent decrease in *mpg*
-- negative effect of *log weight*: `$10\%$` percent increase in *weight* 
-would result in `$1.10^{-0.837066} - 1 = -7.67\%$` percent decrease in 
+- negative effect of *cylinders*: $1$ cylinder increase would 
+result in $e^{-0.016291} - 1 = -1.62\%$ percent decrease in *mpg*
+- negative effect of *log weight*: $10\%$ percent increase in *weight* 
+would result in $1.10^{-0.837066} - 1 = -7.67\%$ percent decrease in 
 *mpg*
-- positive effect of *model year*: `$1$` year increase would result in 
-`$0.03$` points increase in *mpg*. This effect may represent the 
+- positive effect of *model year*: $1$ year increase would result in 
+$0.03$ points increase in *mpg*. This effect may represent the 
 efficiency enhancements made along the years to reduce fuel consumption  

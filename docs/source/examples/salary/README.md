@@ -30,7 +30,7 @@ model.priors = {
 }
 ```
 
-See :py:class:`LinearModel <baypy.model.linear_model.LinearModel>` for 
+See {py:class}`LinearModel <baypy.model.linear_model.LinearModel>` for 
 more information on this class and its attributes and methods.
 
 ### Sampling
@@ -51,7 +51,7 @@ LinearRegression.sample(
 ```
 
 See 
-:py:class:`LinearRegression <baypy.regression.linear_regression.LinearRegression>` 
+{py:class}`LinearRegression <baypy.regression.linear_regression.LinearRegression>` 
 for more information on this class and its attributes and methods.
 
 ### Convergence Diagnostics
@@ -87,10 +87,10 @@ bp.diagnostics.autocorrelation_plot(posteriors=model.posteriors)
 ![](images/autocorrelation_plot.png)
 
 See 
-:py:func:`effective_sample_size <baypy.diagnostics.functions.effective_sample_size>`,
-:py:func:`autocorrelation_summary <baypy.diagnostics.functions.autocorrelation_summary>`
+{py:func}`effective_sample_size <baypy.diagnostics.effective_sample_size>`,
+{py:func}`autocorrelation_summary <baypy.diagnostics.autocorrelation_summary>`
 and 
-:py:func:`autocorrelation_plot <baypy.diagnostics.functions.autocorrelation_plot>`
+{py:func}`autocorrelation_plot <baypy.diagnostics.autocorrelation_plot>`
 for more details on diagnostics functions.  
 All diagnostics show a low correlation, indicating the chains 
 converged to the stationary distribution.
@@ -139,13 +139,13 @@ YearsExperience  8.696984e+03  9.198969e+03  9.447750e+03  9.703882e+03  1.02242
 variance         2.049029e+07  2.779544e+07  3.309215e+07  3.986484e+07  5.835968e+07
 ```
 
-See :py:func:`trace_plot <baypy.analysis.functions.trace_plot>`,
-:py:func:`residuals_plot <baypy.analysis.functions.residuals_plot>` and
-:py:func:`summary <baypy.analysis.functions.summary>` for more details 
+See {py:func}`trace_plot <baypy.analysis.trace_plot>`,
+{py:func}`residuals_plot <baypy.analysis.residuals_plot>` and
+{py:func}`summary <baypy.analysis.summary>` for more details 
 on analysis functions.  
 The summary reports a statistical evidence for a positive effect of 
-years of experience: `$1$` year increase in experience would result in
-`$\sim 9.500$` increase in salary.  
+years of experience: $1$ year increase in experience would result in
+$\sim 9.500$ increase in salary.  
 Predict the salary distribution for a jobholder with 5 year of 
 experience, so the predictor is `YearsExperience = 5`:
 
@@ -177,7 +177,7 @@ plt.show()
 ![](images/predict_distribution.png)
 
 See 
-:py:meth:`LinearModel.predict_distribution <baypy.model.linear_model.LinearModel.predict_distribution>`
+{py:meth}`LinearModel.predict_distribution <baypy.model.linear_model.LinearModel.predict_distribution>`
 for more information on this method.  
 Comparing data to fitted model posteriors:
 
