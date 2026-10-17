@@ -47,7 +47,7 @@ class Regression(ABC):
                (prior not in model.data.columns):
                 raise ValueError(f"Column '{prior}' not found in 'model.data'")
 
-        if not isinstance(n_iterations, int):
+        if not isinstance(n_iterations, int) or isinstance(n_iterations, bool):
             raise TypeError("Parameter 'n_iteration' must be an integer")
 
         if not isinstance(burn_in_iterations, int):
