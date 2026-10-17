@@ -28,7 +28,7 @@ extensions = [
     'sphinx_copybutton'
 ]
 
-sourse_suffix = {
+source_suffix = {
     '.rst': 'restrusturedtext',
     '.md': 'markdown',
 }
