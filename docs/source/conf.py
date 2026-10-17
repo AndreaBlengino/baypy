@@ -28,11 +28,6 @@ extensions = [
     'sphinx_copybutton'
 ]
 
-source_suffix = {
-    '.rst': 'restrusturedtext',
-    '.md': 'markdown',
-}
-
 myst_enable_extensions = [
     'dollarmath',
 ]
