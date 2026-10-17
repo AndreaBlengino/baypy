@@ -142,7 +142,7 @@ def summary(
     if print_summary:
         summary_output = (
             f"Number of chains:      {n_chains:>6}\n"
-            f"Sample size per chian: {n_iterations:>6}\n"
+            f"Sample size per chain: {n_iterations:>6}\n"
             f"\n"
             f"Empirical mean, standard deviation, {credibility_mass} HPD "
             f"interval for each variable:\n"
