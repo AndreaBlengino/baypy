@@ -14,6 +14,6 @@ Documentation
 
 
 Maintenance
-------------
+-----------
 
 * Fix some typos
