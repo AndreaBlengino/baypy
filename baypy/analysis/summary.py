@@ -89,8 +89,8 @@ def summary(
 
     if not isinstance(alpha, float):
         raise TypeError("Parameter 'alpha' must be a float")
-    if (alpha < 0) or (alpha > 1):
-        raise ValueError("Parameter 'alpha' must be between 0 and 1")
+    if (alpha <= 0) or (alpha >= 1):
+        raise ValueError("Parameter 'alpha' must be between 0 and 1 excluded")
 
     if quantiles is not None:
         if not isinstance(quantiles, list):
