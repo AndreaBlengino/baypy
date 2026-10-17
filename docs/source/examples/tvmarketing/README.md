@@ -319,7 +319,7 @@ bp.analysis.summary(posteriors=model_2.posteriors)
 
 ```text
 Number of chains:           3
-Sample size per chian:    500
+Sample size per chain:    500
 
 Empirical mean, standard deviation, 95% HPD interval for each variable:
 
