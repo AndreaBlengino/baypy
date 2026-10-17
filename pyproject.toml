@@ -21,7 +21,7 @@ maintainers = [
 description = "Python library for solving bayesian regression models through a Monte Carlo Markov chain sampling"
 readme = "README.rst"
 license = "GPL-3.0-only"
-license-file = [ "LICENSE" ]
+license-files = [ "LICENSE" ]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Education",
