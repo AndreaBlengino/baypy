@@ -6,7 +6,7 @@ from ..utils import flatten_matrix
 def summary(
     posteriors: dict[str, np.ndarray],
     alpha: float = 0.05,
-    quantiles: list[float] = None,
+    quantiles: list[float] | None = None,
     print_summary: bool = True
 ) -> dict[str, int | str]:
     """It prints a statistical summary for each posterior.

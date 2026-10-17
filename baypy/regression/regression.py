@@ -20,7 +20,7 @@ class Regression(ABC):
         n_iterations: int,
         burn_in_iterations: int,
         n_chains: int,
-        seed: int = None
+        seed: int | None = None
     ) -> None:
         if not isinstance(model, Model):
             raise TypeError(

@@ -7,7 +7,7 @@ from ..utils import flatten_matrix
 
 def autocorrelation_summary(
     posteriors: dict[str, np.ndarray],
-    lags: Iterable[int] = None,
+    lags: Iterable[int] | None = None,
     print_summary: bool = True
 ) -> pd.DataFrame:
     """It prints the auto-correlation summary for each regression variable. \n
