@@ -101,8 +101,7 @@ def summary(
             raise TypeError("Parameter 'quantiles' must contain only float")
         if any([(quantile < 0) or (quantile > 1) for quantile in quantiles]):
             raise ValueError(
-                "Parameter 'quantiles' cannot contain only floats between 0 "
-                "and 1"
+                "Parameter 'quantiles' can contain only floats between 0 and 1"
             )
 
     quantiles = [0.025, 0.25, 0.5, 0.75, 0.975] if quantiles is None \
