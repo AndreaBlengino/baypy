@@ -67,7 +67,7 @@ class TestAnalysisSummary:
         assert all(
             summary['quantiles'].columns == [
                 f'{100*quantile}%'.replace('.0%', '%')
-                for quantile in model_options['quantiles']
+                for quantile in sorted(set(model_options['quantiles']))
             ]
         )
 
