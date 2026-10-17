@@ -105,7 +105,7 @@ def summary(
             )
 
     quantiles = [0.025, 0.25, 0.5, 0.75, 0.975] if quantiles is None \
-        else quantiles
+        else sorted(set(quantiles))
 
     n_iterations, n_chains = posteriors['intercept'].shape
 
