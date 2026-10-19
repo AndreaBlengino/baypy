@@ -7,7 +7,7 @@ from ..utils import flatten_matrix
 
 def autocorrelation_summary(
     posteriors: dict[str, np.ndarray],
-    lags: Iterable[int] = None,
+    lags: Iterable[int] | None = None,
     print_summary: bool = True
 ) -> pd.DataFrame:
     """It prints the auto-correlation summary for each regression variable. \n
@@ -99,7 +99,7 @@ def autocorrelation_summary(
                 "Parameter 'lags' cannot contain negative integers"
             )
 
-    lags = [0, 1, 5, 10, 30] if lags is None else list(set(lags))
+    lags = [0, 1, 5, 10, 30] if lags is None else sorted(set(lags))
 
     n_chains = posteriors['intercept'].shape[1]
     acorr_summary = pd.DataFrame(

@@ -29,7 +29,7 @@ class LinearRegression(Regression):
         n_iterations: int,
         burn_in_iterations: int,
         n_chains: int,
-        seed: int = None
+        seed: int | None = None
     ) -> None:
         r"""It samples a sequence of observations from the full posterior
         distribution of regressors' parameters :math:`\beta_j` and ``variance``

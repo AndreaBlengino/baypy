@@ -6,7 +6,7 @@ from ..utils import flatten_matrix
 def summary(
     posteriors: dict[str, np.ndarray],
     alpha: float = 0.05,
-    quantiles: list[float] = None,
+    quantiles: list[float] | None = None,
     print_summary: bool = True
 ) -> dict[str, int | str]:
     """It prints a statistical summary for each posterior.
@@ -89,8 +89,8 @@ def summary(
 
     if not isinstance(alpha, float):
         raise TypeError("Parameter 'alpha' must be a float")
-    if (alpha < 0) or (alpha > 1):
-        raise ValueError("Parameter 'alpha' must be between 0 and 1")
+    if (alpha <= 0) or (alpha >= 1):
+        raise ValueError("Parameter 'alpha' must be between 0 and 1 excluded")
 
     if quantiles is not None:
         if not isinstance(quantiles, list):
@@ -101,12 +101,11 @@ def summary(
             raise TypeError("Parameter 'quantiles' must contain only float")
         if any([(quantile < 0) or (quantile > 1) for quantile in quantiles]):
             raise ValueError(
-                "Parameter 'quantiles' cannot contain only floats between 0 "
-                "and 1"
+                "Parameter 'quantiles' can contain only floats between 0 and 1"
             )
 
     quantiles = [0.025, 0.25, 0.5, 0.75, 0.975] if quantiles is None \
-        else quantiles
+        else sorted(set(quantiles))
 
     n_iterations, n_chains = posteriors['intercept'].shape
 
@@ -142,7 +141,7 @@ def summary(
     if print_summary:
         summary_output = (
             f"Number of chains:      {n_chains:>6}\n"
-            f"Sample size per chian: {n_iterations:>6}\n"
+            f"Sample size per chain: {n_iterations:>6}\n"
             f"\n"
             f"Empirical mean, standard deviation, {credibility_mass} HPD "
             f"interval for each variable:\n"
