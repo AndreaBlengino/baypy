@@ -11,6 +11,12 @@ Version 1.5.2
 *************
 
 
+Bugfix
+------
+
+* Fix a bug on GitHub workflow OS selection
+
+
 Enhancements
 ------------
 
@@ -18,6 +24,7 @@ Enhancements
   |autocorrelation_summary| and |summary| functions respectively
 * Improve type hinting
 * Improve parameters type check
+* Update GitHub actions
 
 
 Maintenance
