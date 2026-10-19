@@ -82,9 +82,6 @@ jobs:
         run: |
           pip install ".[test]"
 
-      - name: Fetch
-        uses: actions/checkout@master
-
       - name: Run tests
         env:
           MPLBACKEND: Agg
